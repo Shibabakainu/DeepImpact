@@ -47,9 +47,9 @@
 
             // Insert user into the database
             $insertSql = "INSERT INTO users (email, password, profile_image, name)
-                        VALUES (?, ?, ?, ?, ?, ?)";
+                        VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($insertSql);
-            $stmt->bind_param("ssssss", $email, $password, $profile_image, $name,);
+            $stmt->bind_param("ssss", $email, $password, $profile_image, $name);
 
             if ($stmt->execute()) {
             // Display user information
