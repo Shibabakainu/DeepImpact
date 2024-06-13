@@ -51,8 +51,8 @@ session_start();
     <div class="container">
         <h2>Login</h2>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <input type="text" name="email" placeholder="メールアドレス" required>
-            <input type="password" name="password" placeholder="パスワード" required>
+            <input type="text" name="name" placeholder="username" required>
+            <input type="password" name="password" placeholder="password" required>
             <input type="submit" value="ログイン">
         </form>
         <?php
