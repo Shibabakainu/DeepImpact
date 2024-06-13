@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストーリーテラー</title>
+</head>
+<body>
+    <h1>ストーリーテラー</h1>
+    <div id="story"></div>
+    <input type="text" id="input" placeholder="次のストーリーを入力">
+    <button onclick="sendStory()">送信</button>
+
+    <script>
+        const ws = new WebSocket('ws://192.168.10.86:8080');
+
+        ws.onopen = function() {
+            console.log('接続中');
+        };
+
+        ws.onmessage = function(event) {
+            const storyDiv = document.getElementById('story');
+            const newContent = document.createElement('p');
+            newContent.textContent = event.data;
+            storyDiv.appendChild(newContent);
+        };
+
+        function sendStory() {
+            const input = document.getElementById('input').value;
+            ws.send(input);
+            document.getElementById('input').value = '';
+        }
+
+                function invitePlayer(playerId) {
+            // プレイヤーIDをサーバーに送信し、招待リンクを取得
+            const inviteLink = generateInviteLink(playerId);
+            ws.send(inviteLink);
+        }
+
+        function generateInviteLink(playerId) {
+            // 招待リンクを生成するロジックを実装する
+            return 'https://example.com/invite/' + playerId;
+        }
+    </script>
+</body>
+</html>
