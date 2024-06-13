@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fae6b1;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    
+}
+
+.main-container {
+    padding: 20px;
+    width: 100%;
+}
+
+.container {
+    text-align: center;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+}
+
+button {
+    background-color: #e88a49;
+    color: #000;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e77a34;
+}
+
+.footer {
+    margin-top: 50px;
+    font-size: 0.8em;
+    color: #000;
+}
