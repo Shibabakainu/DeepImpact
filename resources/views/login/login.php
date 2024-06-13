@@ -1,4 +1,3 @@
-
 <?php
 session_start(); 
 ?>
@@ -6,11 +5,11 @@ session_start();
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ログイン画面</title>
+    <title>ログイン</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #BFF6C3;
+            background-color: #CAF4FF;
         }
         .container {
             width: 300px;
@@ -20,7 +19,7 @@ session_start();
             border-radius: 5px;
             background-color: rgba(0, 0, 0, 0.3);
         }
-        .container h2 {
+        .container h1 {
             text-align: center;
         }
         .container input[type="text"],
@@ -46,30 +45,51 @@ session_start();
         .container input[type="submit"]:hover {
             background-color: #0056b3;
         }
+        .container input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 3px;
+            background-color:#5AB2FF;
+            color: #fff;
+            cursor: pointer;
+        }
+        .container input[type="button"]:hover {
+            background-color: #0056b3;
+        }
+        .separator {
+        height: 1px;
+        width: 90%;
+        background-color: #ccc;
+        margin: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
+        <h1>Login</h1>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <input type="text" name="email" placeholder="メールアドレス" required>
-            <input type="password" name="password" placeholder="パスワード" required>
+            <input type="text" name="name" placeholder="username" required>
+            <input type="password" name="password" placeholder="password" required>
             <input type="submit" value="ログイン">
+            <div class="separator"></div>
+            <input type="button" class="signup" onclick="location.href='signup.php'" value="新規作成">
         </form>
         <?php
         include '../db_connect.php'; // Include the database connection script
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $_POST['email'];
+            $name = $_POST['name'];
             $password = $_POST['password'];
 
             // Prepare and execute the SQL statement
-            $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+            $stmt = $conn->prepare("SELECT id, password FROM users WHERE name = ?");
             if ($stmt === false) {
                 die('Prepare failed: ' . $conn->error);
             }
 
-            $stmt->bind_param("s", $email);
+            $stmt->bind_param("s", $name);
             if ($stmt->execute() === false) {
                 die('Execute failed: ' . $stmt->error);
             }
@@ -83,7 +103,7 @@ session_start();
                 if (password_verify($password, $hashed_password)) {
                     // Password is correct, start a session
                     $_SESSION['user_id'] = $user_id;
-                    header('Location: ../profile.php'); // Redirect to the profile page
+                    header('Location: ../home.php'); // Redirect to the profile page
                     exit;
                 } else {
                     echo "Invalid email or password.";
@@ -96,7 +116,6 @@ session_start();
         }
         $conn->close();
         ?>          
-        <a href="signup.php">新規作成</a>
     </div>
 </body>
 </html>
