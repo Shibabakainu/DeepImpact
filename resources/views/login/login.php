@@ -59,16 +59,16 @@ session_start();
         include '../db_connect.php'; // Include the database connection script
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $_POST['email'];
+            $name = $_POST['name'];
             $password = $_POST['password'];
 
             // Prepare and execute the SQL statement
-            $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+            $stmt = $conn->prepare("SELECT id, password FROM users WHERE name = ?");
             if ($stmt === false) {
                 die('Prepare failed: ' . $conn->error);
             }
 
-            $stmt->bind_param("s", $email);
+            $stmt->bind_param("s", $name);
             if ($stmt->execute() === false) {
                 die('Execute failed: ' . $stmt->error);
             }
