@@ -42,7 +42,17 @@ main {
     padding: 10px;
 }
 
-button {
+.back {
+    width: 120px;
+    height: 60px;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+}
+
+.create {
     width: 120px;
     height: 60px;
     border-radius: 10px;

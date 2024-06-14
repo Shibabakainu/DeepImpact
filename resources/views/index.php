@@ -12,7 +12,7 @@
     <?php include 'header.php'; ?>
     <div class="main-container">
         <div class="buttons">
-            <button onclick="window.location.href='create_room.php'">ルーム作成</button>
+            <button onclick="window.location.href='room_create.php'">ルーム作成</button>
             <button onclick="window.location.href='search_room.php'">ルーム検索</button>
             <button onclick="window.location.href='pachinko.php'">パチンコ</button>
             <button onclick="window.location.href='rules.php'">ルール</button>
