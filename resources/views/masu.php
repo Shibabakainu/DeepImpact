@@ -11,7 +11,7 @@
             margin: 0;
             height: 100vh; /* ビューポートの高さいっぱいに */
             overflow: hidden; /* スクロールバーを非表示に */
-            background: url('your-image-url.jpg') no-repeat center center fixed; /* 背景画像の設定 */
+            background: url('art1.jpg') no-repeat center center fixed; /* 背景画像の設定 */
             background-size: cover; /* 画像をカバー全体に */
             display: flex;
             justify-content: center;
@@ -90,7 +90,7 @@
             margin-left: auto; /* 3, 4番目の列を左寄せ */
         }
 
-     </style>
+    </style>
 </head>
 <body>
     <div class="board">
@@ -138,6 +138,6 @@
             <div class="circle">39</div>
             <div class="circle">40</div>
         </div>
-     </div>
+    </div>
 </body>
 </html>
