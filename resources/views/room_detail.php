@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>プレイヤーリスト</title>
-    <link rel="stylesheet" href="../css/home_detail.css">
+    <link rel="stylesheet" href="../css/room_detail.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
                 <li>プレイヤー6</li>
             </ul>
             <div class="buttons">
-                <a href="home_create.php"><button class="back">戻る</button></a>
+                <a href="room_create.php"><button class="back">戻る</button></a>
                 <button class="create">物語を作る</button>
             </div>
         </div>
