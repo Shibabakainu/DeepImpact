@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+}
+
+.header-container {
+    width: 100%;
+    background-color: #fae6b1;
+    position: fixed; /* ヘッダーを固定 */
+    top: 0; /* 画面の上部に配置 */
+    z-index: 1000; /* ヘッダーを他のコンテンツの上に表示 */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.title-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+}
+
+.menu-button {
+    background-color: #e88a49;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.3s; /* 移動のアニメーションを追加 */
+}
+
+.menu-button:hover {
+    background-color: #e77a34;
+}
+
+.menu-button.move-left {
+    transform: translateX(-270px); /* 左に20px移動 */
+}

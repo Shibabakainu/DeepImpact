@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    right: -250px; /* Initially hidden */
+    background-color: #ffffff;
+    padding-top: 60px; /* Adjusted to leave space for the fixed header */
+    transition: right 0.3s;
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.sidebar.open {
+    right: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar ul li a {
+    display: block;
+    color: #000;
+    text-decoration: none;
+    font-size: 1.2em;
+    padding: 10px 20px;
+    background-color: #d88c45;
+    border-radius: 5px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #e77a34;
+}
