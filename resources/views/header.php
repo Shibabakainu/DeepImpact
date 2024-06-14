@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Story Teller</title>
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/sidebar.css">
-    <script src="../js/script.js" defer></script>
+    <link rel="stylesheet" href="/deepimpact/resources/css/header.css">
+    <link rel="stylesheet" href="/deepimpact/resources/css/sidebar.css">
+    <script src="/deepimpact/resources/js/script.js" defer></script>
 </head>
 
 <body>
