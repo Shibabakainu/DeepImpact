@@ -9,7 +9,8 @@ session_start();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #CAF4FF;
+            /*background-color: #CAF4FF;*/
+            background-image: url('/images/art6.jpg');
         }
         .container {
             width: 300px;
@@ -103,7 +104,7 @@ session_start();
                 if (password_verify($password, $hashed_password)) {
                     // Password is correct, start a session
                     $_SESSION['user_id'] = $user_id;
-                    header('Location: ../home.php'); // Redirect to the profile page
+                    header('Location: ../index.php'); // Redirect to the home page
                     exit;
                 } else {
                     echo "Invalid email or password.";

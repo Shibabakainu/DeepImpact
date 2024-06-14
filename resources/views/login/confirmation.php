@@ -18,7 +18,6 @@
 </head>
 
 <body>
-    <h1>プロフィール確認</h1>
     <?php
     include '../db_connect.php'; // Include the database connection script
 
@@ -51,46 +50,11 @@
             $stmt = $conn->prepare($insertSql);
             $stmt->bind_param("ssss", $email, $password, $profile_image, $name);
 
-            if ($stmt->execute()) {
-            // Display user information
-            echo "<!DOCTYPE html>";
-            echo "<html lang='ja'>";
-            echo "<head>";
-            echo "<meta charset='UTF-8'>";
-            echo "<title>Registration Successful</title>";
-            echo "<style>
-                    .profile_image { max-width: 150px; height: auto; }
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: #CAF4FF;
-                    }
-                    .container {
-                        width: 300px;
-                        margin: 100px auto;
-                        padding: 20px;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        background-color: rgba(0, 0, 0, 0.3);
-                    }
-                    .container h1 {
-                        text-align: center;
-                    }
-                  </style>";
-            echo "</head>";
-            echo "<body>";
-            echo "<div class='container'>";
-            echo "<h1>Registration successful!</h1>";
-            echo "<p><strong>名前:</strong> " . htmlspecialchars($name) . "</p>";
-            echo "<p><strong>メールアドレス:</strong> " . htmlspecialchars($email) . "</p>";
-            echo "<p><strong>プロフィール画像:</strong><br><img src='" . htmlspecialchars($target_file) . "' class='profile_image'></p>";
-            echo "<button onclick=\"location.href='../profile.php'\">新規作成</button>";
-            echo "</div>";
-            echo "</body>";
-            echo "</html>";
+            if ($stmt->execute()) {        
             // Get the last inserted user ID
             $user_id = $stmt->insert_id;
             // Redirect to the profile page with user ID
-            header("Location: ../login/login.php?id=$user_id");
+            header("Location: ../login/profile.php?id=$user_id");
             exit;
             } else {
                 echo "Error: " . $stmt->error;
