@@ -1,6 +1,3 @@
-<?php
-
-?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -99,47 +96,12 @@
     <div class="board">
         <div class="start">START</div>
         <div class="circle-container">
-            <!-- ジグザグに配置した.circle要素に数字を追加 -->
-            <div class="circle">1</div>
-            <div class="circle">2</div>
-            <div class="circle">3</div>
-            <div class="circle">4</div>
-            <div class="circle">5</div>
-            <div class="circle">6</div>
-            <div class="circle">7</div>
-            <div class="circle">8</div>
-            <div class="circle">9</div>
-            <div class="circle">10</div>
-            <div class="circle">11</div>
-            <div class="circle">12</div>
-            <div class="circle">13</div>
-            <div class="circle">14</div>
-            <div class="circle">15</div>
-            <div class="circle">16</div>
-            <div class="circle">17</div>
-            <div class="circle">18</div>
-            <div class="circle">19</div>
-            <div class="circle">20</div>
-            <div class="circle">21</div>
-            <div class="circle">22</div>
-            <div class="circle">23</div>
-            <div class="circle">24</div>
-            <div class="circle">25</div>
-            <div class="circle">26</div>
-            <div class="circle">27</div>
-            <div class="circle">28</div>
-            <div class="circle">29</div>
-            <div class="circle">30</div>
-            <div class="circle">31</div>
-            <div class="circle">32</div>
-            <div class="circle">33</div>
-            <div class="circle">34</div>
-            <div class="circle">35</div>
-            <div class="circle">36</div>
-            <div class="circle">37</div>
-            <div class="circle">38</div>
-            <div class="circle">39</div>
-            <div class="circle">40</div>
+            <!-- PHPを使ってサークルを動的に生成 -->
+            <?php
+            for ($i = 1; $i <= 40; $i++) {
+                echo '<div class="circle">' . $i . '</div>';
+            }
+            ?>
         </div>
     </div>
 </body>
