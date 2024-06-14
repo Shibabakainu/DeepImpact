@@ -5,16 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロフィール確認</title>
-    <style>
-        img.profile_image {
-            max-width: 200px; /* 最大幅を設定 */
-            max-height: 200px; /* 最大高さを設定 */
-            width: 200px; /* 幅を自動調整:auto */
-            height: 200px; /* 高さを自動調整:auto */
-            object-fit: cover; /* 画像を保持し、アスペクト比を維持しつつ要素全体にスケーリング */
-            border-radius: 50%; /* 円形にする */
-        }
-    </style>
 </head>
 
 <body>

@@ -5,20 +5,27 @@ session_start();
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            /*background-color: #CAF4FF;*/
-            background-image: url("/images/art6.jpg");
+            background-image: url("/deepimpact/images/art6.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 90vh;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
         }
         .container {
             width: 300px;
-            margin: 100px auto;
+            margin: 200px auto;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0,0.3);
         }
         .container h1 {
             text-align: center;
@@ -69,7 +76,7 @@ session_start();
 </head>
 <body>
     <div class="container">
-        <h1>Login</h1>
+        <h1>LOGIN</h1>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <input type="text" name="name" placeholder="username" required>
             <input type="password" name="password" placeholder="password" required>
