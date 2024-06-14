@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+body {
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    background-color: #ffff;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.main-container {
+    text-align: center;
+    font-size: 68px;
+    width: 80%;
+    max-width: 500px;
+    border: dashed 1px black;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.kotoba {
+    margin-bottom: 20px;
+}
+
+.textbox {
+    width: 100%;
+    max-width: 400px;
+    height: 60px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    font-size: 24px;
+    color: black;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+button {
+    width: 120px;
+    height: 60px;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+}
+
+.create {
+    background-color: #e0e0e0;
+}
+
+.back {
+    background-color: #e0e0e0;
+}
+
+.create:hover {
+    background-color: #adf5ff;
+}
+
+.back:hover {
+    background-color: #ff6c6c;
+}
