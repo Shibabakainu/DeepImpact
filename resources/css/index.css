@@ -1,22 +1,35 @@
 body {
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    position: relative;
     font-family: Arial, sans-serif;
-    background-color: #fae6b1;
-    margin: 0;
     display: flex;
     justify-content: center;
-    align-items: center; /* Center content vertically */
-    height: 100vh; /* Full height of the viewport */
-    overflow: hidden; /* Prevent scrolling */
-    padding-top: 60px; /* Adjusted to leave space for the fixed header */
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    padding-top: 60px;
+    background-image: url(../../images/art5.jpg);
+    background-size: cover;
+    background-position: center;
 }
 
 .main-container {
     text-align: center;
 }
 
+.header-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
 .buttons {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, auto);
     gap: 20px;
     justify-content: center;
 }
@@ -29,6 +42,7 @@ button {
     font-size: 1.5em;
     cursor: pointer;
     border-radius: 5px;
+    white-space: nowrap;
 }
 
 button:hover {

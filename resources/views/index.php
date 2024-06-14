@@ -11,6 +11,7 @@
 <body>
     <?php include 'header.php'; ?>
     <div class="main-container">
+        <img src="../../images/sttera.png" alt="Story Teller" class="header-image">
         <div class="buttons">
             <button onclick="window.location.href='room_create.php'">ルーム作成</button>
             <button onclick="window.location.href='search_room.php'">ルーム検索</button>

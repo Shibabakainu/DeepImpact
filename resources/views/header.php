@@ -13,7 +13,7 @@
 <body>
     <div class="header-container">
         <header>
-            <img src="../../images/sttera.png" alt="Story Teller" class="title-image">
+            <a href="index.php"><img src="../../images/sttera.png" alt="Story Teller" class="title-image"></a>
             <button class="menu-button" onclick="toggleSidebar(this)">メニュー</button>
         </header>
     </div>

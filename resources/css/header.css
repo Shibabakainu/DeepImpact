@@ -4,10 +4,13 @@ body {
 
 .header-container {
     width: 100%;
-    background-color: #fae6b1;
-    position: fixed; /* ヘッダーを固定 */
-    top: 0; /* 画面の上部に配置 */
-    z-index: 1000; /* ヘッダーを他のコンテンツの上に表示 */
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    /* ヘッダーを固定 */
+    top: 0;
+    /* 画面の上部に配置 */
+    z-index: 1000;
+    /* ヘッダーを他のコンテンツの上に表示 */
 }
 
 header {
@@ -15,10 +18,11 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
+
 }
 
 .title-image {
-    width: 100%;
+    width: 70%;
     max-width: 400px;
     height: auto;
 }
@@ -31,7 +35,8 @@ header {
     font-size: 1em;
     cursor: pointer;
     border-radius: 5px;
-    transition: transform 0.3s; /* 移動のアニメーションを追加 */
+    transition: transform 0.3s;
+    /* 移動のアニメーションを追加 */
 }
 
 .menu-button:hover {
@@ -39,5 +44,6 @@ header {
 }
 
 .menu-button.move-left {
-    transform: translateX(-270px); /* 左に20px移動 */
+    transform: translateX(-270px);
+    /* 左に20px移動 */
 }
