@@ -5,8 +5,9 @@ session_start();
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>プロフィール</title>
-        <link rel="stylesheet" href="/resources/css/profile.css">
+        <link rel="stylesheet" href="/deepimpact/resources/css/profile.css">
     </head>
     <body>
         <?php include '../header.php'; ?>
@@ -35,10 +36,8 @@ session_start();
                 $user = $result->fetch_assoc();
                 // Display user data
                 echo "<h1><font size=7>" . htmlspecialchars($user['name']) . "</font></h1>";
-                echo "<img src='profile/profileicon/" . htmlspecialchars($user['profile_image']) . "' alt='Profile Picture' class='profile_image'>";
+                echo "<img src='/deepimpact/resources/views/login/profileicon/" . htmlspecialchars($user['profile_image']) . "' alt='Profile Picture' class='profile_image'>";
                 echo "<p><font size=5><b>メール</b>: " . htmlspecialchars($user['email']) . "</font></p>";
-                echo "<p><font size=5><b>学科</b>: " . htmlspecialchars($user['course']) . "</font></p>";
-                echo "<p><font size=5><b>一言</b>: " . htmlspecialchars($user['singleword']) . "</font></p>";
                 echo "<p><font size=5><b>参加時点</b>: <font color=grey>" . htmlspecialchars($user['created_at']) . "</font></font></p>";
             } else {
                 echo "User not found.";
