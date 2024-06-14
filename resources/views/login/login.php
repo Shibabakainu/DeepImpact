@@ -10,7 +10,7 @@ session_start();
         body {
             font-family: Arial, sans-serif;
             /*background-color: #CAF4FF;*/
-            background-image: url('/images/art6.jpg');
+            background-image: url("/images/art6.jpg");
         }
         .container {
             width: 300px;
