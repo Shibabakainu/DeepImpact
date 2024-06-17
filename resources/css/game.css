@@ -1,0 +1,49 @@
+ul {
+    display: flex;
+    justify-content: center;
+    max-width: 24rem;
+    list-style:none;
+  }
+  
+  li:not(:last-child) {
+    /* :not(:last-child) に適用することで、基本的にすべて縮めて、最後の1枚だけ幅を保持する */
+    min-width: 0;
+    /* 最小の重なり幅。枚数が少ないときでもこの幅は重ねる */
+    margin-right: -2rem;
+  }
+  
+  
+  li {  
+    /* ホバー時アニメーション */
+    transition-property: flex-shrink, translate;
+    transition-duration: 0.2s;
+    /* ホバーしたカードが前面に出ないようにする */
+    isolation: isolate;
+}
+
+li:hover {
+    flex-shrink: 0;
+    translate: 0 -1rem;
+}
+
+
+div {
+    /* カードの見た目 */
+    width: 6rem;
+    aspect-ratio: 58/89;
+    background-color: #c00606;
+    box-shadow: 0 0 6px black;
+    border: 0.5rem white solid;
+    border-radius: 0.5rem;
+    
+}
+
+    body {
+        background-image: url('/deepimpact/images/art3.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+li .card1 img {
+    width: 5rem;
+}
