@@ -54,3 +54,96 @@ button:hover {
     font-size: 0.8em;
     color: #000;
 }
+
+/*ポップアップ*/
+#click_btn {
+    background-color: #e88a49;
+    color: #000;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+#popup-wrapper {
+    background-color: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 998;
+    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+#popup-inside {
+    text-align: center;
+    width: 100%;
+    max-width: 60%;
+    height: 60%;
+    background: white;
+    margin: 10% auto;
+    padding: 20px;
+    position: relative;
+    z-index: 999;
+}
+
+#close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+}
+
+/*text*/
+.title {
+    overflow: hidden;
+    transform: translate(-100%, 0);
+    transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+    color: #000000;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.title span {
+    display: block;
+    transform: translate(100%, 0);
+    transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+}
+
+.title.-visible,
+.title.-visible span {
+    transform: translate(0, 0);
+}
+
+.sentence {
+    overflow: hidden;
+    transform: translate(-100%, 0);
+    transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+    font-family: "Yu Gothic Medium";
+    font-size: 16px;
+    text-align: center;
+}
+
+.sentence span {
+    display: block;
+    transform: translate(100%, 0);
+    transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+}
+
+.sentence.-visible,
+.sentence.-visible span {
+    transform: translate(0, 0);
+}

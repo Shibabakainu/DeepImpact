@@ -16,9 +16,33 @@
             <button onclick="window.location.href='room_create.php'">ルーム作成</button>
             <button onclick="window.location.href='search_room.php'">ルーム検索</button>
             <button onclick="window.location.href='pachinko.php'">パチンコ</button>
-            <button onclick="window.location.href='rules.php'">ルール</button>
+            <button id="click-btn">ルール</button>
+            <div id="popup-wrapper">
+                <div id="popup-inside">
+                    <div id="close">X</div>
+                    <div class="text">
+                        <h2>Story Teller</h2>
+                        <p>ルールです。<br>改行</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</body>
 
-</html>
+    <script>
+        const clickBtn = document.getElementById('click-btn');
+        const popupWrapper = document.getElementById('popup-wrapper');
+        const close = document.getElementById('close');
+
+        // ボタンをクリックしたときにポップアップを表示させる
+        clickBtn.addEventListener('click', () => {
+            popupWrapper.style.display = "block";
+        });
+
+        // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる
+        popupWrapper.addEventListener('click', e => {
+            if (e.target.id === popupWrapper.id || e.target.id === close.id) {
+                popupWrapper.style.display = 'none';
+            }
+        });
+    </script>
