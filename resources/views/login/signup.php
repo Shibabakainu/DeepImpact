@@ -11,27 +11,29 @@ session_start();
 </head>
 <body>
     <div class="container">
-    <h1>プロフィール設定</h1>
+        <div class="title"><img src="/deepimpact/images/font2.png"></div>
+        <h3>プロフィール設定</h3>
         <form id="profileForm" action="confirmation.php" method="post" enctype="multipart/form-data">
             <label for="profile_image">プロフィール画像:</label><br>
             <input type="file" accept=".jpg,.jpeg,.png,.gif" id="profile_image" name="profile_image" onchange="previewImage()"><br><br>
             <img id="profile_image_preview" src="#" alt="プロフィール画像プレビュー"><br>
 
             <label for="name">User Name:</label><br>
-            <input type="text" id="name" name="name"><br><br>
+            <input type="text" id="name" name="name" required><br><br>
 
             <label for="email">メールアドレス:</label><br>
-            <input type="email" id="email" name="email"><br><br>
+            <input type="email" id="email" name="email" required><br><br>
 
             <label for="password">パスワード:</label><br>
-            <input type="password" id="password" name="password"><br><br>
+            <input type="password" id="password" name="password" required><br><br>
 
             <label for="confirm_password">パスワード再入力:</label><br>
-            <input type="password" id="confirm_password" name="confirm_password" oninput="checkPasswordMatch()"><br>
+            <input type="password" id="confirm_password" name="confirm_password" oninput="checkPasswordMatch()" required><br>
             <div id="passwordMismatch">パスワードが一致しません</div><br>
 
             <input type="button" value="作成" onclick="showCustomAlert()">
         </form>
+        <button class="return" onclick="location.href='/deepimpact/resources/views/login/login.php'">戻る</button>
     </div>
 
     <div id="overlay"></div>

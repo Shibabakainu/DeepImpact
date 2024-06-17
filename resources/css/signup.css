@@ -4,10 +4,14 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top;
-    height: 90vh;
-    width: 100%;
     align-items: center;
     justify-content: center;
+}
+.title {
+    text-align: center;
+}
+.title img {
+    width: 300px;
 }
 .container {
     width: 300px;
@@ -17,7 +21,7 @@ body {
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.3);
 }
-.container h1 {
+.container h3 {
     text-align: center;
 }
 .container label {
@@ -36,6 +40,7 @@ body {
 }
 .container input[type="button"] {
     width: 100%;
+    margin-top: 20px;
     padding: 10px;
     box-sizing: border-box;
     border: none;
@@ -45,6 +50,20 @@ body {
     cursor: pointer;
 }
 .container input[type="button"]:hover {
+    background-color: #0056b3;
+}
+.container button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 3px;
+    background-color:blue;
+    color: #fff;
+    cursor: pointer;
+}
+.container button:hover {
     background-color: #0056b3;
 }
 #profile_image_preview {
@@ -89,4 +108,10 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 500;
+}
+@media screen and (max-width: 1500px) {
+    body {
+        height: 100vh;
+        width: 100%;
+    }
 }

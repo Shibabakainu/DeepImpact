@@ -11,7 +11,7 @@ session_start();
 </head>
 <body>
     <div class="container">
-        <h1>LOGIN</h1>
+        <div class="title"><img src="/deepimpact/images/font2.png"></div>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <input type="text" name="name" placeholder="username" required>
             <input type="password" name="password" placeholder="password" required>
