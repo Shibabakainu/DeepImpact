@@ -5,93 +5,9 @@ session_start();
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>サインアップ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #CAF4FF;
-        }
-        .container {
-            width: 300px;
-            margin: 100px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-        .container h1 {
-            text-align: center;
-        }
-        .container label {
-            font-weight: bolder;
-        }
-        .container input[type="text"],
-        .container input[type="email"],
-        .container input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-        .container input[type="button"] {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: none;
-            border-radius: 3px;
-            background-color:#5AB2FF;
-            color: #fff;
-            cursor: pointer;
-        }
-        .container input[type="button"]:hover {
-            background-color: #0056b3;
-        }
-        #profile_image_preview {
-            max-width: 200px;
-            max-height: 200px;
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 50%;
-            display: none;
-        }
-
-        #passwordMismatch {
-            color: red;
-            margin-top: 5px;
-            display: none;
-        }
-
-        #customAlert {
-            display: none;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #000;
-            z-index: 1000;
-            text-align: center;
-        }
-
-        #customAlert button {
-            margin: 10px;
-        }
-
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 500;
-        }
-    </style>
+    <link rel="stylesheet" href="/deepimpact/resources/css/signup.css">
 </head>
 <body>
     <div class="container">

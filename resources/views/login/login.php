@@ -7,72 +7,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url("/deepimpact/images/art6.jpg");
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
-            height: 90vh;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            width: 300px;
-            margin: 200px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: rgba(0, 0, 0,0.3);
-        }
-        .container h1 {
-            text-align: center;
-        }
-        .container input[type="text"],
-        .container input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-        .container input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            box-sizing: border-box;
-            border: none;
-            border-radius: 3px;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-        }
-        .container input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .container input[type="button"] {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: none;
-            border-radius: 3px;
-            background-color:#5AB2FF;
-            color: #fff;
-            cursor: pointer;
-        }
-        .container input[type="button"]:hover {
-            background-color: #0056b3;
-        }
-        .separator {
-        height: 1px;
-        width: 90%;
-        background-color: #ccc;
-        margin: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/deepimpact/resources/css/login.css">
 </head>
 <body>
     <div class="container">
