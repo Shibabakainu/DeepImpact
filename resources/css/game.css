@@ -1,19 +1,35 @@
-ul {
+body {
+    background-image: url('/deepimpact/images/art3.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+    width: 80%;
+    height: 80%;
+    margin: 200px auto;
+    padding: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0,0.3);
+    text-align: center;
+}
+
+.container ul {
     display: flex;
     justify-content: center;
     max-width: 24rem;
     list-style:none;
-  }
+}
   
-  li:not(:last-child) {
+.container  li:not(:last-child) {
     /* :not(:last-child) に適用することで、基本的にすべて縮めて、最後の1枚だけ幅を保持する */
     min-width: 0;
     /* 最小の重なり幅。枚数が少ないときでもこの幅は重ねる */
-    margin-right: -2rem;
-  }
-  
-  
-  li {  
+    margin-right: -5rem;
+}
+ 
+.container li {  
     /* ホバー時アニメーション */
     transition-property: flex-shrink, translate;
     transition-duration: 0.2s;
@@ -21,29 +37,27 @@ ul {
     isolation: isolate;
 }
 
-li:hover {
+.container li:hover {
     flex-shrink: 0;
     translate: 0 -1rem;
 }
 
-
-div {
+.container .card {
     /* カードの見た目 */
-    width: 6rem;
-    aspect-ratio: 58/89;
+    width: 10rem;
     background-color: #c00606;
     box-shadow: 0 0 6px black;
     border: 0.5rem white solid;
     border-radius: 0.5rem;
-    
 }
 
-    body {
-        background-image: url('/deepimpact/images/art3.jpg');
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
+.container li img {
+    width: 10rem;
+}
 
-li .card1 img {
-    width: 5rem;
+@media screen and (max-width: 1500px) {
+    body {
+        height: 100vh;
+        width: 100%;
+    }
 }

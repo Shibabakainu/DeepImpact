@@ -67,7 +67,7 @@ background-color: #ccc;
 margin: 20px;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1500px) {
     body {
         height: 80vh;
         width: 100%;
