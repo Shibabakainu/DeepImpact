@@ -37,6 +37,7 @@ session_start();
 
             <input type="button" value="作成" onclick="showCustomAlert()">
         </form>
+        <div class="separator"></div>
         <button class="return" onclick="location.href='/deepimpact/resources/views/login/login.php'">戻る</button>
     </div>
 
