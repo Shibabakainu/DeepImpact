@@ -66,6 +66,9 @@ width: 90%;
 background-color: #ccc;
 margin: 20px;
 }
+.container .error {
+    color: #fff;
+}
 
 @media screen and (max-width: 1500px) {
     body {
