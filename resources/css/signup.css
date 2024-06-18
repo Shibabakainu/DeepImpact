@@ -1,4 +1,5 @@
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
     background-image: url("/deepimpact/images/art3.jpg");
     background-repeat: no-repeat;
@@ -7,15 +8,34 @@ body {
     align-items: center;
     justify-content: center;
 }
-.title {
-    text-align: center;
+.header-container {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    /* ヘッダーを固定 */
+    top: 0;
+    /* 画面の上部に配置 */
+    z-index: 997;
+    /* ヘッダーを他のコンテンツの上に表示 */
 }
-.title img {
-    width: 300px;
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+
 }
+
+.title-image {
+    width: 70%;
+    max-width: 400px;
+    height: auto;
+}
+
 .container {
     width: 300px;
-    margin: 100px auto;
+    margin: 150px auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -108,10 +128,4 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 500;
-}
-@media screen and (max-width: 1500px) {
-    body {
-        height: 100vh;
-        width: 100%;
-    }
 }
