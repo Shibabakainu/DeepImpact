@@ -121,15 +121,14 @@
             <div class="circle">19</div>
             <div class="circle">20</div>
             <div class="circle">21</div>
-            <div class="circle">22</div>
-            <div class="circle">23</div>
-            <div class="circle">24</div>
-            <div class="circle">25</div>
-            <div class="circle">26</div>
-            <div class="circle">27</div>
-            <div class="circle">28</div>
-            <div class="circle">29</div>
-            <div class="circle">30</div>
+            <div class="circle">40</div>
+            <div class="circle">39</div>
+            <div class="circle">38</div>
+            <div class="circle">37</div>
+            <div class="circle">36</div>
+            <div class="circle">35</div>
+            <div class="circle">34</div>
+            <div class="circle">33</div>
             <div class="circle">31</div>
             <div class="circle">32</div>
             <div class="circle">33</div>
@@ -140,6 +139,7 @@
             <div class="circle">38</div>
             <div class="circle">39</div>
             <div class="circle">40</div>
+            <div class="circle">41</div>
         </div>
     </div>
 </body>
