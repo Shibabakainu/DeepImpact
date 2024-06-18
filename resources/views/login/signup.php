@@ -10,8 +10,12 @@ session_start();
     <link rel="stylesheet" href="/deepimpact/resources/css/signup.css">
 </head>
 <body>
+    <div class="header-container">
+        <header>
+            <img src="/deepimpact/images/sttera.png" alt="Story Teller" class="title-image">
+        </header>
+    </div>
     <div class="container">
-        <div class="title"><img src="/deepimpact/images/font2.png"></div>
         <h3>プロフィール設定</h3>
         <form id="profileForm" action="confirmation.php" method="post" enctype="multipart/form-data">
             <label for="profile_image">プロフィール画像:</label><br>
@@ -33,6 +37,7 @@ session_start();
 
             <input type="button" value="作成" onclick="showCustomAlert()">
         </form>
+        <div class="separator"></div>
         <button class="return" onclick="location.href='/deepimpact/resources/views/login/login.php'">戻る</button>
     </div>
 

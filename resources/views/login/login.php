@@ -49,10 +49,10 @@ session_start();
                     header('Location: ../index.php'); // Redirect to the home page
                     exit;
                 } else {
-                    echo "Invalid email or password.";
+                    echo "<div class='error'>Invalid email or password.</div>";
                 }
             } else {
-                echo "Invalid email or password.";
+                echo "<div class='error'>Invalid email or password.</div>";
             }
 
             $stmt->close();

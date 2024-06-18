@@ -16,10 +16,10 @@
             <button onclick="window.location.href='room_create.php'">ルーム作成</button>
             <button onclick="window.location.href='search_room.php'">ルーム検索</button>
             <button onclick="window.location.href='pachinko.php'">パチンコ</button>
-            <button id="click-btn">ルール</button>
-            <div id="popup-wrapper">
-                <div id="popup-inside">
-                    <div id="close">X</div>
+            <button id="index-click-btn">ルール</button>
+            <div id="index-popup-wrapper">
+                <div id="index-popup-inside">
+                    <div id="index-close">X</div>
                     <div class="text">
                         <h2>Story Teller</h2>
                         <p>ルールです。<br>改行</p>
@@ -30,19 +30,21 @@
     </div>
 
     <script>
-        const clickBtn = document.getElementById('click-btn');
-        const popupWrapper = document.getElementById('popup-wrapper');
-        const close = document.getElementById('close');
+        const indexClickBtn = document.getElementById('index-click-btn');
+        const indexPopupWrapper = document.getElementById('index-popup-wrapper');
+        const indexClose = document.getElementById('index-close');
 
         // ボタンをクリックしたときにポップアップを表示させる
-        clickBtn.addEventListener('click', () => {
-            popupWrapper.style.display = "block";
+        indexClickBtn.addEventListener('click', () => {
+            indexPopupWrapper.style.display = "block";
         });
 
         // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる
-        popupWrapper.addEventListener('click', e => {
-            if (e.target.id === popupWrapper.id || e.target.id === close.id) {
-                popupWrapper.style.display = 'none';
+        indexPopupWrapper.addEventListener('click', e => {
+            if (e.target.id === indexPopupWrapper.id || e.target.id === indexClose.id) {
+                indexPopupWrapper.style.display = 'none';
             }
         });
     </script>
+</body>
+</html>
