@@ -21,7 +21,7 @@
             </ul>
             <div class="buttons">
                 <a href="room_create.php"><button class="back">戻る</button></a>
-                <button class="create">物語を作る</button>
+                <a href="game.php"><button class="create">物語を作る</button></a>
             </div>
         </div>
     </main>

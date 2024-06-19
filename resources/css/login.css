@@ -7,12 +7,41 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.header-container {
+    left: -10px;
+    width: 2000px;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    /* ヘッダーを固定 */
+    top: 0;
+    /* 画面の上部に配置 */
+    z-index: 997;
+    /* ヘッダーを他のコンテンツの上に表示 */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+
+}
+
+.title-image {
+    width: 70%;
+    max-width: 400px;
+    height: auto;
+}
+
 .title {
     text-align: center;
 }
+
 .title img {
     width: 300px;
 }
+
 .container {
     width: 300px;
     margin: 200px auto;
@@ -21,9 +50,11 @@ body {
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.4);
 }
+
 .container h1 {
     text-align: center;
 }
+
 .container input[type="text"],
 .container input[type="password"] {
     width: 100%;
@@ -33,6 +64,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 3px;
 }
+
 .container input[type="submit"] {
     width: 100%;
     padding: 10px;
@@ -44,28 +76,33 @@ body {
     color: #fff;
     cursor: pointer;
 }
+
 .container input[type="submit"]:hover {
     background-color: #0056b3;
 }
+
 .container input[type="button"] {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
     border: none;
     border-radius: 3px;
-    background-color:#5AB2FF;
+    background-color: #5AB2FF;
     color: #fff;
     cursor: pointer;
 }
+
 .container input[type="button"]:hover {
     background-color: #0056b3;
 }
+
 .separator {
-height: 1px;
-width: 90%;
-background-color: #ccc;
-margin: 20px;
+    height: 1px;
+    width: 90%;
+    background-color: #ccc;
+    margin: 20px;
 }
+
 .container .error {
     color: #fff;
 }

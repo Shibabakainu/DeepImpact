@@ -1,6 +1,9 @@
 body {
+    /* サイトの外枠の余白を無効化 */
     margin: 0;
     font-family: Arial, sans-serif;
+    line-height: 1.2;
+    /* 行間を狭くするための調整 */
 }
 
 .sidebar {
@@ -9,13 +12,13 @@ body {
     position: fixed;
     top: 0;
     right: -250px;
-    /* Initially hidden */
+    /* 初期状態では隠す */
     background-color: #ffffff;
     padding-top: 60px;
-    /* Adjusted to leave space for the fixed header */
+    /* 固定ヘッダーのスペースを確保 */
     transition: right 0.3s;
     z-index: 997;
-    /* Ensure it appears above other content */
+    /* 他のコンテンツより前面に表示 */
 }
 
 .sidebar.open {
@@ -94,6 +97,8 @@ body {
     margin: 10% auto;
     padding: 20px;
     position: relative;
+    overflow: scroll;
+    border-radius: 5px;
     z-index: 999;
 }
 
@@ -104,22 +109,26 @@ body {
     cursor: pointer;
 }
 
-/*text*/
-.title2 {
-    overflow: hidden;
-    transform: translate(-100%, 0);
-    transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
-    color: #000000;
-    font-family: 'Josefin Sans', sans-serif;
+/*ルール*/
+.rule {
+    list-style: none;
 }
 
-.title2 span {
-    display: block;
-    transform: translate(100%, 0);
-    transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+p {
+    font-size: 24px;
+    margin: 10px 0;
+    /* マージンを調整して間隔を狭くする */
+    font-weight: bold;
 }
 
-.title2.-visible,
-.title2.-visible span {
-    transform: translate(0, 0);
+/* スクロールバーの幅や高さを狭くしています */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* スクロールバーのつまみの色変更、および角を丸くしています。 */
+::-webkit-scrollbar-thumb {
+    background: rgb(132, 132, 132);
+    border-radius: 5px;
 }

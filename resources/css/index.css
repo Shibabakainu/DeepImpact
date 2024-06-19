@@ -103,6 +103,8 @@ button:hover {
     padding: 20px;
     position: relative;
     z-index: 999;
+    overflow: scroll;
+    border-radius: 5px;
 }
 
 #index-close {
@@ -150,4 +152,26 @@ button:hover {
 .sentence.-visible,
 .sentence.-visible span {
     transform: translate(0, 0);
+}
+
+/*ルール*/
+ul {
+    list-style: none
+}
+
+p {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* スクロールバーの幅や高さを狭くしています */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* スクロールバーのつまみの色変更、および角を丸くしています。 */
+::-webkit-scrollbar-thumb {
+    background: rgb(132, 132, 132);
+    border-radius: 5px;
 }

@@ -1,15 +1,22 @@
 <?php
-session_start(); 
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/login.css">
 </head>
+
 <body>
+    <div class="header-container">
+        <header>
+            <img src="/deepimpact/images/sttera.png" alt="Story Teller" class="title-image">
+        </header>
+    </div>
     <div class="container">
         <div class="title"><img src="/deepimpact/images/font2.png"></div>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -58,7 +65,8 @@ session_start();
             $stmt->close();
         }
         $conn->close();
-        ?>          
+        ?>
     </div>
 </body>
+
 </html>
