@@ -13,7 +13,7 @@
         <div id="menu-popup-wrapper">
             <div class="button_1">
                 <button class="popup-btn" id="menu-close">キャンセル</button>
-                <button class="popup-btn">退出する</button>
+                <button class="back-btn">退出する</button>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
 
         // ボタンをクリックしたときにポップアップを表示させる
         indexClickBtn.addEventListener('click', () => {
-            indexPopupWrapper.style.display = "block";
+            indexPopupWrapper.style.display = "flex";
         });
 
         // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる

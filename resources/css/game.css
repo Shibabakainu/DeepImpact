@@ -79,7 +79,7 @@ body {
     white-space: nowrap;
 }
 
-#menu-btn:hover {
+#menu-click-btn:hover {
     background-color: #e77a34;
 }
 
@@ -93,6 +93,8 @@ body {
     display: none;
     z-index: 998;
     animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    justify-content: center;
+    align-items: center;
 }
 
 @keyframes fadeIn {
@@ -106,16 +108,35 @@ body {
 }
 
 #popup-btn {
+    text-align: center;
     background: white;
     position: relative;
     z-index: 999;
-    overflow: scroll;
     border-radius: 5px;
 }
 
-#menu-close {
-    position: absolute;
-    top: 0;
-    right: 5px;
-    cursor: pointer;
+#back-btn {
+    background-color: red;
+    position: relative;
+    z-index: 999;
+    border-radius: 5px;
+}
+
+.button_1 {
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    /* 縦方向に配置 */
+    gap: 100px;
+    /* ボタン間の間隔を広げる */
+    justify-content: center;
+    align-items: center;
+    /* ボタンコンテナの背景色 */
+}
+
+.button_1 .popup-btn,
+.button_1 .back-btn {
+    transform: scale(1.5);
+    /* ボタンを50%大きく */
+    font-size: 1.5em;
 }
