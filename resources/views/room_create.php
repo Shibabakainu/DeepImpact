@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/room_create.css">
+    <link rel="stylesheet" href="/deepimpact/resources/css/room_create.css">
     <?php include 'header.php'; ?>
 </head>
 

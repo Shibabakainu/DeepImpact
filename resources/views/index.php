@@ -21,6 +21,12 @@
                 <div id="index-popup-inside">
                     <div class="text">
                         <div id="index-close">X</div>
+                        <p>※注意事項※</p>
+                        <ul>
+                            <li>ゲーム推奨プレイ人数は6人となっています。</li>
+                            <li>あとは適当に追加
+                            </li>
+                        </ul>
                         <p>ゲーム開始時</p>
                         <ul>
                             <li>各プレイヤーに5枚のカードを配ります。</li>

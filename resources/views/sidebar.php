@@ -6,6 +6,12 @@
                 <div id="sidebar-popup-inside">
                     <div class="text2">
                         <div id="sidebar-close">X</div>
+                        <p>※注意事項※</p>
+                        <ul>
+                            <li>ゲーム推奨プレイ人数は6人となっています。</li>
+                            <li>あとは適当に追加
+                            </li>
+                        </ul>
                         <p>ゲーム開始時</p>
                         <ul class="rule">
                             <li class="a">各プレイヤーに5枚のカードを配ります。</li>
