@@ -103,7 +103,8 @@ header {
 }
 
 #passwordMismatch {
-    color: red;
+    font-weight: bolder;
+    color:orangered;
     margin-top: 5px;
     display: none;
 }
