@@ -3,17 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/deepimpact/resources/css/room_create.css">
+    <link rel="stylesheet" href="../css/room_create.css">
     <?php include 'header.php'; ?>
 </head>
 
 <body>
     <main>
         <div class="main-container">
-            <p class="kotoba">合言葉</p>
-            <input class="textbox" type="text" name="pass" placeholder="半角数字1～4文字">
-            <a href="index.php"><button class="back">戻る</button></a>
-            <a href="room_detail.php"><button class="create">作成</button></a>
+            <button class="create" onclick="location.href='room_detail.php'">作成</button>
+            <button class="create" onclick="location.href='room_detail.php'">検索</button>
+            <button class="create" onclick="location.href='index.php'">戻る</button>
         </div>
     </main>
 </body>
