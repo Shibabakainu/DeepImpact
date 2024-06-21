@@ -48,7 +48,7 @@ session_start();
 
             //編集ボタンをユーザーのデータの下に配置
             if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
-            echo "<a href='identification.php' class='edit_button'>編集</a>";
+            echo "<a href='profile_edit.php' class='edit_button'>編集</a>";
             }
             ?>
         </div>
