@@ -19,9 +19,7 @@
     </div>
 
     <div class="container">
-
         <h1>カードをホバーしてみてね</h1>
-
         <ul>
             <li>
                 <div class="card" id="card1"><img src="/deepimpact/images/card1.png"></div>
@@ -41,21 +39,50 @@
         </ul>
     </div>
 
-    <script>
-        const indexClickBtn = document.getElementById('menu-click-btn');
-        const indexPopupWrapper = document.getElementById('menu-popup-wrapper');
-        const indexClose = document.getElementById('menu-close');
+    <div id="second-popup-wrapper">
+        <div class="button_2">
+            <p class="warning-text">本当に退出しますか？</p>
+            <button class="popup-btn" id="second-popup-close">キャンセル</button>
+            <button class="other-btn" id="exit-btn">退出</button>
+        </div>
+    </div>
 
-        // ボタンをクリックしたときにポップアップを表示させる
-        indexClickBtn.addEventListener('click', () => {
-            indexPopupWrapper.style.display = "flex";
+    <script>
+        const gameClickBtn = document.getElementById('menu-click-btn');
+        const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
+        const gameClose = document.getElementById('menu-close');
+        const backBtn = document.querySelector('.back-btn');
+        const secondPopupWrapper = document.getElementById('second-popup-wrapper');
+        const secondPopupClose = document.getElementById('second-popup-close');
+        const exitBtn = document.getElementById('exit-btn');
+
+        // メニューをクリックしたときにポップアップを表示させる
+        gameClickBtn.addEventListener('click', () => {
+            gamePopupWrapper.style.display = "flex";
         });
 
-        // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる
-        indexPopupWrapper.addEventListener('click', e => {
-            if (e.target.id === indexPopupWrapper.id || e.target.id === indexClose.id) {
-                indexPopupWrapper.style.display = 'none';
+        // ポップアップの外側または「キャンセル」をクリックしたときポップアップを閉じる
+        gamePopupWrapper.addEventListener('click', e => {
+            if (e.target.id === gamePopupWrapper.id || e.target.id === gameClose.id) {
+                gamePopupWrapper.style.display = 'none';
             }
+        });
+
+        // 「退出する」ボタンをクリックしたときに2つ目のポップアップを表示させる
+        backBtn.addEventListener('click', () => {
+            secondPopupWrapper.style.display = 'flex';
+        });
+
+        // 2つ目のポップアップの外側または「閉じる」ボタンをクリックしたときポップアップを閉じる
+        secondPopupWrapper.addEventListener('click', e => {
+            if (e.target.id === secondPopupClose.id) {
+                secondPopupWrapper.style.display = 'none';
+            }
+        });
+
+        // 「退出」ボタンをクリックしたときに指定されたURLに移動する
+        exitBtn.addEventListener('click', () => {
+            window.location.href = "index.php";
         });
     </script>
 </body>
