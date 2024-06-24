@@ -10,23 +10,14 @@
 
 <body>
     <div class="menu-">
-        <button id="menu-click-btn">メニュー</button>
         <div id="menu-popup-wrapper">
             <div class="button_1">
-                <button class="popup-btn" id="menu-close">キャンセル</button>
                 <button class="back-btn">退出する</button>
             </div>
         </div>
-        <button data-action="Menu-Close" class="hamburger-close">
+        <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
             <span></span>
         </button>
-        <script>
-            $(document).ready(function() {
-            $("button").click(function() {
-                $(this).toggleClass("toggle");
-            });
-        });
-        </script>
     </div>
 
     <div class="container">
@@ -67,15 +58,18 @@
         const secondPopupClose = document.getElementById('second-popup-close');
         const exitBtn = document.getElementById('exit-btn');
 
-        // メニューをクリックしたときにポップアップを表示させる
-        gameClickBtn.addEventListener('click', () => {
-            gamePopupWrapper.style.display = "flex";
+        $(document).ready(function() {
+            $("button").click(function() {
+                $(this).toggleClass("toggle");
+            });
         });
 
-        // ポップアップの外側または「キャンセル」をクリックしたときポップアップを閉じる
-        gamePopupWrapper.addEventListener('click', e => {
-            if (e.target.id === gamePopupWrapper.id || e.target.id === gameClose.id) {
+        // ハンバーガーメニューをクリックしたときポップアップを表示する/閉じる
+        gameClickBtn.addEventListener('click', () => {
+            if (gamePopupWrapper.style.display === 'flex') {
                 gamePopupWrapper.style.display = 'none';
+            } else {
+                gamePopupWrapper.style.display = 'flex';
             }
         });
 

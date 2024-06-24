@@ -77,14 +77,7 @@ body {
 
 /*ポップアップ*/
 #menu-click-btn {
-    background-color: #e88a49;
-    color: #000;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.5em;
-    cursor: pointer;
-    border-radius: 5px;
-    white-space: nowrap;
+    z-index: 1000;
 }
 
 #menu-click-btn:hover {
@@ -207,6 +200,7 @@ body {
 }
 
 .hamburger-close {
+    position: relative;
     width: 60px;
     height: 60px;
     margin: 15px;
@@ -215,6 +209,7 @@ body {
     background-color: transparent;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
+    z-index: 1000;
 }
 .hamburger-close:focus {
     outline: none;
