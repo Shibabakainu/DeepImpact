@@ -1,16 +1,21 @@
 body {
     /* サイトの外枠の余白を無効化 */
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     background-image: url('/deepimpact/images/art3.jpg');
     background-size: cover;
     background-repeat: no-repeat;
+    height: 100vh;
+    /* 画面全体の高さを指定 */
+    overflow: hidden;
+    /* スクロールを無効にする */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
     width: 80%;
-    height: 80%;
-    margin: 200px auto;
     padding: 50px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -64,6 +69,9 @@ body {
 }
 
 .menu- {
+    position: fixed;
+    top: 10px;
+    right: 10px;
     text-align: right;
 }
 
