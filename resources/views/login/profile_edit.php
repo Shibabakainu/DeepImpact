@@ -17,7 +17,7 @@ session_start();
     </div>
     <div class="container">
         <h3>プロフィール編集</h3>
-        <form id="profileForm" action="confirmation.php" method="post" enctype="multipart/form-data">
+        <form id="profileForm" action="edit_confirmation.php" method="post" enctype="multipart/form-data">
             <label for="profile_image">プロフィール画像:</label><br>
             <input type="file" accept=".jpg,.jpeg,.png,.gif" id="profile_image" name="profile_image" onchange="previewImage()"><br><br>
             <img id="profile_image_preview" src="#" alt="プロフィール画像プレビュー"><br>
