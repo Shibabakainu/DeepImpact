@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+body {
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    background-color: #ffff;
+    font-family: Arial, sans-serif;
+    background-image: url(../../images/art5.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    width: 300px;
+    margin: 0 auto;
+    padding-top: 200px;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.menu-button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+select {
+    padding: 5px;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    padding: 10px;
+    background-color: #FFC107;
+    border: none;
+    cursor: pointer;
+}
+
+footer {
+    margin-top: 20px;
+}
+
+.ticket-button {
+    font-size: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}

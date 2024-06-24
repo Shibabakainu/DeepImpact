@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>設定画面</title>
+    <link rel="stylesheet" href="/deepimpact/resources/css/room_setting.css">
+</head>
+<body>
+    <?php include 'header.php'; ?>
+    <div class="container">
+        <form action="settings.php" method="POST">
+            <div class="form-group">
+                <label for="setting">合言葉設定</label>
+                <input type="text" id="setting" name="setting">
+            </div>
+            <div class="form-group">
+                <label for="room">ルーム名</label>
+                <input type="text" id="room" name="room">
+            </div>
+            <div class="form-group">
+                <label for="people">人数</label>
+                <select id="people" name="people">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="1">6</option>
+                </select>
+            </div>
+            <button type="submit">設定</button>
+        </form>
+        
+    </div>
+</body>
+</html>
