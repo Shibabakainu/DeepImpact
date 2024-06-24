@@ -43,7 +43,7 @@ session_start();
 
     <div id="overlay"></div>
     <div id="customAlert">
-        <p>この内容で作成しますか？</p>
+        <p>この内容で編集しますか？</p>
         <button id="confirmButton">はい</button>
         <button id="cancelButton">いいえ</button>
     </div>
