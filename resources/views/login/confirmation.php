@@ -71,7 +71,7 @@
 
         if ($stmt->num_rows > 0) {
             // Email already exists
-            echo "<div class='notice'>This email is already registered. Please use a different email.</div>";
+            echo "<div class='notice'>このメールはすでに登録されています。別のメールアドレスを使用してください。</div>";
             echo "<button onclick=\"location.href='signup.php'\">戻る</button>";
         } else {
             // Check if name already exists
@@ -83,7 +83,7 @@
 
             if ($stmt->num_rows > 0) {
                 // Name already exists
-                echo "<div class='notice'>This name is already taken. Please use a different name.</div>";
+                echo "<div class='notice'>この名前はすでに使われています。別の名前を使用してください。</div>";
                 echo "<button onclick=\"location.href='signup.php'\">戻る</button>";
             } else {
                 // Move the uploaded profile image to the server
