@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>game</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/game.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -16,6 +17,16 @@
                 <button class="back-btn">退出する</button>
             </div>
         </div>
+        <button data-action="Menu-Close" class="hamburger-close">
+            <span></span>
+        </button>
+        <script>
+            $(document).ready(function() {
+            $("button").click(function() {
+                $(this).toggleClass("toggle");
+            });
+        });
+        </script>
     </div>
 
     <div class="container">
@@ -84,6 +95,7 @@
         exitBtn.addEventListener('click', () => {
             window.location.href = "index.php";
         });
+
     </script>
 </body>
 
