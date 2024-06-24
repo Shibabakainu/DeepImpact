@@ -1,0 +1,72 @@
+@charset "UTF-8";
+
+body {
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    background-color: #ffff;
+    font-family: Arial, sans-serif;
+    background-image: url(../../images/art5.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+input[type="search"] {
+    width: 300px; /* 幅を300ピクセルに設定 */
+    height: 30px; /* 高さを30ピクセルに設定 */
+    font-size: 16px; /* フォントサイズを16ピクセルに設定 */
+    padding: 5px 10px; /* パディングを調整 */
+}
+
+.create {
+    width: 120px;
+    height: 60px;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    background-color: #e0e0e0;
+}
+
+main {
+    display: flex;
+    flex-direction: column; /* 垂直方向に子要素を並べる */
+    justify-content: center; /* 垂直方向に中央揃え */
+    align-items: center; /* 水平方向に中央揃え */
+    height: calc(100vh - 60px);
+    /* ヘッダーの高さを引いた高さ */
+    padding-top: 60px;
+    /* ヘッダーの高さ分の余白 */
+}
+
+form {
+    margin-top: 20px; /* 上に20ピクセルのマージンを追加 */
+}
+
+.buttons {
+    display: flex;
+    justify-content: center; /* 水平方向に中央揃え */
+    align-items: center; /* 垂直方向に中央揃え */
+    width: 100%; /* 幅を100%に設定 */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.back {
+    width: 140px;
+    height: 60px;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+}
+
+.create:hover {
+    background-color: #adf5ff;
+}
+
+.back:hover {
+    background-color: #ff6c6c;
+}
