@@ -8,7 +8,7 @@
 <body>
     <?php include 'header.php'; ?>
     <div class="container">
-        <form action="settings.php" method="POST">
+        <form action="room_detail.php" method="POST">
             <div class="form-group">
                 <label for="setting">合言葉設定</label>
                 <input type="text" id="setting" name="setting">
@@ -29,7 +29,8 @@
             </div>
             <button type="submit">設定</button>
         </form>
-        
+                    <button class="create" onclick="location.href='room_detail.php'">戻る</button>
+
     </div>
 </body>
 </html>

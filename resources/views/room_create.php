@@ -10,7 +10,7 @@
 <body>
     <main>
         <div class="main-container">
-            <button class="create" onclick="location.href='room_detail.php'">作成</button>
+            <button class="create" onclick="location.href='room_setting.php'">作成</button>
             <button class="create" onclick="location.href='room_search.php'">検索</button>
             <button class="create" onclick="location.href='index.php'">戻る</button>
         </div>

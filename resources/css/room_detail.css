@@ -11,6 +11,8 @@ body {
     background-position: center;
 }
 
+
+
 main {
     display: flex;
     justify-content: center;
@@ -58,6 +60,7 @@ main {
     display: flex;
     justify-content: center;
     gap: 20px;
+    transition: 0.5s ease;
 }
 
 .back {
@@ -68,6 +71,7 @@ main {
     cursor: pointer;
     margin: 10px;
     border: none;
+    transition: 0.5s ease;
 }
 
 .create {
@@ -78,12 +82,13 @@ main {
     cursor: pointer;
     margin: 10px;
     border: none;
+    transition: 0.5s ease;
 }
 
 .create:hover {
-    background-color: #adf5ff;
+    background-color:#e77a34;
 }
 
 .back:hover {
-    background-color: #ff6c6c;
+    background-color: #e77a34;;
 }
