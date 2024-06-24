@@ -46,6 +46,7 @@
             </div>
         </li>
         <li class="btn"><a href="/deepimpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
+        <li class="btn"><a href="/deepimpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
         <li class="btn"><a href="/deepimpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
     </ul>
 </div>

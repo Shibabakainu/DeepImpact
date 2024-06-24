@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0e68c;
+    margin: 0;
+    padding-top: 100;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 180px;
+}
+
+.friend-search {
+    background-color: #fffacd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.friend-search h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.friend-search p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.search-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-box label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.search-box input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.notice {
+    padding-top: 200px;
+}
