@@ -52,7 +52,6 @@
     <script>
         const gameClickBtn = document.getElementById('menu-click-btn');
         const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
-        const gameClose = document.getElementById('menu-close');
         const backBtn = document.querySelector('.back-btn');
         const secondPopupWrapper = document.getElementById('second-popup-wrapper');
         const secondPopupClose = document.getElementById('second-popup-close');
