@@ -5,17 +5,19 @@
     <meta charset="UTF-8">
     <title>game</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/game.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
     <div class="menu-">
-        <button id="menu-click-btn">メニュー</button>
         <div id="menu-popup-wrapper">
             <div class="button_1">
-                <button class="popup-btn" id="menu-close">キャンセル</button>
                 <button class="back-btn">退出する</button>
             </div>
         </div>
+        <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
+            <span></span>
+        </button>
     </div>
 
     <div class="container">
@@ -50,21 +52,23 @@
     <script>
         const gameClickBtn = document.getElementById('menu-click-btn');
         const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
-        const gameClose = document.getElementById('menu-close');
         const backBtn = document.querySelector('.back-btn');
         const secondPopupWrapper = document.getElementById('second-popup-wrapper');
         const secondPopupClose = document.getElementById('second-popup-close');
         const exitBtn = document.getElementById('exit-btn');
 
-        // メニューをクリックしたときにポップアップを表示させる
-        gameClickBtn.addEventListener('click', () => {
-            gamePopupWrapper.style.display = "flex";
+        $(document).ready(function() {
+            $("button").click(function() {
+                $(this).toggleClass("toggle");
+            });
         });
 
-        // ポップアップの外側または「キャンセル」をクリックしたときポップアップを閉じる
-        gamePopupWrapper.addEventListener('click', e => {
-            if (e.target.id === gamePopupWrapper.id || e.target.id === gameClose.id) {
+        // ハンバーガーメニューをクリックしたときポップアップを表示する/閉じる
+        gameClickBtn.addEventListener('click', () => {
+            if (gamePopupWrapper.style.display === 'flex') {
                 gamePopupWrapper.style.display = 'none';
+            } else {
+                gamePopupWrapper.style.display = 'flex';
             }
         });
 
@@ -84,6 +88,7 @@
         exitBtn.addEventListener('click', () => {
             window.location.href = "index.php";
         });
+
     </script>
 </body>
 

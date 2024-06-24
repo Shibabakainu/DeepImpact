@@ -9,3 +9,30 @@ CREATE TABLE storyteller.users (
     name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ルームテーブル
+CREATE TABLE rooms (
+    room_id INT AUTO_INCREMENT PRIMARY KEY,
+    host_user_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    max_players INT DEFAULT 6,
+    status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
+    FOREIGN KEY (host_user_name) REFERENCES users(name) ON DELETE CASCADE
+);
+
+-- ルームの合言葉テーブル
+CREATE TABLE room_passwords (
+    room_id INT PRIMARY KEY,
+    password_hash VARCHAR(255) NOT NULL,
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id)
+);
+
+-- ルームとプレイヤーのリレーションテーブル
+CREATE TABLE room_players (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    room_id INT NOT NULL,
+    user_id INT NOT NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
