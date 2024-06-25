@@ -42,6 +42,7 @@ session_start();
             echo "<div class='search-box'>";
             echo "<label for='friend-id'><b>ID検索</b></label>";
             echo "<input type='text' id='friend-id' name='friend-id' placeholder='相手のIDを入力してください'>";
+            echo "<button class='search_button' onclick=\"location.href='friend_search.php'\">検索</button>";
             echo "</div>";
             echo "</div>";
         } else {
@@ -50,6 +51,7 @@ session_start();
         $stmt->close();
         $conn->close();
         ?>
+
     </div>
 </body>
 

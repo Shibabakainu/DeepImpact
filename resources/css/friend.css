@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0e68c;
     margin: 0;
-    padding-top: 100;
+    padding-top: 100px;
 }
 
 .container {
@@ -31,7 +31,8 @@ body {
 
 .search-box {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* アイテムを水平方向に配置 */
+    align-items: center; /* アイテムを垂直方向に中央揃え */
 }
 
 .search-box label {
@@ -40,11 +41,18 @@ body {
 }
 
 .search-box input[type="text"] {
-    padding: 10px;
+    padding: 10px; 
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    flex: 1; /* 入力フィールドが利用可能なスペースを取る */
 }
+
+.search-box .search_button {
+    width: 100px;
+    margin-left: 10px; /* 入力フィールドとボタンの間にスペースを追加 */
+}
+
 .notice {
     padding-top: 200px;
 }
