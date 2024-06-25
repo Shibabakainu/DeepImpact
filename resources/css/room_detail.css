@@ -11,6 +11,19 @@ body {
     background-position: center;
 }
 
+.container {
+    width: 70%;
+    margin: 300px auto;
+    padding: 20px; /* 上部余白を追加 */
+    color: #fff;
+    /* ボーダーと角丸の設定 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+    /* 背景色を黒にし、透過度を設定 */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
 
 
 main {
@@ -32,8 +45,10 @@ main {
 }
 
 .player-list {
+    
+    width: 70%;
     list-style: none;
-    padding: 0;
+    padding: 0 0 0 140px;
     margin: 0 0 20px;
 }
 

@@ -1,83 +1,136 @@
 @charset "UTF-8";
 
+/* 全体のボディ設定 */
 body {
     /* サイトの外枠の余白を無効化 */
     margin: 0px;
     padding: 0px;
+    
+    /* 背景色とフォント設定 */
     background-color: #ffff;
     font-family: Arial, sans-serif;
+    
+    /* 背景画像の設定 */
     background-image: url(../../images/art5.jpg);
     background-size: cover;
     background-position: center;
+
+    /* フレックスボックスの使用と中央揃え */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 画面全体の高さを確保 */
 }
 
+/* コンテナクラスの設定 */
 .container {
-    width: 300px;
-    margin: 0 auto;
-    padding-top: 200px;
+    width: 70%;
+    margin: 300px auto;
+    padding-top: 10px; /* 上部余白を追加 */
+    
+    /* ボーダーと角丸の設定 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+    /* 背景色を黒にし、透過度を設定 */
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
+/* ヘッダーの設定 */
 header {
+    /* フレックスボックスの使用と配置設定 */
     display: flex;
     justify-content: flex-end;
 }
 
+/* メニューボタンの設定 */
 .menu-button {
+    /* フォントサイズ設定 */
     font-size: 24px;
+    
+    /* 背景、ボーダー、カーソルの設定 */
     background: none;
     border: none;
     cursor: pointer;
 }
 
+/* フォーム全体の設定 */
 form {
+    /* フレックスボックスの使用と配置設定 */
     display: flex;
     flex-direction: column;
+    align-items: center; /* 要素を中央に配置 */
+    
+    /* 要素間の間隔と外部余白の設定 */
     gap: 10px;
+    margin: 20px;
 }
 
+/* フォームグループの設定 */
 .form-group {
+    /* フレックスボックスの使用と配置設定 */
     display: flex;
     flex-direction: column;
 }
 
+/* ラベルの設定 */
 label {
+    /* 下部余白と文字色の設定 */
     margin-bottom: 5px;
+    color: #fff;
 }
 
+/* テキスト入力とセレクトボックスの設定 */
 input[type="text"],
 select {
+    /* 内部余白とフォントサイズの設定 */
     padding: 5px;
     font-size: 16px;
 }
 
+/* 送信ボタンの設定 */
 button[type="submit"] {
-    width: 300px;
+    /* 幅、高さ、角丸の設定 */
+    width: 210px;
     height: 60px;
     border-radius: 10px;
+    
+    /* フォントサイズとカーソルの設定 */
     font-size: 24px;
     cursor: pointer;
+    
+    /* ボーダーと背景色の設定 */
     border: none;
     margin-top: 10px;
     background-color: #e0e0e0;
-
-
 }
+
+/* ボタンのホバー時の設定 */
 button:hover {
+    /* 背景色の変更 */
     background-color: #e77a34;
 }
 
+/* クリエイトボタンの設定 */
 .create {
-    width: 300px;
+    /* 幅、高さ、角丸の設定 */
+    width: 210px;
     height: 60px;
     border-radius: 10px;
+    
+    /* フォントサイズとカーソルの設定 */
     font-size: 24px;
     cursor: pointer;
+    
+    /* 外部余白、ボーダー、背景色の設定 */
     margin-top: 10px;
     border: none;
     background-color: #e0e0e0;
+    transition: 0.5s ease;
 }
 
+/* フッターの設定 */
 footer {
+    /* 上部の余白設定 */
     margin-top: 20px;
 }
-

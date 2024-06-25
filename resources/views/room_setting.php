@@ -24,13 +24,12 @@
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
-                    <option value="1">6</option>
+                    <option value="6">6</option>
                 </select>
             </div>
             <button type="submit">設定</button>
+            <button type="button" class="create" onclick="location.href='room_create.php'">戻る</button>
         </form>
-                    <button class="create" onclick="location.href='room_detail.php'">戻る</button>
-
     </div>
 </body>
 </html>
