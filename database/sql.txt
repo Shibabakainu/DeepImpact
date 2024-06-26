@@ -16,6 +16,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO `users`(`id`, `email`, `password`, `profile_image`, `name`, `created_at`) VALUES ('1','demo@demo','demo','','demo','');
 # ルームテーブル
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
