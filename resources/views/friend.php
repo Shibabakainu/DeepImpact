@@ -38,11 +38,13 @@ session_start();
             // Display user data
             echo "<div class='friend-search'>";
             echo "<h2>フレンド検索</h2>";
-            echo "<p><b>貴方のID</b>: " . htmlspecialchars($user['email']) . "</p>";
+            echo "<p><b>貴方のID</b>: " . htmlspecialchars($user['name']) . "</p>";
             echo "<div class='search-box'>";
-            echo "<label for='friend-id'><b>ID検索</b></label>";
-            echo "<input type='text' id='friend-id' name='friend-id' placeholder='相手のIDを入力してください'>";
-            echo "<button class='search_button' onclick=\"location.href='friend_search.php'\">検索</button>";
+            echo "<form action='friend_search.php' method='post'>";
+            echo "<label for='friend-name'><b>名前検索</b></label>";
+            echo "<input type='text' id='friend-name' name='friend_name' placeholder='相手の名前を入力してください'>";
+            echo "<button type='submit' class='search_button'>検索</button>";
+            echo "</form>";
             echo "</div>";
             echo "</div>";
         } else {
@@ -51,8 +53,6 @@ session_start();
         $stmt->close();
         $conn->close();
         ?>
-
     </div>
 </body>
-
 </html>

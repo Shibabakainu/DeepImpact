@@ -15,20 +15,20 @@
     
     <?php
         if (!isset($_SESSION['user_id'])) {
-            header("Location: login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
+            header("Location: /deepimpact/resources/views/login/login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
             exit;
         }
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_id'])) {
-            $friend_id = $_POST['friend_id'];
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_name'])) {
+            $friend_name = $_POST['friend_name'];
 
             // データベース接続
             include 'db_connect.php';
 
             // フレンドを検索するクエリ
-            $sql = "SELECT * FROM users WHERE id = ?";
+            $sql = "SELECT * FROM users WHERE name = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $friend_id);
+            $stmt->bind_param("s", $friend_name);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -36,17 +36,18 @@
                 // フレンドが見つかった場合の処理
                 $friend = $result->fetch_assoc();
                 echo "<h2>フレンド情報</h2>";
-                echo "<p><b>フレンドのID</b>: " . htmlspecialchars($friend['email']) . "</p>";
+                echo "<p><b>フレンドの名前</b>: " . htmlspecialchars($friend['name']) . "</p>";
+                echo "<p><b>フレンドのメール</b>: " . htmlspecialchars($friend['email']) . "</p>";
                 // ここにフレンドのその他の情報を表示する処理を追加できます
             } else {
                 // フレンドが見つからなかった場合の処理
-                echo "<p>指定されたIDのユーザーは見つかりませんでした。</p>";
+                echo "<p>指定された名前のユーザーは見つかりませんでした。</p>";
             }
 
             $stmt->close();
             $conn->close();
         } else {
-            // POST リクエストでない場合や friend_id がセットされていない場合のエラーハンドリング
+            // POST リクエストでない場合や friend_name がセットされていない場合のエラーハンドリング
             echo "<p>検索に失敗しました。</p>";
         }
     ?>
@@ -55,5 +56,4 @@
         </div>
     </div>
 </body>
-    
 </html>
