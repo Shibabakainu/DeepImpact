@@ -27,32 +27,31 @@ body {
 
 
 .ccontainer {
-    text-align: center;
+    position: relative; /* 相対位置に */
+    width: 100%; /* 幅を100%に設定 */
+    height: 100vh; /* 高さをビューの高さに設定 */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 68px;
-    width: 80%;
-    max-width: 500px;
+    align-items: flex-end; /* 下端に配置 */
+    justify-content: flex-end; /* 右端に配置 */
     padding: 20px;
     box-sizing: border-box;
-    position: relative; /* 追加 */
 }
 
 .create {
-    width: 120px;
-    height: 60px;
-    border-radius: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    margin: 10px 20px 10px;
-    border: none;
-    background-color: #e0e0e0;
-    transition: 0.5s ease;
-    position: absolute; /* 追加 */
-    right: 0; /* 追加 */
+    width: 120px; /* ボタンの幅を設定 */
+    height: 60px; /* ボタンの高さを設定 */
+    border-radius: 10px; /* ボタンの角を丸くする */
+    font-size: 24px; /* ボタンの文字サイズを設定 */
+    margin: 10px; /* ボタンの周囲に余白を設定 */
+    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
+    border: none; /* ボタンの枠線を削除 */
+    background-color: #e0e0e0; /* ボタンの背景色を設定 */
+    transition: 0.5s ease; /* ホバー時のトランジション効果を設定 */
+    position: absolute; /* 絶対配置に設定 */
+    right: 10px; /* 親要素の右端から10pxの位置に配置 */
+    bottom: 10px; /* 親要素の下端から10pxの位置に配置 */
 }
+
 .create:hover {
-    background-color: #e77a34;
+    background-color: #e77a34; /* ホバー時の背景色を設定 */
 }

@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="/deepimpact/resources/css/friend_search.css">
 </head>
 <body>
+
 <?php
 session_start();
+include 'header.php'; 
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
@@ -52,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_id'])) {
 }
 ?>
 </body>
-            <div class="buttons">
+            <div class="ccontainer">
                 <button class="create" onclick="location.href='friend.php'">戻る</button>
             </div>
 </html>
