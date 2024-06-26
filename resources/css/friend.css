@@ -59,6 +59,18 @@ body {
 .search-box .search_button {
     width: 100px;
     margin-left: 10px; /* 入力フィールドとボタンの間にスペースを追加 */
+    height: 40px;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    background-color: #e88a49;
+}
+
+.search-box .search_button:hover {
+    background-color: #e77a34;
 }
 
 .notice {
