@@ -101,7 +101,7 @@
                     // Get the last inserted user ID
                     $user_id = $stmt->insert_id;
                     // Redirect to the profile page with user ID
-                    header("Location: ../login/profile.php?id=$user_id");
+                    header("Location: ../login/login.php?id=$user_id");
                     exit;
                 } else {
                     echo "Error: " . $stmt->error;
