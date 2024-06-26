@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+body {
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    background-color: #ffff;
+    font-family: Arial, sans-serif;
+    background-image: url(../../images/art5.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.container {
+    width: 70%;
+    margin: 300px auto;
+    padding-top: 20px; /* 上部余白を追加 */
+    
+    /* ボーダーと角丸の設定 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+    /* 背景色を黒にし、透過度を設定 */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.buttons {
+    display: flex;
+    justify-content: center; /* 水平方向に中央揃え */
+    width: 100%; /* 幅を100%に設定 */
+    padding: 20px;
+    box-sizing: border-box;
+}

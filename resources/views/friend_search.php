@@ -1,39 +1,58 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/friend_search.css">
-    <?php include 'header.php'; ?>
+    <title>プレイヤーリスト</title>
+    <link rel="stylesheet" href="/deepimpact/resources/css/friend_search.css">
 </head>
 <body>
-<div class="container">
-    <h1>検索結果</h1>
-    <div class="search-results">
-    <?php
-      // キーワードの取得
-    if (isset($_POST['keyword'])) {
-        $keyword = $_POST['keyword'];
+<?php
+session_start();
 
-          // 検索処理（ダミーの例として、単純な検索結果を表示）
-        $results = array(
-            "PHPに関する記事",
-            "HTMLとCSSの基礎",
-            "JavaScriptの学習方法"
-        );
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
+    exit;
+}
 
-          // 検索結果を表示
-        echo "<ul>";
-        foreach ($results as $result) {
-            echo "<li>$result</li>";
-        }
-        echo "</ul>";
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_id'])) {
+    $friend_id = $_POST['friend_id'];
+
+    // データベース接続
+    include 'db_connect.php';
+
+    // フレンドを検索するクエリ
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $friend_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // フレンドが見つかった場合の処理
+        $friend = $result->fetch_assoc();
+        echo "<div class='container'>";
+        echo "<h2>フレンド情報</h2>";
+        echo "<p><b>フレンドのID</b>: " . htmlspecialchars($friend['email']) . "</p>";
+        // ここにフレンドのその他の情報を表示する処理を追加できます
+        echo "</div>";
     } else {
-        echo "<p>検索キーワードがありません。</p>";
+        // フレンドが見つからなかった場合の処理
+        echo "<div class='container'>";
+        echo "<p>指定されたIDのユーザーは見つかりませんでした。</p>";
+        echo "</div>";
     }
-    ?>
-    </div>
-    <a href="index.html">もう一度検索する</a>
-</div>
+
+    $stmt->close();
+    $conn->close();
+} else {
+    // POST リクエストでない場合や friend_id がセットされていない場合のエラーハンドリング
+    echo "<div class='container'>";
+    echo "<p>検索に失敗しました。</p>";
+    echo "</div>";
+}
+?>
 </body>
+            <div class="buttons">
+                <button class="create" onclick="location.href='friend.php'">戻る</button>
+            </div>
 </html>

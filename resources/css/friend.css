@@ -1,8 +1,10 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0e68c;
     margin: 0;
     padding-top: 100px;
+    background-image: url(../../images/art5.jpg);
+    background-size: cover;
+    background-position: center;
 }
 
 .container {
@@ -13,10 +15,15 @@ body {
 }
 
 .friend-search {
-    background-color: #fffacd;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+        width: 80%;
+        padding: 50px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        color: #fff;
+    
 }
 
 .friend-search h2 {
@@ -46,6 +53,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     flex: 1; /* 入力フィールドが利用可能なスペースを取る */
+    margin-left: 20px;
 }
 
 .search-box .search_button {
