@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>設定画面</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/room_setting.css">
 </head>
+
 <body>
     <?php include 'header.php'; ?>
     <div class="container">
         <form action="room_detail.php" method="POST">
             <div class="form-group">
                 <label for="setting">合言葉設定</label>
-                <input type="text" id="setting" name="setting">
+                <input type="text" id="setting" name="setting" required>
             </div>
             <div class="form-group">
                 <label for="room">ルーム名</label>
-                <input type="text" id="room" name="room">
+                <input type="text" id="room" name="room" required>
             </div>
             <div class="form-group">
                 <label for="people">人数</label>
@@ -32,4 +34,5 @@
         </form>
     </div>
 </body>
+
 </html>
