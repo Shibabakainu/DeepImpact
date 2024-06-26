@@ -46,6 +46,21 @@
     }
 
     $stmt->close();
+
+    // 保留中のフレンドリクエストを取得
+    $sql = "SELECT user_name FROM friends WHERE friend_name = ? AND status = 'pending'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $user_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // 保留中のリクエストの配列を作成
+    $pending_requests = [];
+    while ($row = $result->fetch_assoc()) {
+        $pending_requests[] = $row['user_name'];
+    }
+
+    $stmt->close();
     $conn->close();
     ?>
     <div class="container">
@@ -59,6 +74,25 @@
                 <div class="no-friends">フレンドがいません。</div>
             <?php endif; ?>
         </div>
+        
+        <div class="pending-requests">
+            <div class="title">保留中のフレンドリクエスト</div>
+            <?php if (!empty($pending_requests)): ?>
+                <?php foreach ($pending_requests as $request): ?>
+                    <div class="request-item">
+                        <?php echo htmlspecialchars($request, ENT_QUOTES, 'UTF-8'); ?>
+                        <form action="handle_friend_request.php" method="post" class="request-form">
+                            <input type="hidden" name="request_user" value="<?php echo htmlspecialchars($request, ENT_QUOTES, 'UTF-8'); ?>">
+                            <button type="submit" name="action" value="accept" class="accept-button">承認</button>
+                            <button type="submit" name="action" value="reject" class="reject-button">拒否</button>
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="no-requests">保留中のフレンドリクエストがありません。</div>
+            <?php endif; ?>
+        </div>
+
         <button class="friend-search" onclick="location.href='/deepimpact/resources/views/friend.php'">フレンド検索</button>
         <button class="logout" onclick="location.href='index.php'">退出</button>
     </div>

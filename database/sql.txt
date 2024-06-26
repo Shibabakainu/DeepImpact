@@ -66,23 +66,25 @@ CREATE TRIGGER after_accept_friend
 AFTER UPDATE ON friends
 FOR EACH ROW
 BEGIN
-    DECLARE opposite_status ENUM('pending', 'accepted', 'rejected');
+    IF @disable_trigger IS NULL OR @disable_trigger = FALSE THEN
+        DECLARE opposite_status ENUM('pending', 'accepted', 'rejected');
 
-    IF NEW.status = 'accepted' THEN
-        -- Check if the reverse relationship already exists
-        SELECT status INTO opposite_status
-        FROM friends
-        WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name;
-
-        -- If the reverse relationship doesn't exist, insert it
-        IF opposite_status IS NULL THEN
-            INSERT INTO friends (user_name, friend_name, status)
-            VALUES (NEW.friend_name, NEW.user_name, 'accepted');
-        ELSE
-            -- If the reverse relationship exists, update its status
-            UPDATE friends
-            SET status = 'accepted'
+        IF NEW.status = 'accepted' THEN
+            -- Check if the reverse relationship already exists
+            SELECT status INTO opposite_status
+            FROM friends
             WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name;
+
+            -- If the reverse relationship doesn't exist, insert it
+            IF opposite_status IS NULL THEN
+                INSERT INTO friends (user_name, friend_name, status)
+                VALUES (NEW.friend_name, NEW.user_name, 'accepted');
+            ELSE
+                -- If the reverse relationship exists, update its status
+                UPDATE friends
+                SET status = 'accepted'
+                WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name;
+            END IF;
         END IF;
     END IF;
 END //
