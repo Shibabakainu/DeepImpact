@@ -15,7 +15,7 @@
         <div class="buttons">
             <button onclick="window.location.href='room_create.php'">ルーム作成</button>
             <button onclick="window.location.href='search_room.php'">ルーム検索</button>
-            <button onclick="window.location.href='pachinko.php'">パチンコ</button>
+            <button onclick="window.location.href='frieview.php'">フレンド</button>
             <button id="index-click-btn">ルール</button>
             <div id="index-popup-wrapper">
                 <div id="index-popup-inside">
