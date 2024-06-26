@@ -35,13 +35,19 @@
             if ($result->num_rows > 0) {
                 // フレンドが見つかった場合の処理
                 $friend = $result->fetch_assoc();
-                echo "<h2>フレンド情報</h2>";
-                echo "<p><b>フレンドの名前</b>: " . htmlspecialchars($friend['name']) . "</p>";
-                echo "<p><b>フレンドのメール</b>: " . htmlspecialchars($friend['email']) . "</p>";
+                echo "<div class='friend-info'>";
+                if (!empty($friend['profile_image'])) {
+                    echo "<img src='/deepimpact/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
+                } else {
+                    echo "<img src='/deepimpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
+                }
+                echo "<p><b>ユーザーの名前</b>: " . htmlspecialchars($friend['name']) . "</p>";
+                echo "<p><b>ユーザーのメール</b>: " . htmlspecialchars($friend['email']) . "</p>";
                 echo "<form action='send_friend_request.php' method='post'>";
                 echo "<input type='hidden' name='friend_name' value='" . htmlspecialchars($friend['name']) . "'>";
                 echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
                 echo "</form>";
+                echo "</div>";
             } else {
                 // フレンドが見つからなかった場合の処理
                 echo "<p>指定された名前のユーザーは見つかりませんでした。</p>";
