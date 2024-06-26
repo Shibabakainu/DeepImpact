@@ -82,6 +82,5 @@
         <button class="friend-search">フレンド検索</button>
         <button class="logout">退出</button>
     </div>
-    <div class="chat">チャット(未定)</div>
 </body>
 </html>
