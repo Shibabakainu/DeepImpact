@@ -9,19 +9,7 @@
 </head>
 
 <body>
-    <div class="menu-">
-        <div id="menu-popup-wrapper">
-            <div class="button_1">
-                <button class="back-btn">退出する</button>
-            </div>
-        </div>
-        <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
-            <span></span>
-        </button>
-    </div>
-
     <div class="container">
-        <h1>カードをホバーしてみてね</h1>
         <ul>
             <li>
                 <div class="card" id="card1"><img src="/deepimpact/images/card1.png"></div>
@@ -41,6 +29,59 @@
         </ul>
     </div>
 
+
+    <div class="menu-">
+        <div id="menu-popup-wrapper">
+            <div class="button_1">
+                <button class="back-btn">退出する</button>
+                <button class="popup-btn" id="rule-click-btn">ルール</button>
+                <div id="rule-popup-wrapper" style="display: none;">
+                    <div id="rule-popup-inside">
+                        <div class="text">
+                            <div id="rule-close">X</div>
+                            <p>※注意事項※</p>
+                            <ul>
+                                <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
+                                <li>あとは適当に追加</li>
+                            </ul>
+                            <p>ゲーム開始時</p>
+                            <ul>
+                                <li>各プレイヤーに5枚のカードを配ります。</li>
+                            </ul>
+                            <p>カードの提出</p>
+                            <ul>
+                                <li>物語を確認し、自分の手札から物語のフレーズに合うと思うカードを1枚選択し、待機します。</li><br>
+                                <li>全てのプレイヤーが選び終えると、画面中央に選ばれたカードが表示されます。</li>
+                            </ul>
+                            <p>投票</p>
+                            <ul>
+                                <li>各プレイヤーは、物語のフレーズに1番あっていると思うカードを選び、投票することができます。</li><br>
+                                <li>注意として、自身が提出したカードに投票することはできません。</li>
+                            </ul>
+                            <p>得点</p>
+                            <ul>
+                                <li>投票が入ったカードを出したプレイヤーは、投票1つにつき、+1点を獲得します。</li><br>
+                                <li>1番票を集めたカードに、投票をしていた場合には投票者にも+1点を獲得します。</li>
+                            </ul>
+                            <p>ラウンド終了</p>
+                            <ul>
+                                <li>各プレイヤーは新しいカードを1枚手に入れ、手札が5枚に戻ります。</li>
+                            </ul>
+                            <p>ゲーム終了</p>
+                            <ul>
+                                <li>物語の決められたチャプター(ターン)が全て終えると、ゲーム終了です。</li><br>
+                                <li>最も得点の多いプレイヤーの勝利となります。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
+            <span></span>
+        </button>
+    </div>
+
     <div id="second-popup-wrapper">
         <div class="button_2">
             <p class="warning-text">本当に退出しますか？</p>
@@ -56,6 +97,11 @@
         const secondPopupWrapper = document.getElementById('second-popup-wrapper');
         const secondPopupClose = document.getElementById('second-popup-close');
         const exitBtn = document.getElementById('exit-btn');
+
+        // 新しいルールポップアップ関連の変数
+        const ruleClickBtn = document.getElementById('rule-click-btn');
+        const rulePopupWrapper = document.getElementById('rule-popup-wrapper');
+        const ruleClose = document.getElementById('rule-close');
 
         $(document).ready(function() {
             $("button").click(function() {
@@ -89,6 +135,16 @@
             window.location.href = "index.php";
         });
 
+        // 新しいルールポップアップ関連のイベントリスナー
+        ruleClickBtn.addEventListener('click', () => {
+            rulePopupWrapper.style.display = "block";
+        });
+
+        rulePopupWrapper.addEventListener('click', e => {
+            if (e.target.id === rulePopupWrapper.id || e.target.id === ruleClose.id) {
+                rulePopupWrapper.style.display = 'none';
+            }
+        });
     </script>
 </body>
 

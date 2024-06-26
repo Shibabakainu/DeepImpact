@@ -2,7 +2,7 @@ body {
     /* サイトの外枠の余白を無効化 */
     margin: 0;
     padding: 0;
-    background-image: url('/deepimpact/images/art4.jpg');
+    background-image: url('/deepimpact/images/art3.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     height: 100vh;
@@ -15,7 +15,9 @@ body {
 }
 
 .container {
-    width: 80%;
+    position: relative;
+    bottom: -250px;
+    width: 40%;
     padding: 50px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -92,7 +94,7 @@ body {
     width: 100%;
     height: 100%;
     display: none;
-    z-index: 995;
+    z-index: 994;
     animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
     justify-content: center;
     align-items: center;
@@ -121,6 +123,7 @@ body {
     position: relative;
     z-index: 995;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .button_1 {
@@ -134,6 +137,7 @@ body {
     padding: 20px;
     /* ボタンコンテナの背景色 */
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .button_1 .popup-btn,
@@ -141,6 +145,12 @@ body {
     padding: 15px 30px;
     font-size: 1.5em;
     border-radius: 10px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.button_1 .back-btn:hover {
+    background: rgb(250, 45, 45);
 }
 
 /* 2つ目のポップアップ */
@@ -167,6 +177,7 @@ body {
     align-items: center;
     padding: 30px;
     /* ボタンコンテナの背景色 */
+    cursor: pointer;
 }
 
 .button_2 .popup-btn {
@@ -174,6 +185,7 @@ body {
     left: -10px;
     font-size: 1.8em;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 .button_2 .other-btn {
@@ -184,6 +196,7 @@ body {
     font-size: 1.8em;
     background-color: rgb(250, 45, 45);
     border-radius: 10px;
+    cursor: pointer;
 }
 
 /* 警告テキスト */
@@ -211,12 +224,15 @@ body {
     transition: background-color 0.3s ease-in-out;
     z-index: 1000;
 }
+
 .hamburger-close:focus {
     outline: none;
 }
+
 .hamburger-close:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
 button.hamburger-close span {
     position: relative;
     display: inline-block;
@@ -227,7 +243,9 @@ button.hamburger-close span {
     top: -4px;
     transition: 0.3s ease-in-out 0.25s;
 }
-button.hamburger-close span:before, button.hamburger-close span:after {
+
+button.hamburger-close span:before,
+button.hamburger-close span:after {
     content: "";
     position: absolute;
     background-color: white;
@@ -236,21 +254,92 @@ button.hamburger-close span:before, button.hamburger-close span:after {
     width: 20px;
     height: 2px;
 }
+
 button.hamburger-close span:before {
     top: -5px;
 }
+
 button.hamburger-close span:after {
     bottom: -5px;
 }
+
 button.hamburger-close.toggle span {
     background-color: transparent;
     transition: 0.3s ease-in-out 0s;
 }
+
 button.hamburger-close.toggle span:before {
     top: 0;
     transform: rotate(45deg);
 }
+
 button.hamburger-close.toggle span:after {
     top: 0;
     transform: rotate(-45deg);
+}
+
+#rule-popup-wrapper {
+    background-color: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 996;
+    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+#rule-popup-inside {
+    text-align: center;
+    width: 100%;
+    max-width: 60%;
+    height: 60%;
+    background: white;
+    margin: 10% auto;
+    padding: 20px;
+    position: relative;
+    z-index: 997;
+    overflow: scroll;
+    border-radius: 5px;
+}
+
+#rule-close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+}
+
+/*ルール*/
+ul {
+    list-style: none
+}
+
+p {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* スクロールバーの幅や高さを狭くしています */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* スクロールバーのつまみの色変更、および角を丸くしています。 */
+::-webkit-scrollbar-thumb {
+    background: rgb(132, 132, 132);
+    border-radius: 5px;
 }
