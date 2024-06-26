@@ -15,7 +15,7 @@
     
     <?php
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /deepimpact/resources/views/login/login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
+            header("Location: ../login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
             exit;
         }
 
@@ -38,7 +38,10 @@
                 echo "<h2>フレンド情報</h2>";
                 echo "<p><b>フレンドの名前</b>: " . htmlspecialchars($friend['name']) . "</p>";
                 echo "<p><b>フレンドのメール</b>: " . htmlspecialchars($friend['email']) . "</p>";
-                // ここにフレンドのその他の情報を表示する処理を追加できます
+                echo "<form action='send_friend_request.php' method='post'>";
+                echo "<input type='hidden' name='friend_name' value='" . htmlspecialchars($friend['name']) . "'>";
+                echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
+                echo "</form>";
             } else {
                 // フレンドが見つからなかった場合の処理
                 echo "<p>指定された名前のユーザーは見つかりませんでした。</p>";
