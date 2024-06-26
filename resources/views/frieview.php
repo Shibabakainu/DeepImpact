@@ -21,7 +21,7 @@
             <?php endforeach; ?>
         </div>
         <button class="friend-search" onclick="location.href='/deepimpact/resources/views/friend.php'">フレンド検索</button>
-        <button class="logout">退出</button>
+        <button class="logout" onclick="location.href='index.php'">退出</button> <!-- ここを修正 -->
     </div>
 </body>
 </html>
