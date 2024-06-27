@@ -1,8 +1,14 @@
 <?php
 session_start();
+include 'db_connect.php';
+
+header('Content-Type: application/json');
+
+$response = ['status' => 'error', 'message' => '無効なリクエストです。'];
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
+    $response['message'] = 'ログインしていません。';
+    echo json_encode($response);
     exit;
 }
 
@@ -10,10 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_name'])) {
     $user_id = $_SESSION['user_id'];
     $friend_name = $_POST['friend_name'];
 
-    // データベース接続
-    include 'db_connect.php';
-
-    // Get the user's name
+    // ユーザー名を取得
     $sql = "SELECT name FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
@@ -23,23 +26,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_name'])) {
     $user_name = $user['name'];
     $stmt->close();
 
-    // フレンドリクエストを送信するクエリ
-    $sql = "INSERT INTO friends (user_name, friend_name, status) VALUES (?, ?, 'pending')";
+    // Check if the friend request already exists
+    $sql = "SELECT * FROM friends WHERE user_name = ? AND friend_name = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $user_name, $friend_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($stmt->execute()) {
-        echo "<p>フレンドリクエストを送信しました。</p>";
+    if ($result->num_rows > 0) {
+        // Friend request already exists
+        $friend = $result->fetch_assoc();
+        if ($friend['status'] == 'pending') {
+            $response['message'] = 'フレンド申請はすでに保留中です。';
+        } else if ($friend['status'] == 'rejected') {
+            $response['message'] = 'フレンド申請は拒否されました。';
+        } else {
+            $response['message'] = 'このユーザーは既にフレンドです。';
+        }
     } else {
-        echo "<p>フレンドリクエストの送信に失敗しました。</p>";
+        // Insert the new friend request
+        $sql = "INSERT INTO friends (user_name, friend_name, status) VALUES (?, ?, 'pending')";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $user_name, $friend_name);
+        if ($stmt->execute()) {
+            $response['status'] = 'success';
+            $response['message'] = 'フレンド申請が送信されました。';
+        } else {
+            $response['message'] = 'フレンド申請の送信に失敗しました。';
+        }
+        $stmt->close();
     }
 
-    $stmt->close();
     $conn->close();
 } else {
-    echo "<p>リクエストに失敗しました。</p>";
+    $response['message'] = '無効なリクエストです。';
 }
+
+echo json_encode($response);
 ?>
-<div class="container2">
-    <button class="return" onclick="location.href='friend.php'">戻る</button>
-</div>
