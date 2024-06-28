@@ -1,3 +1,7 @@
+<?php
+session_start();
+$loggedIn = isset($_SESSION['user_id']);
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -6,6 +10,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Story Teller</title>
     <link rel="stylesheet" href="../css/index.css">
+    <style>
+        /* ポップアップのスタイル */
+        #login-popup-wrapper {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #login-popup-inside {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+
+        #login-popup-inside .text {
+            margin-bottom: 20px;
+        }
+
+        #login-popup-inside button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,8 +61,7 @@
                         <p>※注意事項※</p>
                         <ul>
                             <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
-                            <li>あとは適当に追加
-                            </li>
+                            <li>あとは適当に追加</li>
                         </ul>
                         <p>ゲーム開始時</p>
                         <ul>
@@ -60,6 +96,15 @@
             </div>
         </div>
     </div>
+
+    <?php if (!$loggedIn) : ?>
+        <div id="login-popup-wrapper" style="display: flex;">
+            <div id="login-popup-inside">
+                <div class="text">ログインしてください</div>
+                <button onclick="window.location.href='/deepimpact/resources/views/login/login.php'">ログインページへ</button>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <script>
         const indexClickBtn = document.getElementById('index-click-btn');

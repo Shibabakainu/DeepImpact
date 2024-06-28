@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 body {
-    /* サイトの外枠の余白を無効化 */
     margin: 0px;
     padding: 0px;
     background-color: #ffff;
@@ -14,26 +13,19 @@ body {
 .container {
     width: 70%;
     margin: 300px auto;
-    padding: 20px; /* 上部余白を追加 */
+    padding: 20px;
     color: #fff;
-    /* ボーダーと角丸の設定 */
     border: 1px solid #ccc;
     border-radius: 5px;
-    
-    /* 背景色を黒にし、透過度を設定 */
     background-color: rgba(0, 0, 0, 0.4);
 }
-
-
 
 main {
     display: flex;
     justify-content: center;
     align-items: center;
     height: calc(100vh - 60px);
-    /* ヘッダーの高さを引いた高さ */
     padding-top: 60px;
-    /* ヘッダーの高さ分の余白 */
 }
 
 .main-container {
@@ -45,7 +37,6 @@ main {
 }
 
 .player-list {
-    
     width: 70%;
     list-style: none;
     padding: 0 0 0 140px;
@@ -59,6 +50,12 @@ main {
     border-radius: 10px;
     font-size: 24px;
     text-align: left;
+    cursor: pointer;
+}
+
+.player-list li.empty {
+    background-color: transparent;
+    border: 2px dashed #d3d3d3;
 }
 
 .host {
@@ -101,9 +98,9 @@ main {
 }
 
 .create:hover {
-    background-color:#e77a34;
+    background-color: #e77a34;
 }
 
 .back:hover {
-    background-color: #e77a34;;
+    background-color: #e77a34;
 }
