@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <?php include 'header.php'; ?>
+    <?php include '../views/header.php'; ?>
     <div class="main-container">
         <img src="../../images/sttera.png" alt="Story Teller" class="header-image">
         <div class="buttons">

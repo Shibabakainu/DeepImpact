@@ -7,12 +7,12 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロフィール編集</title>
-    <link rel="stylesheet" href="/deepimpact/resources/css/signup.css">
+    <link rel="stylesheet" href="/resources/css/signup.css">
 </head>
 <body>
     <div class="header-container">
         <header>
-            <img src="/deepimpact/images/sttera.png" alt="Story Teller" class="title-image">
+            <img src="/images/sttera.png" alt="Story Teller" class="title-image">
         </header>
     </div>
     <div class="container">
@@ -38,7 +38,7 @@ session_start();
             <input type="button" value="編集" onclick="showCustomAlert()">
         </form>
         <div class="separator"></div>
-        <button class="return" onclick="location.href='/deepimpact/resources/views/login/profile.php'">戻る</button>
+        <button class="return" onclick="location.href='/resources/views/login/profile.php'">戻る</button>
     </div>
 
     <div id="overlay"></div>

@@ -9,7 +9,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url('/deepimpact/images/art2.jpg');
+            background-image: url('/images/art2.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             height: 100vh;
@@ -96,12 +96,11 @@
                             VALUES (?, ?, ?, ?)";
                 $stmt = $conn->prepare($insertSql);
                 $stmt->bind_param("ssss", $email, $password, $profile_image, $name);
-
                 if ($stmt->execute()) {        
                     // Get the last inserted user ID
                     $user_id = $stmt->insert_id;
                     // Redirect to the profile page with user ID
-                    header("Location: ../login/login.php?id=$user_id");
+                    header("Location: /resources/login/login.php?id=$user_id");
                     exit;
                 } else {
                     echo "Error: " . $stmt->error;
