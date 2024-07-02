@@ -94,7 +94,7 @@
         </div>
 
         <button class="friend-search" onclick="location.href='/deepimpact/resources/views/friend.php'">フレンド検索</button>
-        <button class="logout" onclick="location.href='index.php'">退出</button>
+        <button class="return" onclick="location.href='index.php'">戻る</button>
     </div>
 </body>
 </html>

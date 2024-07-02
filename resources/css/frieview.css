@@ -52,7 +52,7 @@ body {
 .friend-search:hover{
     background-color: #e77a34;
 }
-.logout {
+.return {
     font-size: 1rem;
     font-weight: bold;
     background-color:crimson;
@@ -63,7 +63,7 @@ body {
     margin: 5px;
     width: 30%;
 }
-.logout:hover {
+.return:hover {
     background-color:firebrick;
 }
 .pending-requests {
