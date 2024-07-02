@@ -38,7 +38,7 @@ session_start();
             // Display user data
             echo "<div class='friend-search'>";
             echo "<h2>フレンド検索</h2>";
-            echo "<p><b>貴方のID</b>: " . htmlspecialchars($user['name']) . "</p>";
+            echo "<p><b>貴方の名前</b>: " . htmlspecialchars($user['name']) . "</p>";
             echo "<div class='search-box'>";
             echo "<form action='friend_search.php' method='post'>";
             echo "<label for='friend-name'><b>名前検索</b></label>";

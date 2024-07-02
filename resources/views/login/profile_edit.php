@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -17,16 +17,47 @@ session_start();
     </div>
     <div class="container">
         <h3>プロフィール編集</h3>
+        <?php
+        include '../db_connect.php'; // データベース接続スクリプトをインクルード
+
+        // ユーザーIDを取得
+        if (isset($_SESSION['user_id'])) {
+            $user_id = $_SESSION['user_id'];
+        } else {
+            echo "<div class='notice'>ユーザーIDが指定されていません。</div>";
+            exit;
+        }
+
+        // データベースからユーザーの情報を取得
+        $sql = "SELECT * FROM users WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            $currentName = htmlspecialchars($user['name']);
+            $currentEmail = htmlspecialchars($user['email']);
+            $currentProfileImage = !empty($user['profile_image']) ? htmlspecialchars($user['profile_image']) : '';
+
+            $stmt->close();
+            $conn->close();
+        } else {
+            echo "ユーザーが見つかりません。";
+            exit;
+        }
+        ?>
         <form id="profileForm" action="edit_confirmation.php" method="post" enctype="multipart/form-data">
             <label for="profile_image">プロフィール画像:</label><br>
             <input type="file" accept=".jpg,.jpeg,.png,.gif" id="profile_image" name="profile_image" onchange="previewImage()"><br><br>
-            <img id="profile_image_preview" src="#" alt="プロフィール画像プレビュー"><br>
+            <img id="profile_image_preview" src="<?php echo !empty($currentProfileImage) ? '/deepimpact/resources/views/login/profileicon/' . $currentProfileImage : '#' ?>" alt="プロフィール画像プレビュー" style="<?php echo !empty($currentProfileImage) ? 'display:block;' : 'display:none;' ?>"><br>
 
             <label for="name">User Name:</label><br>
-            <input type="text" id="name" name="name" required><br><br>
+            <input type="text" id="name" name="name" placeholder="<?php echo $currentName; ?>" value="<?php echo $currentName; ?>" required><br><br>
 
             <label for="email">メールアドレス:</label><br>
-            <input type="email" id="email" name="email" required><br><br>
+            <input type="email" id="email" name="email" placeholder="<?php echo $currentEmail; ?>" value="<?php echo $currentEmail; ?>" required><br><br>
 
             <label for="password">パスワード:</label><br>
             <input type="password" id="password" name="password" required><br><br>
