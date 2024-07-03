@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("/deepimpact/images/art7.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center content vertically */
+    height: 100vh; /* Full height of the viewport */
+    overflow: hidden; /* Prevent scrolling */
+    padding-top: 60px; /* Adjusted to leave space for the fixed header */
+}
+.container {
+    text-align: center;
+    color: #fff;
+    width: 80%;
+    margin: 200px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0,0.3);
+}
+.container h1 {
+    text-align: center;
+}
+
+.container .profile_image {
+    max-width: 200px;
+    max-height: 200px;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.return {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color:crimson;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    width: 30%;
+    transition: 0.3s ease;
+}
+.return:hover {
+    background-color:firebrick;
+}
