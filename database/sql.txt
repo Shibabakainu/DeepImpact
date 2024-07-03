@@ -4,55 +4,59 @@ CREATE DATABASE storyteller CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE storyteller;
 
+# テーブルusers作成
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    profile_image VARCHAR(255),
-    name VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id              INT             AUTO_INCREMENT PRIMARY KEY,
+    email           VARCHAR(100)    NOT NULL UNIQUE,
+    password        VARCHAR(255)    NOT NULL,
+    profile_image   VARCHAR(255),
+    name            VARCHAR(100)    NOT NULL UNIQUE,  -- Adding NOT NULL and UNIQUE constraints
+    created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (id, email, password, profile_image, name, created_at) VALUES
-(1, 'demo@demo', 'deepimpact', '', 'storyteller', CURRENT_TIMESTAMP);
+INSERT INTO users(id, email, password, profile_image, name, created_at) VALUES ('1','demo@demo','demo','','demo','');
 
+# ルームテーブル
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
-    room_id INT AUTO_INCREMENT PRIMARY KEY,
-    room_name VARCHAR(100) NOT NULL,
-    host_user_name VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    max_players INT DEFAULT 6,
+    room_id         INT             AUTO_INCREMENT PRIMARY KEY,
+    room_name       VARCHAR(100)    NOT NULL,
+    host_user_name  VARCHAR(100)    NOT NULL,
+    created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    max_players     INT             DEFAULT 6,
     status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
-    current_players INT DEFAULT 1,
+    current_players INT             DEFAULT 1,  -- 新しいカラムの追加
     FOREIGN KEY (host_user_name) REFERENCES users(name) ON DELETE CASCADE
 );
 
+# ルームの合言葉テーブル
 DROP TABLE IF EXISTS room_passwords;
 CREATE TABLE room_passwords (
-    room_id INT PRIMARY KEY,
-    password_hash VARCHAR(255) NOT NULL,
+    room_id         INT             PRIMARY KEY,
+    password_hash   VARCHAR(255)    NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
 );
 
+# ルームとプレイヤーのリレーションテーブル
 DROP TABLE IF EXISTS room_players;
 CREATE TABLE room_players (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    room_id INT NOT NULL,
-    user_id INT NOT NULL,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id              INT             AUTO_INCREMENT PRIMARY KEY,
+    room_id         INT             NOT NULL,
+    user_id         INT             NOT NULL,
+    joined_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+# フレンドリレーションテーブル
 DROP TABLE IF EXISTS friends;
 CREATE TABLE friends (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_name VARCHAR(100) NOT NULL,
-    friend_name VARCHAR(100) NOT NULL,
+    id              INT             AUTO_INCREMENT PRIMARY KEY,
+    user_name       VARCHAR(100)    NOT NULL,
+    friend_name     VARCHAR(100)    NOT NULL,
     status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
-    requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    requested_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_name) REFERENCES users(name) ON DELETE CASCADE,
     FOREIGN KEY (friend_name) REFERENCES users(name) ON DELETE CASCADE,
     UNIQUE(user_name, friend_name)
@@ -65,15 +69,19 @@ AFTER UPDATE ON friends
 FOR EACH ROW
 BEGIN
     IF @disable_trigger IS NULL OR @disable_trigger = FALSE THEN
+
         IF NEW.status = 'accepted' THEN
+            -- Check if the reverse relationship already exists
             IF NOT EXISTS (
                 SELECT 1
                 FROM friends
                 WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name
             ) THEN
+                -- If the reverse relationship doesn't exist, insert it
                 INSERT INTO friends (user_name, friend_name, status)
                 VALUES (NEW.friend_name, NEW.user_name, 'accepted');
             ELSE
+                -- If the reverse relationship exists, update its status
                 UPDATE friends
                 SET status = 'accepted'
                 WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name;
@@ -83,3 +91,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
+# Grant privileges
+GRANT ALL PRIVILEGES ON storyteller.* TO 'username'@'localhost' IDENTIFIED BY 'password';
+FLUSH PRIVILEGES;
