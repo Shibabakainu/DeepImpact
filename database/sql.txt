@@ -1,23 +1,26 @@
-# データベースStoryTellerの作成
+-- Create the database
 SET NAMES utf8;
 DROP DATABASE IF EXISTS storyteller;
 CREATE DATABASE storyteller CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE storyteller;
 
-# テーブルusers作成
+-- Create the users table
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
     email           VARCHAR(100)    NOT NULL UNIQUE,
     password        VARCHAR(255)    NOT NULL,
     profile_image   VARCHAR(255),
-    name            VARCHAR(100)    NOT NULL UNIQUE,  -- Adding NOT NULL and UNIQUE constraints
+    name            VARCHAR(100)    NOT NULL UNIQUE,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO `users`(`id`, `email`, `password`, `profile_image`, `name`, `created_at`) VALUES ('1','demo@demo','demo','','demo','');
-# ルームテーブル
+-- Insert a demo user
+INSERT INTO users (id, email, password, profile_image, name, created_at) VALUES 
+(1, 'demo@demo', 'demo', '', 'demo', NOW());
+
+-- Create the rooms table
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
     room_id         INT             AUTO_INCREMENT PRIMARY KEY,
@@ -29,7 +32,7 @@ CREATE TABLE rooms (
     FOREIGN KEY (host_user_name) REFERENCES users(name) ON DELETE CASCADE
 );
 
-# ルームの合言葉テーブル
+-- Create the room_passwords table
 DROP TABLE IF EXISTS room_passwords;
 CREATE TABLE room_passwords (
     room_id         INT             PRIMARY KEY,
@@ -37,7 +40,7 @@ CREATE TABLE room_passwords (
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
 );
 
-# ルームとプレイヤーのリレーションテーブル
+-- Create the room_players table
 DROP TABLE IF EXISTS room_players;
 CREATE TABLE room_players (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
@@ -48,7 +51,7 @@ CREATE TABLE room_players (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-# フレンドリレーションテーブル
+-- Create the friends table
 DROP TABLE IF EXISTS friends;
 CREATE TABLE friends (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
@@ -61,37 +64,45 @@ CREATE TABLE friends (
     UNIQUE(user_name, friend_name)
 );
 
+-- Remove the trigger if it exists
+DROP TRIGGER IF EXISTS after_accept_friend;
+
+-- Create the event to update reciprocal friend relationships
 DELIMITER //
 
-CREATE TRIGGER after_accept_friend
-AFTER UPDATE ON friends
-FOR EACH ROW
+CREATE EVENT update_reciprocal_friends
+ON SCHEDULE EVERY 1 MINUTE
+DO
 BEGIN
-    IF @disable_trigger IS NULL OR @disable_trigger = FALSE THEN
-        DECLARE opposite_status ENUM('pending', 'accepted', 'rejected');
+    DECLARE done INT DEFAULT 0;
+    DECLARE current_user_name VARCHAR(100);
+    DECLARE current_friend_name VARCHAR(100);
+    DECLARE cur CURSOR FOR 
+        SELECT user_name, friend_name FROM friends WHERE status = 'accepted';
 
-        IF NEW.status = 'accepted' THEN
-            -- Check if the reverse relationship already exists
-            SELECT status INTO opposite_status
-            FROM friends
-            WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
-            -- If the reverse relationship doesn't exist, insert it
-            IF opposite_status IS NULL THEN
-                INSERT INTO friends (user_name, friend_name, status)
-                VALUES (NEW.friend_name, NEW.user_name, 'accepted');
-            ELSE
-                -- If the reverse relationship exists, update its status
-                UPDATE friends
-                SET status = 'accepted'
-                WHERE user_name = NEW.friend_name AND friend_name = NEW.user_name;
-            END IF;
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO current_user_name, current_friend_name;
+        IF done THEN
+            LEAVE read_loop;
         END IF;
-    END IF;
+
+        -- Check if reciprocal relationship exists
+        IF NOT EXISTS (SELECT 1 FROM friends WHERE user_name = current_friend_name AND friend_name = current_user_name) THEN
+            -- Insert the reciprocal relationship
+            INSERT INTO friends (user_name, friend_name, status) VALUES (current_friend_name, current_user_name, 'accepted');
+        ELSE
+            -- Update the reciprocal relationship if it exists
+            UPDATE friends SET status = 'accepted' WHERE user_name = current_friend_name AND friend_name = current_user_name;
+        END IF;
+    END LOOP;
+    CLOSE cur;
 END //
 
 DELIMITER ;
 
-# Grant privileges
+-- Grant privileges
 GRANT ALL PRIVILEGES ON storyteller.* TO 'username'@'localhost' IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
