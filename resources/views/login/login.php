@@ -64,6 +64,7 @@ session_start();
 
             $stmt->close();
         }
+        // 接続を閉じる
         $conn->close();
         ?>
     </div>
