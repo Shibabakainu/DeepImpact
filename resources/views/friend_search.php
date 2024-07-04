@@ -53,8 +53,7 @@
                     } else {
                         echo "<img src='/DeepImpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
                     }
-                    echo "<p><b>ユーザーの名前</b>: " . htmlspecialchars($friend['name']) . "</p>";
-                    echo "<p><b>ユーザーのメール</b>: " . htmlspecialchars($friend['email']) . "</p>";
+                    echo "<p>" . htmlspecialchars($friend['name']) . "</p>";
                     echo "<form id='friend-request-form'>";
                     echo "<input type='hidden' name='friend_name' value='" . htmlspecialchars($friend['name']) . "'>";
                     echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";

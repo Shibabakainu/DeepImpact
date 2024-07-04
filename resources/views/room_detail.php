@@ -20,10 +20,22 @@ if ($user_id) {
     }
 }
 
-// フォームから送信されたデータを取得
-$setting = isset($_POST['setting']) ? htmlspecialchars($_POST['setting'], ENT_QUOTES, 'UTF-8') : '';
-$room = isset($_POST['room']) ? htmlspecialchars($_POST['room'], ENT_QUOTES, 'UTF-8') : '';
-$people = isset($_POST['people']) ? (int)$_POST['people'] : 0;
+// クエリパラメータからデータを取得
+$setting = isset($_GET['setting']) ? htmlspecialchars($_GET['setting'], ENT_QUOTES, 'UTF-8') : '';
+$room = isset($_GET['room']) ? htmlspecialchars($_GET['room'], ENT_QUOTES, 'UTF-8') : '';
+$people = isset($_GET['people']) ? (int)$_GET['people'] : 0;
+
+// DBに現在のプレイヤー数を保存
+$sql_update_players = "UPDATE rooms SET current_players = ? WHERE room_name = ?";
+$stmt_update_players = $conn->prepare($sql_update_players);
+if ($stmt_update_players) {
+    $stmt_update_players->bind_param("is", $people, $room);
+    $stmt_update_players->execute();
+    $stmt_update_players->close();
+} else {
+    echo "Error updating current players: " . $conn->error;
+}
+
 ?>
 
 <!DOCTYPE html>

@@ -68,7 +68,9 @@
         <div class="friend-list">
             <?php if (!empty($friends)): ?>
                 <?php foreach ($friends as $friend): ?>
-                    <div class="friend-item"><?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?></div>
+                    <div class="friend-item" onclick="location.href='/deepimpact/resources/views/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
+                        <?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="no-friends">フレンドがいません。</div>
@@ -93,8 +95,8 @@
             <?php endif; ?>
         </div>
 
-        <button class="friend-search" onclick="location.href='/DeepImpact/resources/views/friend.php'">フレンド検索</button>
-        <button class="logout" onclick="location.href='index.php'">退出</button>
+        <button class="friend-search" onclick="location.href='/deepimpact/resources/views/friend.php'">フレンド検索</button>
+        <button class="return" onclick="location.href='index.php'">戻る</button>
     </div>
 </body>
 </html>

@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 body {
-    /* サイトの外枠の余白を無効化 */
     margin: 0px;
     padding: 0px;
     background-color: #ffff;
@@ -12,10 +11,29 @@ body {
 }
 
 input[type="search"] {
-    width: 300px; /* 幅を300ピクセルに設定 */
-    height: 30px; /* 高さを30ピクセルに設定 */
-    font-size: 16px; /* フォントサイズを16ピクセルに設定 */
-    padding: 5px 10px; /* パディングを調整 */
+    width: 300px;
+    height: 30px;
+    font-size: 16px;
+    padding: 5px 10px;
+}
+
+.search_label {
+    color: white;
+}
+
+.search_btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    background-color: #e0e0e0;
+}
+
+button:hover {
+    background-color: #e77a34;
 }
 
 .create {
@@ -29,47 +47,110 @@ input[type="search"] {
     background-color: #e0e0e0;
 }
 
-main {
-    display: flex;
-    flex-direction: column; /* 垂直方向に子要素を並べる */
-    justify-content: center; /* 垂直方向に中央揃え */
-    align-items: center; /* 水平方向に中央揃え */
-    height: calc(100vh - 60px);
-    /* ヘッダーの高さを引いた高さ */
-    padding-top: 60px;
-    /* ヘッダーの高さ分の余白 */
-}
-
-form {
-    margin-top: 20px; /* 上に20ピクセルのマージンを追加 */
-}
-
-.buttons {
-    display: flex;
-    justify-content: center; /* 水平方向に中央揃え */
-    align-items: center; /* 垂直方向に中央揃え */
-    width: 100%; /* 幅を100%に設定 */
-    padding: 20px;
-    box-sizing: border-box;
-}
-button:hover {
-    background-color: #e77a34;
-}
-
-.back {
-    width: 140px;
-    height: 60px;
-    border-radius: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    margin: 10px;
-    border: none;
-}
-
 .create:hover {
     background-color: #adf5ff;
 }
 
-.back:hover {
-    background-color: #ff6c6c;
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px);
+    padding-top: 60px;
+}
+
+form {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.room-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 400px;
+    /* 固定高さを指定してスクロールを許可 */
+    overflow-y: auto;
+}
+
+.room {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 80%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.room-name {
+    position: relative;
+    top: 28px;
+    left: 30px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.room-status {
+    text-align: center;
+    font-size: 24px;
+}
+
+.room-progress {
+    position: relative;
+    top: -26px;
+    right: 30px;
+    text-align: right;
+    font-size: 20px;
+}
+
+/* コンテナクラスの設定 */
+.container {
+    width: 70%;
+    margin: 100px auto;
+    /* 変更点：余白を減らしました */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* スクロールバーのカスタマイズ */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(132, 132, 132);
+    border-radius: 5px;
+}
+
+/*ステータス*/
+.waiting {
+    color: green;
+    /* グリーン、または任意の色 */
+}
+
+.in_game {
+    color: red;
+    /* レッド、または任意の色 */
+}
+
+.finished {
+    color: black;
+    /* ブラック、または任意の色 */
 }

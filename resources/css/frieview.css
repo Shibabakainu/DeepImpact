@@ -26,8 +26,14 @@ body {
 }
 .friend-list {
     margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    flex-direction: column;
 }
 .friend-item {
+    width: 30%;
+    font-weight: bold;
     color: black;
     background-color: #d3d3d3;
     margin: 5px 0;
@@ -52,7 +58,7 @@ body {
 .friend-search:hover{
     background-color: #e77a34;
 }
-.logout {
+.return {
     font-size: 1rem;
     font-weight: bold;
     background-color:crimson;
@@ -63,26 +69,36 @@ body {
     margin: 5px;
     width: 30%;
 }
-.logout:hover {
+.return:hover {
     background-color:firebrick;
 }
 .pending-requests {
-    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    flex-direction: column;
 }
 
 .request-item {
+    font-size: large;
+    font-weight: bold;
     display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     margin-bottom: 10px;
+    width: 30%;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .request-form {
-    display: flex;
-    gap: 10px;
+    margin-left: 20px;
 }
 
 .accept-button, .reject-button {
-    margin: 10px;
     padding: 5px 10px;
     cursor: pointer;
 }
@@ -90,9 +106,17 @@ body {
 .accept-button {
     background-color: #4CAF50;
     color: white;
+    border-radius: 5px;
+}
+.accept-button:hover {
+    background-color: darkgreen;
 }
 
 .reject-button {
     background-color: #f44336;
     color: white;
+    border-radius: 5px;
+}
+.reject-button:hover {
+    background-color: crimson;
 }

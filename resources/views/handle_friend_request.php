@@ -24,24 +24,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['request_user']) && iss
     $user_name = $user['name'];
     $stmt->close();
 
-    // Disable triggers
-    $conn->query("SET @DISABLE_TRIGGERS = TRUE");
-
     if ($action === 'accept') {
         // フレンドリクエストを承認する
         $sql = "UPDATE friends SET status = 'accepted' WHERE user_name = ? AND friend_name = ? AND status = 'pending'";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $request_user, $user_name);
+        $stmt->execute();
+        $stmt->close();
+
+        // Reciprocal update to add the reverse relationship
+        // Check if the reverse relationship already exists
+        $sql = "SELECT * FROM friends WHERE user_name = ? AND friend_name = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $user_name, $request_user);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows == 0) {
+            // If the reverse relationship doesn't exist, insert it
+            $sql = "INSERT INTO friends (user_name, friend_name, status) VALUES (?, ?, 'accepted')";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $user_name, $request_user);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            // If the reverse relationship exists, update its status
+            $sql = "UPDATE friends SET status = 'accepted' WHERE user_name = ? AND friend_name = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $user_name, $request_user);
+            $stmt->execute();
+            $stmt->close();
+        }
     } else {
         // フレンドリクエストを拒否する
         $sql = "DELETE FROM friends WHERE user_name = ? AND friend_name = ? AND status = 'pending'";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $request_user, $user_name);
+        $stmt->execute();
+        $stmt->close();
     }
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $request_user, $user_name);
-    $stmt->execute();
-    $stmt->close();
-
-    // Enable triggers
-    $conn->query("SET @DISABLE_TRIGGERS = FALSE");
 
     $conn->close();
 
