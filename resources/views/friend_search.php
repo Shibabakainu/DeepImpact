@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>プレイヤーリスト</title>
-    <link rel="stylesheet" href="/resources/css/friend_search.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/friend_search.css">
     <style>
         .popup {
             position: fixed;
@@ -49,9 +49,9 @@
                     $friend = $result->fetch_assoc();
                     echo "<div class='friend-info'>";
                     if (!empty($friend['profile_image'])) {
-                        echo "<img src='/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
+                        echo "<img src='/DeepImpact/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
                     } else {
-                        echo "<img src='/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
+                        echo "<img src='/DeepImpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
                     }
                     echo "<p><b>ユーザーの名前</b>: " . htmlspecialchars($friend['name']) . "</p>";
                     echo "<p><b>ユーザーのメール</b>: " . htmlspecialchars($friend['email']) . "</p>";

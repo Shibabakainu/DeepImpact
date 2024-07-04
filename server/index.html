@@ -1,45 +1,37 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ストーリーテラー</title>
+    <title>WebSocket Chat</title>
 </head>
 <body>
-    <h1>ストーリーテラー</h1>
-    <div id="story"></div>
-    <input type="text" id="input" placeholder="次のストーリーを入力">
-    <button onclick="sendStory()">送信</button>
+    <h1>WebSocket Chat</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="message" placeholder="Enter message..." />
+    <button onclick="sendMessage()">Send</button>
 
     <script>
-        const ws = new WebSocket('ws://192.168.10.86:8080');
+        var ws = new WebSocket('ws://localhost:8080');
 
         ws.onopen = function() {
-            console.log('接続中');
+            console.log('Connected to the server');
         };
 
         ws.onmessage = function(event) {
-            const storyDiv = document.getElementById('story');
-            const newContent = document.createElement('p');
-            newContent.textContent = event.data;
-            storyDiv.appendChild(newContent);
+            var chatbox = document.getElementById('chatbox');
+            var newMessage = document.createElement('div');
+            newMessage.textContent = event.data;
+            chatbox.appendChild(newMessage);
         };
 
-        function sendStory() {
-            const input = document.getElementById('input').value;
-            ws.send(input);
-            document.getElementById('input').value = '';
-        }
+        ws.onclose = function() {
+            console.log('Disconnected from the server');
+        };
 
-                function invitePlayer(playerId) {
-            // プレイヤーIDをサーバーに送信し、招待リンクを取得
-            const inviteLink = generateInviteLink(playerId);
-            ws.send(inviteLink);
-        }
-
-        function generateInviteLink(playerId) {
-            // 招待リンクを生成するロジックを実装する
-            return 'https://example.com/invite/' + playerId;
+        function sendMessage() {
+            var messageInput = document.getElementById('message');
+            var message = messageInput.value;
+            ws.send(message);
+            messageInput.value = '';
         }
     </script>
 </body>

@@ -32,7 +32,7 @@ $people = isset($_POST['people']) ? (int)$_POST['people'] : 0;
 <head>
     <meta charset="UTF-8">
     <title>プレイヤーリスト</title>
-    <link rel="stylesheet" href="/resources/css/room_detail.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/room_detail.css">
 </head>
 
 <body>

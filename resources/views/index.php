@@ -9,7 +9,7 @@ $loggedIn = isset($_SESSION['user_id']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Story Teller</title>
-    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/index.css">
     <style>
         /* ポップアップのスタイル */
         #login-popup-wrapper {
@@ -46,13 +46,13 @@ $loggedIn = isset($_SESSION['user_id']);
 </head>
 
 <body>
-    <?php include '../views/header.php'; ?>
+    <?php include 'header.php'; ?>
     <div class="main-container">
-        <img src="../../images/sttera.png" alt="Story Teller" class="header-image">
+        <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="header-image">
         <div class="buttons">
             <button onclick="window.location.href='room_create.php'">ルーム作成</button>
             <button onclick="window.location.href='search_room.php'">ルーム検索</button>
-            <button onclick="window.location.href='frieview.php'">フレンド</button>
+            <button onclick="window.location.href='frieview.php'">ぱちんこ</button>
             <button id="index-click-btn">ルール</button>
             <div id="index-popup-wrapper">
                 <div id="index-popup-inside">
@@ -101,7 +101,7 @@ $loggedIn = isset($_SESSION['user_id']);
         <div id="login-popup-wrapper" style="display: flex;">
             <div id="login-popup-inside">
                 <div class="text">ログインしてください</div>
-                <button onclick="window.location.href='/deepimpact/resources/views/login/login.php'">ログインページへ</button>
+                <button onclick="window.location.href='/DeepImpact/resources/views/login/login.php'">ログインページへ</button>
             </div>
         </div>
     <?php endif; ?>

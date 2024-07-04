@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>設定画面</title>
-    <link rel="stylesheet" href="/resources/css/room_setting.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/room_setting.css">
 </head>
 
 <body>

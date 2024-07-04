@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>フレンド一覧画面</title>
-    <link rel="stylesheet" href="/resources/css/frieview.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/frieview.css">
 </head>
 <body>
     <?php
@@ -93,7 +93,7 @@
             <?php endif; ?>
         </div>
 
-        <button class="friend-search" onclick="location.href='/resources/views/friend.php'">フレンド検索</button>
+        <button class="friend-search" onclick="location.href='/DeepImpact/resources/views/friend.php'">フレンド検索</button>
         <button class="logout" onclick="location.href='index.php'">退出</button>
     </div>
 </body>

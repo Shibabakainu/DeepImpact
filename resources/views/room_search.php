@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>プレイヤーリスト</title>
-    <link rel="stylesheet" href="/resources/css/room_search.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/room_search.css">
 </head>
 
 <body>

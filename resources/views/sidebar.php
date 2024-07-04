@@ -1,6 +1,6 @@
 <div id="sidebar" class="sidebar" style="background-color: #fae6b1;">
     <ul>
-        <li class="btn"><a href="/resources/views/index.php" class="common-btn">ホームに戻る</a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/index.php" class="common-btn">ホームに戻る</a></li>
         <li class="btn"><button id="sidebar-click-btn" class="common-btn">ルール</button>
             <div id="sidebar-popup-wrapper">
                 <div id="sidebar-popup-inside">
@@ -45,9 +45,9 @@
                 </div>
             </div>
         </li>
-        <li class="btn"><a href="/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
-        <li class="btn"><a href="/resources/views/friend.php" class="common-btn">フレンド</a></li>
-        <li class="btn"><a href="/resources/views/logout.php" class="common-btn">ログアウト</a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
     </ul>
 </div>
 

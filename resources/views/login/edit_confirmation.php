@@ -9,7 +9,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url('/images/art2.jpg');
+            background-image: url('/DeepImpact/images/art2.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             height: 100vh;

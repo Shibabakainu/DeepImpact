@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>game</title>
-    <link rel="stylesheet" href="/deepimpact/resources/css/game.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -12,19 +12,19 @@
     <div class="container">
         <ul>
             <li>
-                <div class="card" id="card1"><img src="/deepimpact/images/card1.png"></div>
+                <div class="card" id="card1"><img src="/DeepImpact/images/card1.png"></div>
             </li>
             <li>
-                <div class="card" id="card2"><img src="/deepimpact/images/card2.png"></div>
+                <div class="card" id="card2"><img src="/DeepImpact/images/card2.png"></div>
             </li>
             <li>
-                <div class="card" id="card3"><img src="/deepimpact/images/card3.png"></div>
+                <div class="card" id="card3"><img src="/DeepImpact/images/card3.png"></div>
             </li>
             <li>
-                <div class="card" id="card4"><img src="/deepimpact/images/card4.png"></div>
+                <div class="card" id="card4"><img src="/DeepImpact/images/card4.png"></div>
             </li>
             <li>
-                <div class="card" id="card5"><img src="/deepimpact/images/card5.png"></div>
+                <div class="card" id="card5"><img src="/DeepImpact/images/card5.png"></div>
             </li>
         </ul>
     </div>
