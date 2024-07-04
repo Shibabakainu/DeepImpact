@@ -6,6 +6,18 @@
     <title>game</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/game.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .bottom-right-text {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
 </head>
 
 <body>
@@ -28,7 +40,6 @@
             </li>
         </ul>
     </div>
-
 
     <div class="menu-">
         <div id="menu-popup-wrapper">
@@ -90,62 +101,8 @@
         </div>
     </div>
 
-    <script>
-        const gameClickBtn = document.getElementById('menu-click-btn');
-        const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
-        const backBtn = document.querySelector('.back-btn');
-        const secondPopupWrapper = document.getElementById('second-popup-wrapper');
-        const secondPopupClose = document.getElementById('second-popup-close');
-        const exitBtn = document.getElementById('exit-btn');
-
-        // 新しいルールポップアップ関連の変数
-        const ruleClickBtn = document.getElementById('rule-click-btn');
-        const rulePopupWrapper = document.getElementById('rule-popup-wrapper');
-        const ruleClose = document.getElementById('rule-close');
-
-        $(document).ready(function() {
-            $("button").click(function() {
-                $(this).toggleClass("toggle");
-            });
-        });
-
-        // ハンバーガーメニューをクリックしたときポップアップを表示する/閉じる
-        gameClickBtn.addEventListener('click', () => {
-            if (gamePopupWrapper.style.display === 'flex') {
-                gamePopupWrapper.style.display = 'none';
-            } else {
-                gamePopupWrapper.style.display = 'flex';
-            }
-        });
-
-        // 「退出する」ボタンをクリックしたときに2つ目のポップアップを表示させる
-        backBtn.addEventListener('click', () => {
-            secondPopupWrapper.style.display = 'flex';
-        });
-
-        // 2つ目のポップアップの外側または「閉じる」ボタンをクリックしたときポップアップを閉じる
-        secondPopupWrapper.addEventListener('click', e => {
-            if (e.target.id === secondPopupClose.id) {
-                secondPopupWrapper.style.display = 'none';
-            }
-        });
-
-        // 「退出」ボタンをクリックしたときに指定されたURLに移動する
-        exitBtn.addEventListener('click', () => {
-            window.location.href = "index.php";
-        });
-
-        // 新しいルールポップアップ関連のイベントリスナー
-        ruleClickBtn.addEventListener('click', () => {
-            rulePopupWrapper.style.display = "block";
-        });
-
-        rulePopupWrapper.addEventListener('click', e => {
-            if (e.target.id === rulePopupWrapper.id || e.target.id === ruleClose.id) {
-                rulePopupWrapper.style.display = 'none';
-            }
-        });
-    </script>
-</body>
-
-</html>
+    <?php
+        // 表示するテキストをPHPで定義
+        $text = "ここに表示したい物語を入力";
+        echo "<div class='bottom-right-text'>{$text}</div>";
+    ?>
