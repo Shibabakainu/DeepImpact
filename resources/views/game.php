@@ -103,6 +103,6 @@
 
     <?php
         // 表示するテキストをPHPで定義
-        $text = "ここに表示したい物語を入力";
+        $text = "ここに表示したい物語を入力します";
         echo "<div class='bottom-right-text'>{$text}</div>";
     ?>
