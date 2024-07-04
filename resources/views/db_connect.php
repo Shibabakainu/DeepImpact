@@ -1,7 +1,7 @@
 <?php
-$servername = "192.168.100.70";
-$username = "thread";
-$password = "PassWord1412%";
+$servername = "localhost";
+$username = "username";
+$password = "password";
 $dbname = "storyteller";
 
 // 接続の作成
