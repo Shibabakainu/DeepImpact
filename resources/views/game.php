@@ -17,12 +17,14 @@
             border-radius: 5px;
             font-family: Arial, sans-serif;
         }
+
         #chatbox {
             position: fixed;
             top: 50px;
             right: 10px;
             white-space: nowrap;
         }
+
         .message {
             display: inline-block;
             background-color: rgba(255, 255, 255, 0.8);
@@ -38,11 +40,13 @@
             display: flex;
             align-items: center;
         }
+
         #textbox input[type="text"] {
             padding: 10px;
             border-radius: 5px 0 0 5px;
             border: 1px solid #ccc;
         }
+
         #textbox button {
             padding: 10px;
             border-radius: 0 5px 5px 0;
@@ -51,7 +55,6 @@
             color: white;
             cursor: pointer;
         }
-
     </style>
 </head>
 
@@ -141,44 +144,45 @@
     </div>
 
     <script>
-    var ws = new WebSocket('ws://localhost:8080');
-    ws.onopen = function() {
-        console.log('Connected to the server');
-    };
-    ws.onmessage = function(event) {
-        var chatbox = document.getElementById('chatbox');
-        var newMessage = document.createElement('div');
-        newMessage.classList.add('message');
-        newMessage.textContent = event.data;
-        chatbox.appendChild(newMessage);
-        animateMessage(newMessage);
-    };
-    ws.onclose = function() {
-        console.log('Disconnected from the server');
-    };
+        var ws = new WebSocket('ws://localhost:8080');
+        ws.onopen = function() {
+            console.log('Connected to the server');
+        };
+        ws.onmessage = function(event) {
+            var chatbox = document.getElementById('chatbox');
+            var newMessage = document.createElement('div');
+            newMessage.classList.add('message');
+            newMessage.textContent = event.data;
+            chatbox.appendChild(newMessage);
+            animateMessage(newMessage);
+        };
+        ws.onclose = function() {
+            console.log('Disconnected from the server');
+        };
 
-    function sendMessage() {
-        var messageInput = document.getElementById('message');
-        var message = messageInput.value;
-        ws.send(message);
-        messageInput.value = '';
-    };
+        function sendMessage() {
+            var messageInput = document.getElementById('message');
+            var message = messageInput.value;
+            ws.send(message);
+            messageInput.value = '';
+        };
 
-    function animateMessage(message) {
-        var posX = window.innerWidth;
-        function step() {
-            posX -= 2;
-            if (posX < -message.offsetWidth) {
-                message.remove();
-            } else {
-                message.style.transform = 'translateX(' + posX + 'px)';
-                requestAnimationFrame(step);
+        function animateMessage(message) {
+            var posX = window.innerWidth;
+
+            function step() {
+                posX -= 2;
+                if (posX < -message.offsetWidth) {
+                    message.remove();
+                } else {
+                    message.style.transform = 'translateX(' + posX + 'px)';
+                    requestAnimationFrame(step);
+                }
             }
+            requestAnimationFrame(step);
         }
-        requestAnimationFrame(step);
-    }
 
-        
+
         const gameClickBtn = document.getElementById('menu-click-btn');
         const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
         const backBtn = document.querySelector('.back-btn');
@@ -233,15 +237,14 @@
                 rulePopupWrapper.style.display = 'none';
             }
         });
-
     </script>
 </body>
 
 <?php
-        // 表示するテキストをPHPで定義
-        $text = "これは右下に表示されるテキストです";
-        echo "<div class='bottom-right-text'>{$text}</div>";
-    ?>
+// 表示するテキストをPHPで定義
+$text = "これは右下に表示されるテキストです";
+echo "<div class='bottom-right-text'>{$text}</div>";
+?>
 
 
 </html>
