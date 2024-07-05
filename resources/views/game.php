@@ -17,7 +17,14 @@
             border-radius: 5px;
             font-family: Arial, sans-serif;
         }
-
+        @keyframes slide-in {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
         #chatbox {
             position: fixed;
             top: 50px;
@@ -31,6 +38,7 @@
             padding: 5px;
             margin: 5px;
             border-radius: 3px;
+            animation: slide-in 10s linear forwards;
         }
 
         #textbox {
@@ -167,20 +175,19 @@
             messageInput.value = '';
         };
 
-        function animateMessage(message) {
-            var posX = window.innerWidth;
-
-            function step() {
-                posX -= 2;
-                if (posX < -message.offsetWidth) {
-                    message.remove();
-                } else {
-                    message.style.transform = 'translateX(' + posX + 'px)';
-                    requestAnimationFrame(step);
-                }
+    function animateMessage(message) {
+        var posX = window.innerWidth;
+        function step() {
+            posX -= 8;
+            if (posX < -message.offsetWidth) {
+                message.remove();
+            } else {
+                message.style.transform = 'translateX(' + posX + 'px)';
+                requestAnimationFrame(step);
             }
-            requestAnimationFrame(step);
         }
+        requestAnimationFrame(step);
+    }
 
 
         const gameClickBtn = document.getElementById('menu-click-btn');
