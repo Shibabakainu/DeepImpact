@@ -9,7 +9,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url('/deepimpact/images/art2.jpg');
+            background-image: url('/DeepImpact/images/art2.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             height: 100vh;
@@ -54,6 +54,9 @@
 <body>
     <div class="container">
     <?php
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
     include '../db_connect.php'; // Include the database connection script
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -92,26 +95,23 @@
                 move_uploaded_file($_FILES["profile_image"]["tmp_name"], $target_file);
 
                 // Insert user into the database
-                $insertSql = "INSERT INTO users (email, password, profile_image, name)
+                $insertSql = "INSERT INTO users (email, password, name,profile_image)
                             VALUES (?, ?, ?, ?)";
                 $stmt = $conn->prepare($insertSql);
-                $stmt->bind_param("ssss", $email, $password, $profile_image, $name);
-
+                $stmt->bind_param("ssss", $email, $password,$name,$profile_image);
                 if ($stmt->execute()) {        
                     // Get the last inserted user ID
                     $user_id = $stmt->insert_id;
                     // Redirect to the profile page with user ID
-                    header("Location: ../login/login.php?id=$user_id");
+                    header("Location: /DeepImpact/resources/login/login.php?id=$user_id");
                     exit;
                 } else {
                     echo "Error: " . $stmt->error;
                 }
             }
         }
-
         $stmt->close();
     }
-
     $conn->close();
     ?>
     </div>

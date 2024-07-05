@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>フレンド一覧画面</title>
-    <link rel="stylesheet" href="/deepimpact/resources/css/frieview.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/frieview.css">
 </head>
 <body>
     <?php
@@ -68,7 +68,9 @@
         <div class="friend-list">
             <?php if (!empty($friends)): ?>
                 <?php foreach ($friends as $friend): ?>
-                    <div class="friend-item"><?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?></div>
+                    <div class="friend-item" onclick="location.href='/deepimpact/resources/views/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
+                        <?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="no-friends">フレンドがいません。</div>

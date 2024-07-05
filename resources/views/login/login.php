@@ -8,17 +8,17 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
-    <link rel="stylesheet" href="/deepimpact/resources/css/login.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/login.css">
 </head>
 
 <body>
     <div class="header-container">
         <header>
-            <img src="/deepimpact/images/sttera.png" alt="Story Teller" class="title-image">
+            <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="title-image">
         </header>
     </div>
     <div class="container">
-        <div class="title"><img src="/deepimpact/images/font2.png"></div>
+        <div class="title"><img src="/DeepImpact/images/font2.png"></div>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <input type="text" name="name" placeholder="username" required>
             <input type="password" name="password" placeholder="password" required>
@@ -64,6 +64,7 @@ session_start();
 
             $stmt->close();
         }
+        // 接続を閉じる
         $conn->close();
         ?>
     </div>

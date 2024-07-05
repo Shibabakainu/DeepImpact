@@ -4,31 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <title>game</title>
-    <link rel="stylesheet" href="/deepimpact/resources/css/game.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .bottom-right-text {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
         <ul>
             <li>
-                <div class="card" id="card1"><img src="/deepimpact/images/card1.png"></div>
+                <div class="card" id="card1"><img src="/DeepImpact/images/card1.png"></div>
             </li>
             <li>
-                <div class="card" id="card2"><img src="/deepimpact/images/card2.png"></div>
+                <div class="card" id="card2"><img src="/DeepImpact/images/card2.png"></div>
             </li>
             <li>
-                <div class="card" id="card3"><img src="/deepimpact/images/card3.png"></div>
+                <div class="card" id="card3"><img src="/DeepImpact/images/card3.png"></div>
             </li>
             <li>
-                <div class="card" id="card4"><img src="/deepimpact/images/card4.png"></div>
+                <div class="card" id="card4"><img src="/DeepImpact/images/card4.png"></div>
             </li>
             <li>
-                <div class="card" id="card5"><img src="/deepimpact/images/card5.png"></div>
+                <div class="card" id="card5"><img src="/DeepImpact/images/card5.png"></div>
             </li>
         </ul>
     </div>
-
 
     <div class="menu-">
         <div id="menu-popup-wrapper">
@@ -145,7 +156,15 @@
                 rulePopupWrapper.style.display = 'none';
             }
         });
+
     </script>
 </body>
+
+<?php
+        // 表示するテキストをPHPで定義
+        $text = "これは右下に表示されるテキストです";
+        echo "<div class='bottom-right-text'>{$text}</div>";
+    ?>
+
 
 </html>
