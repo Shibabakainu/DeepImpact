@@ -17,6 +17,14 @@
             border-radius: 5px;
             font-family: Arial, sans-serif;
         }
+        @keyframes slide-in {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
         #chatbox {
             position: fixed;
             top: 50px;
@@ -29,6 +37,7 @@
             padding: 5px;
             margin: 5px;
             border-radius: 3px;
+            animation: slide-in 10s linear forwards;
         }
 
         #textbox {
@@ -141,7 +150,7 @@
     </div>
 
     <script>
-    var ws = new WebSocket('ws://localhost:8080');
+    var ws = new WebSocket('ws://192.168.1.100:8080');
     ws.onopen = function() {
         console.log('Connected to the server');
     };
@@ -167,7 +176,7 @@
     function animateMessage(message) {
         var posX = window.innerWidth;
         function step() {
-            posX -= 2;
+            posX -= 8;
             if (posX < -message.offsetWidth) {
                 message.remove();
             } else {
