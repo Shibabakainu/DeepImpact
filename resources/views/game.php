@@ -17,6 +17,41 @@
             border-radius: 5px;
             font-family: Arial, sans-serif;
         }
+        #chatbox {
+            position: fixed;
+            top: 50px;
+            right: 10px;
+            white-space: nowrap;
+        }
+        .message {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            margin: 5px;
+            border-radius: 3px;
+        }
+
+        #textbox {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        #textbox input[type="text"] {
+            padding: 10px;
+            border-radius: 5px 0 0 5px;
+            border: 1px solid #ccc;
+        }
+        #textbox button {
+            padding: 10px;
+            border-radius: 0 5px 5px 0;
+            border: 1px solid #ccc;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -40,7 +75,11 @@
             </li>
         </ul>
     </div>
-
+    <div id="textbox">
+        <div id="chatbox"></div>
+        <input type="text" id="message" placeholder="Enter message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
     <div class="menu-">
         <div id="menu-popup-wrapper">
             <div class="button_1">
@@ -102,6 +141,44 @@
     </div>
 
     <script>
+    var ws = new WebSocket('ws://localhost:8080');
+    ws.onopen = function() {
+        console.log('Connected to the server');
+    };
+    ws.onmessage = function(event) {
+        var chatbox = document.getElementById('chatbox');
+        var newMessage = document.createElement('div');
+        newMessage.classList.add('message');
+        newMessage.textContent = event.data;
+        chatbox.appendChild(newMessage);
+        animateMessage(newMessage);
+    };
+    ws.onclose = function() {
+        console.log('Disconnected from the server');
+    };
+
+    function sendMessage() {
+        var messageInput = document.getElementById('message');
+        var message = messageInput.value;
+        ws.send(message);
+        messageInput.value = '';
+    };
+
+    function animateMessage(message) {
+        var posX = window.innerWidth;
+        function step() {
+            posX -= 2;
+            if (posX < -message.offsetWidth) {
+                message.remove();
+            } else {
+                message.style.transform = 'translateX(' + posX + 'px)';
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
+    }
+
+        
         const gameClickBtn = document.getElementById('menu-click-btn');
         const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
         const backBtn = document.querySelector('.back-btn');
