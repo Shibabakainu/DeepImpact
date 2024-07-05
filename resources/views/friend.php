@@ -9,7 +9,7 @@ include 'db_connect.php'; // Include the database connection
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>フレンド検索</title>
-    <link rel="stylesheet" href="/deepimpact/resources/css/friend_search.css">
+    <link rel="stylesheet" href="/deepimpact/resources/css/friend.css">
     <style>
         .popup {
             position: fixed;
@@ -100,7 +100,7 @@ include 'db_connect.php'; // Include the database connection
         $conn->close();
         ?>
         <div class="container2">
-            <button class="return" onclick="location.href='friend.php'">戻る</button>
+            <button class="return" onclick="location.href='frieview.php'">戻る</button>
         </div>
     </div>
     <div id="popup" class="popup"></div>
