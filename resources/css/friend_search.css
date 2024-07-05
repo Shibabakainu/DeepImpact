@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+body {
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, sans-serif;
+    background-image: url(../../images/art4.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+.container {
+    color: #fff;
+    width: 60%;
+    margin: 300px auto;
+    padding: 20px; /* 上部余白を追加 */    
+    border: 1px solid #ccc;
+    border-radius: 5px;   
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.container .friend-info {
+    text-align: center;
+}
+.container .friend-info img {
+    max-width: 200px;
+    max-height: 200px;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.add_friend_button {
+    width: 120px; /* ボタンの幅を設定 */
+    height: 30px; /* ボタンの高さを設定 */
+    border-radius: 5px; /* ボタンの角を丸くする */
+    font-size: 15px; /* ボタンの文字サイズを設定 */
+    margin: 10px; /* ボタンの周囲に余白を設定 */
+    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
+    border: none; /* ボタンの枠線を削除 */
+    background-color:limegreen; /* ボタンの背景色を設定 */
+    transition: 0.5s ease; /* ホバー時のトランジション効果を設定 */
+}
+.add_friend_button:hover {
+    background-color:lightgreen; /* ホバー時の背景色を設定 */
+}
+
+.container2 {
+    text-align: center;
+}
+
+.return {
+    width: 120px; /* ボタンの幅を設定 */
+    height: 30px; /* ボタンの高さを設定 */
+    border-radius: 5px; /* ボタンの角を丸くする */
+    font-size: 15px; /* ボタンの文字サイズを設定 */
+    margin: 10px; /* ボタンの周囲に余白を設定 */
+    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
+    border: none; /* ボタンの枠線を削除 */
+    background-color:crimson; /* ボタンの背景色を設定 */
+    transition: 0.5s ease; /* ホバー時のトランジション効果を設定 */
+}
+
+.return:hover {
+    background-color: #e77a34; /* ホバー時の背景色を設定 */
+}
