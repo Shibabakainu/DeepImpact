@@ -10,18 +10,21 @@ body {
 }
 
 .container {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding-top: 180px;
+    color: #fff;
+    width: 80%;
+    margin: 50px auto;
+    padding: 20px; /* 上部余白を追加 */    
+    border: 1px solid #ccc;
+    border-radius: 5px;   
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .friend-search {    
     width: 80%;
-    padding: 50px;
-    border: 1px solid #ccc;
+    margin: 0 auto;
+    padding: 20px;
     border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
     text-align: center;
     color: #fff;   
 }
@@ -38,7 +41,7 @@ body {
 
 .search-box {
     display: flex;
-    flex-direction: row; /* アイテムを水平方向に配置 */
+    flex-direction: column; /* アイテムを水平方向に配置 */
     align-items: center; /* アイテムを垂直方向に中央揃え */
 }
 
@@ -75,4 +78,63 @@ body {
 
 .notice {
     padding-top: 200px;
+}
+.container .friend-info {
+    margin: 20px auto;
+    text-align: center;
+    width: 80%;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    color: #fff;   
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.container .friend-info img {
+    margin-left: 100px;
+    max-width: 100px;
+    max-height: 100px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+#friend-request-form {
+    margin-right: 100px;
+}
+.add_friend_button {
+    width: 120px; /* ボタンの幅を設定 */
+    height: 30px; /* ボタンの高さを設定 */
+    border-radius: 5px; /* ボタンの角を丸くする */
+    font-size: 15px; /* ボタンの文字サイズを設定 */
+    margin: 10px; /* ボタンの周囲に余白を設定 */
+    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
+    border: none; /* ボタンの枠線を削除 */
+    background-color:limegreen; /* ボタンの背景色を設定 */
+    transition: 0.5s ease; /* ホバー時のトランジション効果を設定 */
+}
+.add_friend_button:hover {
+    background-color:lightgreen; /* ホバー時の背景色を設定 */
+}
+
+.container2 {
+    text-align: center;
+}
+
+.return {
+    width: 120px; /* ボタンの幅を設定 */
+    height: 30px; /* ボタンの高さを設定 */
+    border-radius: 5px; /* ボタンの角を丸くする */
+    font-size: 15px; /* ボタンの文字サイズを設定 */
+    margin: 10px; /* ボタンの周囲に余白を設定 */
+    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
+    border: none; /* ボタンの枠線を削除 */
+    background-color:crimson; /* ボタンの背景色を設定 */
+    transition: 0.5s ease; /* ホバー時のトランジション効果を設定 */
+}
+
+.return:hover {
+    background-color: #e77a34; /* ホバー時の背景色を設定 */
 }
