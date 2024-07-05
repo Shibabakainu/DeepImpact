@@ -68,27 +68,29 @@ include 'db_connect.php'; // Include the database connection
             $friend_name = $_POST['friend_name'];
 
             // Search for the friend in the database
-            $sql = "SELECT * FROM users WHERE name = ?";
+            $sql = "SELECT * FROM users WHERE name LIKE ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $friend_name);
+            $search_term = "%" . $friend_name . "%";
+            $stmt->bind_param("s", $search_term);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 // Display the search results
-                $friend = $result->fetch_assoc();
-                echo "<div class='friend-info'>";
-                if (!empty($friend['profile_image'])) {
-                    echo "<img src='/deepimpact/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
-                } else {
-                    echo "<img src='/deepimpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
+                while ($friend = $result->fetch_assoc()) {
+                    echo "<div class='friend-info'>";
+                    if (!empty($friend['profile_image'])) {
+                        echo "<img src='/deepimpact/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
+                    } else {
+                        echo "<img src='/deepimpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
+                    }
+                    echo "<p>" . htmlspecialchars($friend['name']) . "</p>";
+                    echo "<form id='friend-request-form' data-friend-id='" . htmlspecialchars($friend['id']) . "'>";
+                    echo "<input type='hidden' name='friend_id' value='" . htmlspecialchars($friend['id']) . "'>";
+                    echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
+                    echo "</form>";
+                    echo "</div>";
                 }
-                echo "<p>" . htmlspecialchars($friend['name']) . "</p>";
-                echo "<form id='friend-request-form'>";
-                echo "<input type='hidden' name='friend_name' value='" . htmlspecialchars($friend['name']) . "'>";
-                echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
-                echo "</form>";
-                echo "</div>";
             } else {
                 // Display a message if no results are found
                 echo "<p>指定された名前のユーザーは見つかりませんでした。</p>";

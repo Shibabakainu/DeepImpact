@@ -93,12 +93,16 @@ body {
     justify-content: space-between;
 }
 .container .friend-info img {
+    margin-left: 100px;
     max-width: 100px;
     max-height: 100px;
     width: 100px;
     height: 100px;
     object-fit: cover;
     border-radius: 50%;
+}
+#friend-request-form {
+    margin-right: 100px;
 }
 .add_friend_button {
     width: 120px; /* ボタンの幅を設定 */
