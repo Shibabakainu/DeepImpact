@@ -104,3 +104,64 @@ main {
 .back:hover {
     background-color: #e77a34;
 }
+
+
+/*退出ポップアップ*/
+/* 2つ目のポップアップ */
+#back-popup-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 996;
+    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    /* 背景をぼかす */
+}
+
+.back_button {
+    flex-direction: column;
+    gap: 20px;
+    /* ボタン間の間隔を広げる */
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    /* ボタンコンテナの背景色 */
+    cursor: pointer;
+}
+
+.back_button .back-popup-btn {
+    position: relative;
+    left: -10px;
+    font-size: 1.8em;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.back_button .back-other-btn {
+    position: relative;
+    right: -30px;
+    width: 150px;
+    /* ボタンを30%大きく */
+    font-size: 1.8em;
+    background-color: rgb(250, 45, 45);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* 警告テキスト */
+.back-warning-text {
+    position: relative;
+    top: -50px;
+    font-weight: bold;
+    color: #000;
+    -webkit-text-stroke: 1px #000000;
+    text-shadow: 1px #000000;
+    font-size: 2em;
+    color: rgb(255, 0, 0);
+    margin-bottom: 10px;
+}
