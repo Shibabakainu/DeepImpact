@@ -12,9 +12,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_name'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_id'])) {
     $user_id = $_SESSION['user_id'];
-    $friend_name = $_POST['friend_name'];
+    $friend_id = $_POST['friend_id'];
 
     // ユーザー名を取得
     $sql = "SELECT name FROM users WHERE id = ?";
@@ -24,6 +24,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_name'])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
     $user_name = $user['name'];
+    $stmt->close();
+
+    // フレンド名を取得
+    $sql = "SELECT name FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $friend_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $friend = $result->fetch_assoc();
+    $friend_name = $friend['name'];
     $stmt->close();
 
     // Check if the friend request already exists
@@ -63,4 +73,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['friend_name'])) {
 }
 
 echo json_encode($response);
-?>

@@ -85,7 +85,7 @@ include 'db_connect.php'; // Include the database connection
                         echo "<img src='/deepimpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
                     }
                     echo "<p>" . htmlspecialchars($friend['name']) . "</p>";
-                    echo "<form id='friend-request-form' data-friend-id='" . htmlspecialchars($friend['id']) . "'>";
+                    echo "<form class='friend-request-form'>";
                     echo "<input type='hidden' name='friend_id' value='" . htmlspecialchars($friend['id']) . "'>";
                     echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
                     echo "</form>";
@@ -109,7 +109,7 @@ include 'db_connect.php'; // Include the database connection
 
     <script>
         document.addEventListener('submit', function(event) {
-            if (event.target && event.target.id === 'friend-request-form') {
+            if (event.target && event.target.classList.contains('friend-request-form')) {
                 event.preventDefault();
 
                 const formData = new FormData(event.target);
