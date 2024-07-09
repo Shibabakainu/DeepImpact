@@ -8,35 +8,6 @@ $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 // URLのクエリパラメータからcurrent_playersを取得
 $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 1; // 設定されていない場合は1をデフォルトとする
 
-if ($user_id) {
-    // room_playersテーブルからroom_idを取得
-    $stmt = $conn->prepare("SELECT room_id FROM room_players WHERE user_id = ? LIMIT 1");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $stmt->bind_result($room_id);
-    $stmt->fetch();
-    $stmt->close();
-
-    if ($room_id) {
-        // roomsテーブルからroom_nameを取得
-        $stmt = $conn->prepare("SELECT room_name FROM rooms WHERE room_id = ?");
-        $stmt->bind_param("i", $room_id);
-        $stmt->execute();
-        $stmt->bind_result($room_name);
-        $stmt->fetch();
-        $stmt->close();
-
-        // usersテーブルからユーザー名を取得
-        $stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $stmt->bind_result($user_name);
-        $stmt->fetch();
-        $stmt->close();
-
-        echo "<div class='top-left-text'>ルーム名: " . htmlspecialchars($room_name, ENT_QUOTES, 'UTF-8') . "<br> " . htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8') . "</div>";
-    }
-}
 ?>
 
 
