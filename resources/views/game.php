@@ -1,3 +1,46 @@
+<?php
+session_start();
+include 'db_connect.php';
+
+// セッションからユーザーIDを取得
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+// URLのクエリパラメータからcurrent_playersを取得
+$current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 1; // 設定されていない場合は1をデフォルトとする
+
+if ($user_id) {
+    // room_playersテーブルからroom_idを取得
+    $stmt = $conn->prepare("SELECT room_id FROM room_players WHERE user_id = ? LIMIT 1");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($room_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($room_id) {
+        // roomsテーブルからroom_nameを取得
+        $stmt = $conn->prepare("SELECT room_name FROM rooms WHERE room_id = ?");
+        $stmt->bind_param("i", $room_id);
+        $stmt->execute();
+        $stmt->bind_result($room_name);
+        $stmt->fetch();
+        $stmt->close();
+
+        // usersテーブルからユーザー名を取得
+        $stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $stmt->bind_result($user_name);
+        $stmt->fetch();
+        $stmt->close();
+
+        echo "<div class='top-left-text'>ルーム名: " . htmlspecialchars($room_name, ENT_QUOTES, 'UTF-8') . "<br> " . htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8') . "</div>";
+    }
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -17,14 +60,28 @@
             border-radius: 5px;
             font-family: Arial, sans-serif;
         }
+
+        .top-left-text {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
         @keyframes slide-in {
             from {
                 transform: translateX(100%);
             }
+
             to {
                 transform: translateX(-100%);
             }
         }
+
         #chatbox {
             position: fixed;
             top: 50px;
@@ -67,6 +124,7 @@
 </head>
 
 <body>
+
     <div class="container">
         <ul>
             <li>
@@ -175,19 +233,20 @@
             messageInput.value = '';
         };
 
-    function animateMessage(message) {
-        var posX = window.innerWidth;
-        function step() {
-            posX -= 8;
-            if (posX < -message.offsetWidth) {
-                message.remove();
-            } else {
-                message.style.transform = 'translateX(' + posX + 'px)';
-                requestAnimationFrame(step);
+        function animateMessage(message) {
+            var posX = window.innerWidth;
+
+            function step() {
+                posX -= 8;
+                if (posX < -message.offsetWidth) {
+                    message.remove();
+                } else {
+                    message.style.transform = 'translateX(' + posX + 'px)';
+                    requestAnimationFrame(step);
+                }
             }
+            requestAnimationFrame(step);
         }
-        requestAnimationFrame(step);
-    }
 
 
         const gameClickBtn = document.getElementById('menu-click-btn');

@@ -1,7 +1,3 @@
-//room_detail.php
-
-
-
 <?php
 session_start();
 include 'db_connect.php';
@@ -80,7 +76,9 @@ if ($stmt_current_players) {
             <div class="back_button">
                 <p class="back-text">本当に退出しますか？</p>
                 <button class="back-popup-btn" id="back-popup-close">キャンセル</button>
-                <button class="back-other-btn" id="back-exit-btn">退出</button>
+                <form action="delete_room.php" method="POST">
+                    <button type="submit" class="back-other-btn" id="back-exit-btn">退出</button>
+                </form>
             </div>
         </div>
 

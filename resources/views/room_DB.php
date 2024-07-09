@@ -1,7 +1,3 @@
-//room_DB.php
-
-
-
 <?php
 session_start();
 include 'db_connect.php';
@@ -44,6 +40,7 @@ $stmt->bind_param("ssi", $room_name, $host_user_name, $max_players);
 
 if ($stmt->execute()) {
     $room_id = $stmt->insert_id;
+    $_SESSION['room_id'] = $room_id; // room_idをセッションに保存
 
     // 合言葉をハッシュ化して挿入
     $password_hash = password_hash($setting, PASSWORD_DEFAULT);
@@ -57,30 +54,28 @@ if ($stmt->execute()) {
     $stmt_password->bind_param("is", $room_id, $password_hash);
 
     if ($stmt_password->execute()) {
-        // ルーム詳細ページにリダイレクト
-        header("Location: room_detail.php?room=$room_name&setting=$setting&people=$max_players");
-        exit;
+        // room_playersテーブルに挿入
+        $sql_room_players = "INSERT INTO room_players (room_id, user_id) VALUES (?, ?)";
+        $stmt_room_players = $conn->prepare($sql_room_players);
+        if (!$stmt_room_players) {
+            die("Error preparing room_players statement: " . $conn->error);
+        }
+        $stmt_room_players->bind_param("ii", $room_id, $user_id);
+
+        if ($stmt_room_players->execute()) {
+            // ルーム詳細ページにリダイレクト
+            header("Location: room_detail.php?room=$room_name&setting=$setting&people=$max_players");
+            exit;
+        } else {
+            echo "エラー: " . $stmt_room_players->error;
+        }
+
+        $stmt_room_players->close();
     } else {
         echo "エラー: " . $stmt_password->error;
     }
 
     $stmt_password->close();
-
-    // room_playersテーブルに挿入
-    $sql_room_players = "INSERT INTO room_players (room_id, user_id) VALUES (?, ?)";
-    $stmt_room_players = $conn->prepare($sql_room_players);
-    if (!$stmt_room_players) {
-        die("Error preparing room_players statement: " . $conn->error);
-    }
-    $stmt_room_players->bind_param("ii", $room_id, $user_id);
-
-    if ($stmt_room_players->execute()) {
-        // Success: User participation recorded
-    } else {
-        echo "エラー: " . $stmt_room_players->error;
-    }
-
-    $stmt_room_players->close();
 } else {
     echo "エラー: " . $stmt->error;
 }
