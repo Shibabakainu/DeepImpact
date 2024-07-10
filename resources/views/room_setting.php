@@ -17,12 +17,16 @@ include 'db_connect.php';
     <div class="container">
         <form action="room_DB.php" method="POST">
             <div class="form-group">
-                <div class="form-group">
-                    <label for="room">ルーム名</label>
-                    <input type="text" id="room" name="room" required>
-                </div>
+                <label for="room">ルーム名</label>
+                <input type="text" id="room" name="room" required>
+            </div>
+            <div class="form-group">
                 <label for="setting">合言葉設定</label>
                 <input type="text" id="setting" name="setting" required>
+            </div>
+            <div class="form-group">
+                <label for="people">最大プレイヤー数</label>
+                <input type="number" id="people" name="people" value="6" min="1" max="6" required>
             </div>
             <button type="submit" name="create_room">作成</button>
             <button type="button" class="create" onclick="location.href='room_create.php'">戻る</button>
@@ -30,18 +34,27 @@ include 'db_connect.php';
     </div>
 
     <?php
+    // Closing PHP tag moved to the end for clean HTML separation
     if (isset($_POST['create_room'])) {
         $room_name = $_POST['room'];
         $setting = $_POST['setting'];
         $max_players = 6; // デフォルトで6人
 
+        // Getting the host user's ID instead of name
+        $host_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+        // Check if host user ID is retrieved
+        if (!$host_user_id) {
+            die('エラー: ユーザーIDが取得できませんでした。');
+        }
+
         // roomsテーブルに挿入
-        $sql = "INSERT INTO rooms (room_name, host_user_name, max_players) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO rooms (room_name, host_id, max_players) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             die("ステートメントの準備エラー: " . $conn->error);
         }
-        $stmt->bind_param("ssi", $room_name, $host_user_name, $max_players);
+        $stmt->bind_param("sii", $room_name, $host_user_id, $max_players);
 
         if ($stmt->execute()) {
             $room_id = $stmt->insert_id;
@@ -62,10 +75,10 @@ include 'db_connect.php';
             } else {
                 echo "エラー: " . $stmt_password->error;
             }
+            $stmt_password->close();
         } else {
             echo "エラー: " . $stmt->error;
         }
-
         $stmt->close();
     }
     $conn->close();

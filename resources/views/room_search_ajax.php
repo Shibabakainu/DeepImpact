@@ -10,7 +10,7 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo '<div class="room">';
         echo '<div class="room-name">' . $row["room_name"] . '</div>';
-        echo '<div class="room-status">プレイヤー: ' . $row["current_players"] . '/6</div>';
+        echo '<div class="room-status">プレイヤー: ' . $row["current_players"] . '/' . $row["max_players"] . '</div>';
         echo '<div class="room-progress ' . strtolower($row["status"]) . '">' . $row["status"] . '</div>';
         echo '</div>';
     }

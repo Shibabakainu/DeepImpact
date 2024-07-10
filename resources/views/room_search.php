@@ -11,7 +11,7 @@
     <?php include 'header.php'; ?>
     <main>
         <div class="container">
-            <label class="search_label" for="movie">ルーム名で検索</label>
+            <label class="search_label" for="search">ルーム名で検索</label>
             <input type="search" id="search" name="q" oninput="searchRooms()" />
             <div class="room-list" id="room-list">
                 <?php
@@ -23,10 +23,11 @@
                 if ($result->num_rows > 0) {
                     // 各行のデータを出力
                     while ($row = $result->fetch_assoc()) {
-                        echo '<div class="room">';
+                        echo '<div class="room" data-room-name="' . $row["room_name"] . '">';
                         echo '<div class="room-name">' . $row["room_name"] . '</div>';
                         echo '<div class="room-status">プレイヤー: ' . $row["current_players"] . '/6</div>';
                         echo '<div class="room-progress ' . strtolower($row["status"]) . '">' . $row["status"] . '</div>';
+                        echo '<button class="join-room">参加</button>';
                         echo '</div>';
                     }
                 } else {
@@ -53,6 +54,37 @@
             };
             xhr.send();
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const joinButtons = document.querySelectorAll('.join-room');
+            
+            joinButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const roomDiv = this.closest('.room');
+                    const roomName = roomDiv.getAttribute('data-room-name');
+                    
+                    fetch('join_room.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `room_name=${encodeURIComponent(roomName)}`
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        if (data.includes('success')) {
+                            // Redirect to the room detail page
+                            window.location.href = `room_detail.php?room=${encodeURIComponent(roomName)}`;
+                        } else {
+                            alert('ルームに参加できません: ' + data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
     </script>
 </body>
 

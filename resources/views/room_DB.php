@@ -6,37 +6,37 @@ include 'db_connect.php';
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 // データベースからユーザー名を取得
-$host_user_name = null;
+$host_id = null;
 if ($user_id) {
-    $stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id FROM users WHERE id = ?");
     if ($stmt) {
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
-        $stmt->bind_result($name);
+        $stmt->bind_result($id);
         if ($stmt->fetch()) {
-            $host_user_name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+            $host_id = $id;
         }
         $stmt->close();
     }
 }
 
-// ユーザー名が取得できない場合はエラー
-if (!$host_user_name) {
-    die('エラー: ユーザー名が取得できませんでした。');
+// ユーザーIDが取得できない場合はエラー
+if (!$host_id) {
+    die('エラー: ユーザーIDが取得できませんでした。');
 }
 
 // フォームデータを取得
 $room_name = isset($_POST['room']) ? htmlspecialchars($_POST['room'], ENT_QUOTES, 'UTF-8') : '';
 $setting = isset($_POST['setting']) ? htmlspecialchars($_POST['setting'], ENT_QUOTES, 'UTF-8') : '';
-$max_players = isset($_POST['people']) ? (int)$_POST['people'] : 0;
+$max_players = isset($_POST['people']) ? (int)$_POST['people'] : 6; // Default to 6 if not provided
 
 // roomsテーブルに挿入
-$sql = "INSERT INTO rooms (room_name, host_user_name, max_players) VALUES (?, ?, ?)";
+$sql = "INSERT INTO rooms (room_name, host_id, current_players, max_players) VALUES (?, ?, 1, ?)";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     die("Error preparing statement: " . $conn->error);
 }
-$stmt->bind_param("ssi", $room_name, $host_user_name, $max_players);
+$stmt->bind_param("sii", $room_name, $host_id, $max_players); // Use $host_id as host_id
 
 if ($stmt->execute()) {
     $room_id = $stmt->insert_id;
@@ -64,7 +64,7 @@ if ($stmt->execute()) {
 
         if ($stmt_room_players->execute()) {
             // ルーム詳細ページにリダイレクト
-            header("Location: room_detail.php?room=$room_name&setting=$setting&people=$max_players");
+            header("Location: room_detail.php?room=$room_name&setting=$setting");
             exit;
         } else {
             echo "エラー: " . $stmt_room_players->error;
@@ -82,3 +82,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+?>

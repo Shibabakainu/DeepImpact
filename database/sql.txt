@@ -25,12 +25,12 @@ DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
     room_id         INT             AUTO_INCREMENT PRIMARY KEY,
     room_name       VARCHAR(100)    NOT NULL,
-    host_user_name  VARCHAR(100)    NOT NULL,
+    host_id         INT             NOT NULL,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     max_players     INT             DEFAULT 6,
     status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
-    current_players INT             DEFAULT 1,  -- 新しいカラムの追加
-    FOREIGN KEY (host_user_name) REFERENCES users(name) ON DELETE CASCADE
+    current_players INT             DEFAULT 1,
+    FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Create the room_passwords table

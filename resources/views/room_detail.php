@@ -24,17 +24,32 @@ if ($user_id) {
 $setting = isset($_GET['setting']) ? htmlspecialchars($_GET['setting'], ENT_QUOTES, 'UTF-8') : '';
 $room = isset($_GET['room']) ? htmlspecialchars($_GET['room'], ENT_QUOTES, 'UTF-8') : '';
 
-// 現在のプレイヤー数を取得
-$sql_current_players = "SELECT current_players FROM rooms WHERE room_name = ?";
-$stmt_current_players = $conn->prepare($sql_current_players);
-if ($stmt_current_players) {
-    $stmt_current_players->bind_param("s", $room);
-    $stmt_current_players->execute();
-    $stmt_current_players->bind_result($people);
-    $stmt_current_players->fetch();
-    $stmt_current_players->close();
+// ルーム情報を取得
+$sql_room_info = "SELECT room_id, host_id, current_players FROM rooms WHERE room_name = ?";
+$stmt_room_info = $conn->prepare($sql_room_info);
+if ($stmt_room_info) {
+    $stmt_room_info->bind_param("s", $room);
+    $stmt_room_info->execute();
+    $stmt_room_info->bind_result($room_id, $host_id, $people);
+    $stmt_room_info->fetch();
+    $stmt_room_info->close();
 } else {
-    echo "現在のプレイヤー数の取得エラー: " . $conn->error;
+    echo "ルーム情報の取得エラー: " . $conn->error;
+}
+
+// ホスト名を取得
+$host_name = 'ホスト';
+if ($host_id) {
+    $stmt_host = $conn->prepare("SELECT name FROM users WHERE id = ?");
+    if ($stmt_host) {
+        $stmt_host->bind_param("i", $host_id);
+        $stmt_host->execute();
+        $stmt_host->bind_result($host_name_result);
+        if ($stmt_host->fetch()) {
+            $host_name = htmlspecialchars($host_name_result, ENT_QUOTES, 'UTF-8');
+        }
+        $stmt_host->close();
+    }
 }
 ?>
 
@@ -54,15 +69,28 @@ if ($stmt_current_players) {
             <h2>ルーム名: <?php echo $room; ?></h2>
             <p>合言葉: <?php echo $setting; ?></p>
             <ul class="player-list">
-                <li class="host"><span class="host-label">ホスト</span> <?php echo $loggedInUser; ?></li>
+                <li class="host"><span class="host-label">ホスト</span> <?php echo $host_name; ?></li>
                 <?php
                 // プレイヤーリストを動的に生成
-                for ($i = 2; $i <= 6; $i++) {
-                    if ($i <= $people) {
-                        echo "<li class='player'>プレイヤー$i</li>";
-                    } else {
-                        echo "<li class='player empty'></li>";
+                $sql_players = "SELECT u.name FROM users u JOIN room_players rp ON u.id = rp.user_id WHERE rp.room_id = ? AND u.id != ? ORDER BY rp.joined_at";
+                $stmt_players = $conn->prepare($sql_players);
+                if ($stmt_players) {
+                    $stmt_players->bind_param("ii", $room_id, $host_id);
+                    $stmt_players->execute();
+                    $stmt_players->bind_result($player_name);
+                    
+                    while ($stmt_players->fetch()) {
+                        echo "<li class='player'>" . htmlspecialchars($player_name, ENT_QUOTES, 'UTF-8') . "</li>";
                     }
+
+                    $stmt_players->close();
+                } else {
+                    echo "プレイヤーリストの取得エラー: " . $conn->error;
+                }
+                
+                // 空のプレイヤースロット
+                for ($i = $people + 1; $i <= 6; $i++) {
+                    echo "<li class='player empty'></li>";
                 }
                 ?>
             </ul>
@@ -110,7 +138,7 @@ if ($stmt_current_players) {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `room_id=<?php echo $room; ?>`
+                body: `room_id=<?php echo $room_id; ?>`
             }).then(response => {
                 // レスポンスを処理する
                 if (response.ok) {
