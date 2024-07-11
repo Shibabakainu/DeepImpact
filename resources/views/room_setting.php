@@ -37,7 +37,7 @@ if (isset($_SESSION['error_message'])) {
                 <input type="number" id="people" name="people" value="6" min="1" max="6" required>
             </div>
             <button type="submit" name="create_room">作成</button>
-            <button type="button" class="create" onclick="location.href='room_create.php'">戻る</button>
+            <button type="button" class="return" onclick="location.href='index.php'">戻る</button>
         </form>
     </div>
 

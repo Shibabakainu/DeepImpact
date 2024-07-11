@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <title>ルーム検索</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/room_search.css">
 </head>
-
 <body>
     <?php include 'header.php'; ?>
     <main>
@@ -17,7 +15,7 @@
                 <?php
                 include 'db_connect.php';
 
-                $sql = "SELECT room_name, current_players, status FROM rooms";
+                $sql = "SELECT room_name, current_players, max_players, status FROM rooms";
                 $result = $conn->query($sql);
 
                 if ($result->num_rows > 0) {
@@ -25,7 +23,7 @@
                     while ($row = $result->fetch_assoc()) {
                         echo '<div class="room" data-room-name="' . $row["room_name"] . '">';
                         echo '<div class="room-name">' . $row["room_name"] . '</div>';
-                        echo '<div class="room-status">プレイヤー: ' . $row["current_players"] . '/6</div>';
+                        echo '<div class="room-status">プレイヤー: ' . $row["current_players"] . '/' . $row["max_players"] . '</div>';
                         echo '<div class="room-progress ' . strtolower($row["status"]) . '">' . $row["status"] . '</div>';
                         echo '<button class="join-room">参加</button>';
                         echo '</div>';
@@ -37,8 +35,7 @@
                 ?>
             </div>
             <div class="buttons">
-                <button class="create" onclick="location.href='room_create.php'">戻る</button>
-                <button class="create" onclick="location.href='#'">参加</button>
+                <button class="return" onclick="location.href='index.php'">戻る</button>
             </div>
         </div>
     </main>
@@ -50,14 +47,14 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     document.getElementById('room-list').innerHTML = xhr.responseText;
+                    attachJoinEventListeners();  // Reattach event listeners after updating room-list
                 }
             };
             xhr.send();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        function attachJoinEventListeners() {
             const joinButtons = document.querySelectorAll('.join-room');
-            
             joinButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const roomDiv = this.closest('.room');
@@ -84,6 +81,10 @@
                     });
                 });
             });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            attachJoinEventListeners();
         });
     </script>
 </body>

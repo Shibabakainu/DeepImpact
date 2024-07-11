@@ -21,34 +21,19 @@ input[type="search"] {
     color: white;
 }
 
-.search_btn {
-    width: 40px;
-    height: 40px;
+.return {
+    color: #fff;
+    font-size: 1rem;
+    background-color:crimson;
+    padding: 10px;
+    border: none;
     border-radius: 5px;
-    font-size: 24px;
     cursor: pointer;
-    margin: 10px;
-    border: none;
-    background-color: #e0e0e0;
+    margin: 5px;
+    width: 30%;
 }
-
-button:hover {
-    background-color: #e77a34;
-}
-
-.create {
-    width: 120px;
-    height: 60px;
-    border-radius: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    margin: 10px;
-    border: none;
-    background-color: #e0e0e0;
-}
-
-.create:hover {
-    background-color: #adf5ff;
+.return:hover {
+    background-color:firebrick;
 }
 
 main {
@@ -93,7 +78,23 @@ form {
     margin: 10px;
     border-radius: 10px;
     width: 80%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.room .join-room {
+    background-color: #e88a49;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: ease 0.3s;
+    /* 移動のアニメーションを追加 */
+}
+
+.join-room:hover {
+    background-color:chocolate;
 }
 
 .room-name {

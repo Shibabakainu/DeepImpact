@@ -142,7 +142,7 @@ if ($host_id) {
                 // レスポンスを処理する
                 if (response.ok) {
                     // 成功した場合の処理（例：設定画面にリダイレクトするなど）
-                    window.location.href = "room_setting.php";
+                    window.location.href = "room_search.php";
                 } else {
                     // エラーが発生した場合の処理
                     console.error('削除リクエストでエラーが発生しました。');

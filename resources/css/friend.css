@@ -124,17 +124,16 @@ body {
 }
 
 .return {
-    width: 120px; /* ボタンの幅を設定 */
-    height: 30px; /* ボタンの高さを設定 */
-    border-radius: 5px; /* ボタンの角を丸くする */
-    font-size: 15px; /* ボタンの文字サイズを設定 */
-    margin: 10px; /* ボタンの周囲に余白を設定 */
-    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
-    border: none; /* ボタンの枠線を削除 */
-    background-color:crimson; /* ボタンの背景色を設定 */
-    transition: 0.5s ease; /* ホバー時のトランジション効果を設定 */
+    color: #fff;
+    font-size: 1rem;
+    background-color:crimson;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    width: 30%;
 }
-
 .return:hover {
-    background-color: #e77a34; /* ホバー時の背景色を設定 */
+    background-color:firebrick;
 }
