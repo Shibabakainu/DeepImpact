@@ -20,7 +20,7 @@ CREATE TABLE users (
 INSERT INTO users (id, email, password, profile_image, name, created_at) VALUES 
 (1, 'demo@demo', 'demo', '', 'demo', NOW());
 
--- Create the rooms table
+-- roomsテーブルを作成
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
     room_id         INT             AUTO_INCREMENT PRIMARY KEY,
@@ -33,7 +33,7 @@ CREATE TABLE rooms (
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Create the room_passwords table
+-- room_passwordsテーブルを作成
 DROP TABLE IF EXISTS room_passwords;
 CREATE TABLE room_passwords (
     room_id         INT             PRIMARY KEY,
@@ -41,13 +41,14 @@ CREATE TABLE room_passwords (
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
 );
 
--- Create the room_players table
+-- room_playersテーブルを作成
 DROP TABLE IF EXISTS room_players;
 CREATE TABLE room_players (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
     room_id         INT             NOT NULL,
     user_id         INT             NOT NULL,
     joined_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    host            BOOLEAN         NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

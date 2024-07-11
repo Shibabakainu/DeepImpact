@@ -1,6 +1,14 @@
 <?php
 session_start();
 include 'db_connect.php';
+
+// エラーメッセージを取得してセッションから削除
+$error_message = '';
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +42,12 @@ include 'db_connect.php';
     </div>
 
     <?php
+
+    if (!empty($error_message)) {
+        echo "<script>alert('$error_message');</script>";
+    }
+
+
     // Closing PHP tag moved to the end for clean HTML separation
     if (isset($_POST['create_room'])) {
         $room_name = $_POST['room'];

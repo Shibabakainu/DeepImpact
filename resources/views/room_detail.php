@@ -63,7 +63,6 @@ if ($host_id) {
 </head>
 
 <body>
-    <?php include 'header.php'; ?>
     <main>
         <div class="container">
             <h2>ルーム名: <?php echo $room; ?></h2>
@@ -78,7 +77,7 @@ if ($host_id) {
                     $stmt_players->bind_param("ii", $room_id, $host_id);
                     $stmt_players->execute();
                     $stmt_players->bind_result($player_name);
-                    
+
                     while ($stmt_players->fetch()) {
                         echo "<li class='player'>" . htmlspecialchars($player_name, ENT_QUOTES, 'UTF-8') . "</li>";
                     }
@@ -87,7 +86,7 @@ if ($host_id) {
                 } else {
                     echo "プレイヤーリストの取得エラー: " . $conn->error;
                 }
-                
+
                 // 空のプレイヤースロット
                 for ($i = $people + 1; $i <= 6; $i++) {
                     echo "<li class='player empty'></li>";

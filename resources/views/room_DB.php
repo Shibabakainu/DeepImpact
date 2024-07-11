@@ -2,6 +2,26 @@
 session_start();
 include 'db_connect.php';
 
+// 最大ルーム数の上限
+$max_rooms = 10;
+
+// 現在のルーム数をカウント
+$sql_count_rooms = "SELECT COUNT(*) as room_count FROM rooms";
+$result = $conn->query($sql_count_rooms);
+if ($result) {
+    $row = $result->fetch_assoc();
+    $current_rooms = $row['room_count'];
+    if ($current_rooms >= $max_rooms) {
+        $_SESSION['error_message'] = 'ルーム数の上限に達しています';
+        header('Location: room_setting.php');
+        exit;
+    }
+} else {
+    die('エラー: 現在のルーム数を取得できませんでした。');
+}
+
+
+
 // セッションからユーザーIDを取得
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
@@ -82,4 +102,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
-?>
