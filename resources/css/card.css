@@ -1,44 +1,70 @@
-.container {
-        margin-top: 300px;
-
-}
 .card-container {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
-    background-color: #f0f0f0;
+    align-items: center;
+    flex-wrap: wrap;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    gap: 1px; /* カードの間隔を狭くする */
 }
 
 .card {
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100px;
-    text-align: center;
+    margin: 5px; /* カードの間隔を狭くする */
+    padding: 10px;
+    position: relative;
+    cursor: pointer;
+    width: 120px; /* カードの幅に合わせる */
+    height: 180px; /* カードの高さに合わせる */
 }
 
 .card img {
-    max-width: 100%;
-    border-radius: 10px;
-}
-
-.card h3 {
-    font-size: 1.2em;
-    margin-top: 10px;
+    max-width: 100px;
+    height: auto;
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    transition: margin-top 0.3s ease; /* スムーズな移動のためのトランジション */
+    text-align: center;
+    position: fixed;
+    bottom: 200px;
+    width: 100%;
 }
 
-.button-container button {
-    padding: 10px 20px;
-    font-size: 16px;
+.selected-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.selected-card-area {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px; /* カードの幅に合わせる */
+    height: 180px; /* カードの高さに合わせる */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.selected-card-display {
+    display: none; /* カードの名前表示を非表示に */
+}
+
+.card-container {
+    display: flex;
+    gap: 1px; /* カードの間隔を狭くする */
+}
+
+.card {
     cursor: pointer;
+    width: 120px; /* カードの幅に合わせる */
+    height: 180px; /* カードの高さに合わせる */
+    margin: 5px; /* カードの間隔を狭くする */
 }
