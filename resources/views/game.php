@@ -8,12 +8,12 @@ $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 // URLのクエリパラメータからcurrent_playersを取得
 $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 1; // 設定されていない場合は1をデフォルトとする
 
+// ポップアップ表示の条件
+$shouldShowPopup = true; // 必要に応じて条件を設定してください
 ?>
 
-
-
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
     <meta charset="UTF-8">
@@ -92,6 +92,13 @@ $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 
             cursor: pointer;
         }
     </style>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            <?php if ($shouldShowPopup): ?>
+                document.getElementById('menu-popup-wrapper').style.display = 'flex';
+            <?php endif; ?>
+        });
+    </script>
 </head>
 
 <body>
@@ -121,7 +128,7 @@ $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 
         <button onclick="sendMessage()">Send</button>
     </div>
     <div class="menu-">
-        <div id="menu-popup-wrapper">
+        <div id="menu-popup-wrapper" style="display: none;">
             <div class="button_1">
                 <button class="back-btn">退出する</button>
                 <button class="popup-btn" id="rule-click-btn">ルール</button>
@@ -219,7 +226,6 @@ $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 
             requestAnimationFrame(step);
         }
 
-
         const gameClickBtn = document.getElementById('menu-click-btn');
         const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
         const backBtn = document.querySelector('.back-btn');
@@ -275,13 +281,10 @@ $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 
             }
         });
     </script>
+    <?php
+    // 表示するテキストをPHPで定義
+    $text = "これは右下に表示されるテキストです";
+    echo "<div class='bottom-right-text'>{$text}</div>";
+    ?>
 </body>
-
-<?php
-// 表示するテキストをPHPで定義
-$text = "これは右下に表示されるテキストです";
-echo "<div class='bottom-right-text'>{$text}</div>";
-?>
-
-
 </html>

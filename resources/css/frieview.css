@@ -59,8 +59,8 @@ body {
     background-color: #e77a34;
 }
 .return {
+    color: #fff;
     font-size: 1rem;
-    font-weight: bold;
     background-color:crimson;
     padding: 10px;
     border: none;

@@ -50,7 +50,7 @@ $loggedIn = isset($_SESSION['user_id']);
     <div class="main-container">
         <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="header-image">
         <div class="buttons">
-            <button onclick="window.location.href='room_create.php'">ルーム作成</button>
+            <button onclick="window.location.href='room_setting.php'">ルーム作成</button>
             <button onclick="window.location.href='room_search.php'">ルーム検索</button>
             <button onclick="window.location.href='frieview.php'">フレンド</button>
             <button id="index-click-btn">ルール</button>
