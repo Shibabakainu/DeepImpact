@@ -71,13 +71,6 @@ DROP TABLE IF EXISTS Card;
 CREATE TABLE Card (
     Card_id INT PRIMARY KEY,
     Card_name VARCHAR(100) NOT NULL,
-    Image_path VARCHAR(255) NOT NULL
-);
-
-DROP TABLE IF EXISTS Card;
-CREATE TABLE Card (
-    Card_id INT PRIMARY KEY,
-    Card_name VARCHAR(100) NOT NULL,
     Image_path VARCHAR(255) NOT NULL,
     IsVisible INT NOT NULL DEFAULT 1
 );
