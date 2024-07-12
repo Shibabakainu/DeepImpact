@@ -20,8 +20,6 @@ if ($result) {
     die('エラー: 現在のルーム数を取得できませんでした。');
 }
 
-
-
 // セッションからユーザーIDを取得
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
@@ -56,9 +54,10 @@ $stmt = $conn->prepare($sql);
 if (!$stmt) {
     die("Error preparing statement: " . $conn->error);
 }
-$stmt->bind_param("sii", $room_name, $host_id, $max_players); // Use $host_id as host_id
+$stmt->bind_param("sii", $room_name, $host_id, $max_players);
 
 if ($stmt->execute()) {
+    echo "Room inserted successfully with ID: " . $stmt->insert_id . "<br>";
     $room_id = $stmt->insert_id;
     $_SESSION['room_id'] = $room_id; // room_idをセッションに保存
 
@@ -74,6 +73,8 @@ if ($stmt->execute()) {
     $stmt_password->bind_param("is", $room_id, $password_hash);
 
     if ($stmt_password->execute()) {
+        echo "Password inserted successfully.<br>";
+
         // room_playersテーブルに挿入
         $sql_room_players = "INSERT INTO room_players (room_id, user_id) VALUES (?, ?)";
         $stmt_room_players = $conn->prepare($sql_room_players);
@@ -83,6 +84,7 @@ if ($stmt->execute()) {
         $stmt_room_players->bind_param("ii", $room_id, $user_id);
 
         if ($stmt_room_players->execute()) {
+            echo "Room player inserted successfully.<br>";
             // ルーム詳細ページにリダイレクト
             header("Location: room_detail.php?room=$room_name&setting=$setting");
             exit;
@@ -102,3 +104,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+?>

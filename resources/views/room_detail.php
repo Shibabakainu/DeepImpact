@@ -95,6 +95,8 @@ if ($host_id) {
             </ul>
             <div class="buttons">
                 <button class="back">戻る</button>
+                <button class="leave-room" data-room-id="<?php echo $room_id; ?>">ルームを退出</button>
+
                 <a href="game.php"><button class="create">物語を作る</button></a>
             </div>
         </div>
@@ -188,6 +190,28 @@ if ($host_id) {
                         });
                     }
                 }
+            });
+        });
+        document.querySelector('.leave-room').addEventListener('click', function() {
+            const roomId = this.getAttribute('data-room-id');
+
+            fetch('leave_room.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `room_id=${encodeURIComponent(roomId)}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes('success')) {
+                    window.location.href = 'room_search.php'; // Redirect to another page after leaving
+                } else {
+                    alert('エラー: ' + data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         });
     </script>
