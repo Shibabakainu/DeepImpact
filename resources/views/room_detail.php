@@ -94,66 +94,12 @@ if ($host_id) {
                 ?>
             </ul>
             <div class="buttons">
-                <button class="back">戻る</button>
                 <button class="leave-room" data-room-id="<?php echo $room_id; ?>">ルームを退出</button>
-
                 <a href="game.php"><button class="create">物語を作る</button></a>
             </div>
         </div>
-
-        <div id="back-popup-wrapper">
-            <div class="back_button">
-                <p class="back-text">本当に退出しますか？</p>
-                <button class="back-popup-btn" id="back-popup-close">キャンセル</button>
-                <form action="delete_room.php" method="POST">
-                    <button type="submit" class="back-other-btn" id="back-exit-btn">退出</button>
-                </form>
-            </div>
-        </div>
-
     </main>
     <script>
-        //ポップアップ表示
-        const back_Btn = document.querySelector('.back');
-        const back_Popup_Wrapper = document.getElementById('back-popup-wrapper');
-        const back_Popup_Close = document.getElementById('back-popup-close');
-        const back_exitBtn = document.getElementById('back-exit-btn');
-
-        // 「戻る」ボタンをクリックしたときにポップアップを表示させる
-        back_Btn.addEventListener('click', () => {
-            back_Popup_Wrapper.style.display = 'flex';
-        });
-
-        // ポップアップの外側または「閉じる」ボタンをクリックしたときポップアップを閉じる
-        back_Popup_Wrapper.addEventListener('click', e => {
-            if (e.target.id === back_Popup_Close.id) {
-                back_Popup_Wrapper.style.display = 'none';
-            }
-        });
-
-        // 「退出」ボタンをクリックしたときに指定されたURLに移動する
-        back_exitBtn.addEventListener('click', () => {
-            // PHPのスクリプトにPOSTリクエストを送信する
-            fetch('delete_room.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `room_id=<?php echo $room_id; ?>`
-            }).then(response => {
-                // レスポンスを処理する
-                if (response.ok) {
-                    // 成功した場合の処理（例：設定画面にリダイレクトするなど）
-                    window.location.href = "room_search.php";
-                } else {
-                    // エラーが発生した場合の処理
-                    console.error('削除リクエストでエラーが発生しました。');
-                }
-            }).catch(error => {
-                console.error('削除リクエスト中にエラーが発生しました。', error);
-            });
-        });
-
         document.addEventListener('DOMContentLoaded', (event) => {
             let peopleCount = <?php echo $people; ?>;
             const playerList = document.querySelector('.player-list');

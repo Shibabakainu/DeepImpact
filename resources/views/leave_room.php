@@ -36,6 +36,32 @@ if ($room_id && $user_id) {
         }
         $stmt_decrement_players->close();
         
+        // Check if the current_players is now 0, and if so, delete the room
+        $sql_check_players = "SELECT current_players FROM rooms WHERE room_id = ?";
+        $stmt_check_players = $conn->prepare($sql_check_players);
+        if (!$stmt_check_players) {
+            throw new Exception($conn->error);
+        }
+        $stmt_check_players->bind_param("i", $room_id);
+        $stmt_check_players->execute();
+        $stmt_check_players->bind_result($current_players);
+        $stmt_check_players->fetch();
+        $stmt_check_players->close();
+
+        if ($current_players === 0) {
+            // Delete the room if no players are left
+            $sql_delete_room = "DELETE FROM rooms WHERE room_id = ?";
+            $stmt_delete_room = $conn->prepare($sql_delete_room);
+            if (!$stmt_delete_room) {
+                throw new Exception($conn->error);
+            }
+            $stmt_delete_room->bind_param("i", $room_id);
+            if (!$stmt_delete_room->execute()) {
+                throw new Exception($stmt_delete_room->error);
+            }
+            $stmt_delete_room->close();
+        }
+        
         // Commit the transaction
         $conn->commit();
         echo "success";
