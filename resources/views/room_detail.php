@@ -95,7 +95,7 @@ if ($host_id) {
             </ul>
             <div class="buttons">
                 <button class="leave-room" data-room-id="<?php echo $room_id; ?>">ルームを退出</button>
-                <a href="game.php"><button class="create">物語を作る</button></a>
+                <button class="create" data-room-id="<?php echo $room_id; ?>">物語を作る</button>
             </div>
         </div>
     </main>
@@ -138,6 +138,7 @@ if ($host_id) {
                 }
             });
         });
+
         document.querySelector('.leave-room').addEventListener('click', function() {
             const roomId = this.getAttribute('data-room-id');
 
@@ -152,6 +153,29 @@ if ($host_id) {
             .then(data => {
                 if (data.includes('success')) {
                     window.location.href = 'room_search.php'; // Redirect to another page after leaving
+                } else {
+                    alert('エラー: ' + data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.querySelector('.create').addEventListener('click', function() {
+            const roomId = this.getAttribute('data-room-id');
+
+            fetch('update_room_status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `room_id=${encodeURIComponent(roomId)}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes('success')) {
+                    window.location.href = 'game.php?room_id=' + encodeURIComponent(roomId); // Redirect to game.php with room_id
                 } else {
                     alert('エラー: ' + data);
                 }
