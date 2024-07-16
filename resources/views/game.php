@@ -4,9 +4,26 @@ include 'db_connect.php';
 
 // セッションからユーザーIDを取得
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+if (!$user_id) {
+    // ユーザーIDがない場合は、適切なエラーメッセージを表示するかリダイレクト
+    die("ログインが必要です。");
+}
 
 // URLのクエリパラメータからcurrent_playersを取得
 $current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 1; // 設定されていない場合は1をデフォルトとする
+
+// プレイヤー情報を取得
+$players = [];
+$sql = "SELECT name FROM users";
+if ($result = $conn->query($sql)) {
+    while ($row = $result->fetch_assoc()) {
+        $players[] = $row['name'];
+    }
+    $result->free();
+} else {
+    die("プレイヤーデータの取得に失敗しました: " . $conn->error);
+}
+$conn->close();
 
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
@@ -14,7 +31,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <title>game</title>
@@ -47,7 +63,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             from {
                 transform: translateX(100%);
             }
-
             to {
                 transform: translateX(-100%);
             }
@@ -122,11 +137,22 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             </li>
         </ul>
     </div>
+
     <div id="textbox">
         <div id="chatbox"></div>
         <input type="text" id="message" placeholder="Enter message..." />
         <button onclick="sendMessage()">Send</button>
     </div>
+
+    <div class="top-left-text">
+        <p>現在のプレイヤー:</p>
+        <ul>
+            <?php foreach ($players as $player): ?>
+                <li><?php echo htmlspecialchars($player, ENT_QUOTES, 'UTF-8'); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+
     <div class="menu-">
         <div id="menu-popup-wrapper" style="display: none;">
             <div class="button_1">
@@ -203,88 +229,47 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         ws.onclose = function() {
             console.log('Disconnected from the server');
         };
-
-        function sendMessage() {
-            var messageInput = document.getElementById('message');
-            var message = messageInput.value;
-            ws.send(message);
-            messageInput.value = '';
+        ws.onerror = function(error) {
+            console.log('WebSocket Error: ' + error);
         };
 
-        function animateMessage(message) {
-            var posX = window.innerWidth;
-
-            function step() {
-                posX -= 8;
-                if (posX < -message.offsetWidth) {
-                    message.remove();
-                } else {
-                    message.style.transform = 'translateX(' + posX + 'px)';
-                    requestAnimationFrame(step);
-                }
-            }
-            requestAnimationFrame(step);
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            ws.send(message);
+            document.getElementById('message').value = '';
         }
 
-        const gameClickBtn = document.getElementById('menu-click-btn');
-        const gamePopupWrapper = document.getElementById('menu-popup-wrapper');
-        const backBtn = document.querySelector('.back-btn');
-        const secondPopupWrapper = document.getElementById('second-popup-wrapper');
-        const secondPopupClose = document.getElementById('second-popup-close');
-        const exitBtn = document.getElementById('exit-btn');
+        function animateMessage(messageElement) {
+            messageElement.style.animation = 'slide-in 10s linear forwards';
+            setTimeout(function() {
+                messageElement.remove();
+            }, 10000);
+        }
 
-        // 新しいルールポップアップ関連の変数
-        const ruleClickBtn = document.getElementById('rule-click-btn');
-        const rulePopupWrapper = document.getElementById('rule-popup-wrapper');
-        const ruleClose = document.getElementById('rule-close');
-
-        $(document).ready(function() {
-            $("button").click(function() {
-                $(this).toggleClass("toggle");
-            });
+        document.getElementById('menu-click-btn').addEventListener('click', function() {
+            document.getElementById('menu-popup-wrapper').style.display = 'flex';
         });
 
-        // ハンバーガーメニューをクリックしたときポップアップを表示する/閉じる
-        gameClickBtn.addEventListener('click', () => {
-            if (gamePopupWrapper.style.display === 'flex') {
-                gamePopupWrapper.style.display = 'none';
-            } else {
-                gamePopupWrapper.style.display = 'flex';
-            }
+        document.getElementById('rule-click-btn').addEventListener('click', function() {
+            document.getElementById('rule-popup-wrapper').style.display = 'block';
         });
 
-        // 「退出する」ボタンをクリックしたときに2つ目のポップアップを表示させる
-        backBtn.addEventListener('click', () => {
-            secondPopupWrapper.style.display = 'flex';
+        document.getElementById('rule-close').addEventListener('click', function() {
+            document.getElementById('rule-popup-wrapper').style.display = 'none';
         });
 
-        // 2つ目のポップアップの外側または「閉じる」ボタンをクリックしたときポップアップを閉じる
-        secondPopupWrapper.addEventListener('click', e => {
-            if (e.target.id === secondPopupClose.id) {
-                secondPopupWrapper.style.display = 'none';
-            }
+        document.getElementById('second-popup-close').addEventListener('click', function() {
+            document.getElementById('second-popup-wrapper').style.display = 'none';
         });
 
-        // 「退出」ボタンをクリックしたときに指定されたURLに移動する
-        exitBtn.addEventListener('click', () => {
-            window.location.href = "index.php";
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            document.getElementById('second-popup-wrapper').style.display = 'flex';
         });
 
-        // 新しいルールポップアップ関連のイベントリスナー
-        ruleClickBtn.addEventListener('click', () => {
-            rulePopupWrapper.style.display = "block";
-        });
-
-        rulePopupWrapper.addEventListener('click', e => {
-            if (e.target.id === rulePopupWrapper.id || e.target.id === ruleClose.id) {
-                rulePopupWrapper.style.display = 'none';
-            }
+        document.getElementById('exit-btn').addEventListener('click', function() {
+            window.location.href = '/DeepImpact/exit.php';
         });
     </script>
-    <?php
-    // 表示するテキストをPHPで定義
-    $text = "これは右下に表示されるテキストです";
-    echo "<div class='bottom-right-text'>{$text}</div>";
-    ?>
+
 </body>
 </html>
