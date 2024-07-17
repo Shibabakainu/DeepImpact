@@ -275,5 +275,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
     </script>
 
+<?php
+    // 表示するテキストをPHPで定義
+    $text = "これは右下に表示されるテキストです";
+    echo "<div class='bottom-right-text'>{$text}</div>";
+    ?>
+
 </body>
 </html>
