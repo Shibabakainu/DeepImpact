@@ -28,7 +28,6 @@ $conn->close();
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -109,13 +108,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </style>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
-            <?php if ($shouldShowPopup): ?>
+            var shouldShowPopup = <?php echo json_encode($shouldShowPopup); ?>;
+            if (shouldShowPopup) {
                 document.getElementById('menu-popup-wrapper').style.display = 'flex';
-            <?php endif; ?>
+            }
         });
     </script>
 </head>
-
 <body>
 
     <div class="container">
@@ -247,7 +246,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         }
 
         document.getElementById('menu-click-btn').addEventListener('click', function() {
-            document.getElementById('menu-popup-wrapper').style.display = 'flex';
+            const menuPopupWrapper = document.getElementById('menu-popup-wrapper');
+            if (menuPopupWrapper.style.display === 'flex') {
+                menuPopupWrapper.style.display = 'none';
+            } else {
+                menuPopupWrapper.style.display = 'flex';
+            }
         });
 
         document.getElementById('rule-click-btn').addEventListener('click', function() {
@@ -258,12 +262,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             document.getElementById('rule-popup-wrapper').style.display = 'none';
         });
 
-        document.getElementById('second-popup-close').addEventListener('click', function() {
-            document.getElementById('second-popup-wrapper').style.display = 'none';
-        });
-
         document.querySelector('.back-btn').addEventListener('click', function() {
             document.getElementById('second-popup-wrapper').style.display = 'flex';
+        });
+
+        document.getElementById('second-popup-close').addEventListener('click', function() {
+            document.getElementById('second-popup-wrapper').style.display = 'none';
         });
 
         document.getElementById('exit-btn').addEventListener('click', function() {
