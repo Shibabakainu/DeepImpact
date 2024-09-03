@@ -107,10 +107,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         }
     </style>
     <script type="text/javascript">
+        // Ensure it's hidden initially
         document.addEventListener("DOMContentLoaded", function() {
             var shouldShowPopup = <?php echo json_encode($shouldShowPopup); ?>;
             if (shouldShowPopup) {
-                document.getElementById('menu-popup-wrapper').style.display = 'flex';
+                document.getElementById('menu-popup-wrapper').style.display = 'none';
+            } else {
+                document.getElementById('menu-popup-wrapper').style.display = 'flex'; 
             }
         });
     </script>
@@ -153,7 +156,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </div>
 
     <div class="menu-">
-        <div id="menu-popup-wrapper" style="display: none;">
+        <div id="menu-popup-wrapper">
             <div class="button_1">
                 <button class="back-btn">退出する</button>
                 <button class="popup-btn" id="rule-click-btn">ルール</button>
