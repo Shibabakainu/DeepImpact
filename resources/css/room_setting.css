@@ -118,16 +118,17 @@ button:hover {
 .return {
     color: #fff;
     font-size: 1rem;
-    background-color:crimson;
+    background-color: crimson;
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin: 5px;
-    width: 30%;
+    width: 20%;
 }
+
 .return:hover {
-    background-color:firebrick;
+    background-color: firebrick;
 }
 
 /* フッターの設定 */
