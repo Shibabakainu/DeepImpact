@@ -165,3 +165,18 @@ main {
     color: rgb(255, 0, 0);
     margin-bottom: 10px;
 }
+
+.leave-room {
+    width: 170px;
+    height: 60px;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    transition: 0.5s ease;
+}
+
+.leave-room:hover {
+    background-color: #e77a34;
+}
