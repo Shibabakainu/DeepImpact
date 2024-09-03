@@ -105,6 +105,22 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             color: white;
             cursor: pointer;
         }
+        #hand {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card {
+    width: 100px;
+    height: 150px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 150px;
+    font-size: 18px;
+}
     </style>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
@@ -120,21 +136,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="container">
         <ul>
             <li>
-                <div class="card" id="card1"><img src="/DeepImpact/images/card1.png"></div>
+                <div class="card" id="hand"></div>
             </li>
-            <li>
-                <div class="card" id="card2"><img src="/DeepImpact/images/card2.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card3"><img src="/DeepImpact/images/card3.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card4"><img src="/DeepImpact/images/card4.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card5"><img src="/DeepImpact/images/card5.png"></div>
-            </li>
+            
         </ul>
+
     </div>
 
     <div id="textbox">
@@ -142,6 +148,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <input type="text" id="message" placeholder="Enter message..." />
         <button onclick="sendMessage()">Send</button>
     </div>
+
+    
+        <div id="hand"></div>
+        <button onclick="drawCard()">Draw Card</button>
+        <div id="player-list"></div> <!-- プレイヤーリストを表示するための要素 -->
+    
 
     <div class="top-left-text">
         <p>現在のプレイヤー:</p>
@@ -213,28 +225,75 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </div>
 
     <script>
-        var ws = new WebSocket('ws://localhost:8080');
+        var ws = new WebSocket('ws://192.168.1.100:8080');
         ws.onopen = function() {
             console.log('Connected to the server');
+            ws.send(JSON.stringify({ type: 'join', username: 'Player1' }));
         };
         ws.onmessage = function(event) {
-            var chatbox = document.getElementById('chatbox');
-            var newMessage = document.createElement('div');
-            newMessage.classList.add('message');
-            newMessage.textContent = event.data;
-            chatbox.appendChild(newMessage);
-            animateMessage(newMessage);
+            var data=JSON.parse(event.data);
+            switch(data.type){
+                case 'update_hand':
+                    updateHand(data.hand);
+                    break;
+                case 'game_state':
+                    updateGameState(data.state);
+                    break;
+                case 'player_list':
+                    updatePlayerList(data.players);
+                    break;
+                case 'chat_message':
+                    var chatbox = document.getElementById('chatbox');
+                    var newMessage = document.createElement('div');
+                    newMessage.classList.add('message');
+                    newMessage.textContent = event.data;
+                    chatbox.appendChild(newMessage);
+                    animateMessage(newMessage);
+                    break;
+                default:
+                    console.log('unknown message type:', data.type);
+                    break;
+            }
         };
+
         ws.onclose = function() {
             console.log('Disconnected from the server');
         };
         ws.onerror = function(error) {
             console.log('WebSocket Error: ' + error);
         };
+        function drawCard() {
+            ws.send(JSON.stringify({ type: 'draw_card' }));
+        }
 
+        function playCard(card) {
+            ws.send(JSON.stringify({ type: 'play_card', card: card }));
+        }
+
+        function vote(card) {
+            ws.send(JSON.stringify({ type: 'vote', card: card }));
+        }
+
+        function updateGameState(state) {
+            // ゲーム状態を更新する処理を実装
+            console.log('game state updated:', state);
+        }
+
+        function updateHand(hand) {
+            const handContainer = document.getElementById('hand');
+            handContainer.innerHTML = '';
+
+            // プレイヤーの手札を更新する処理を実装
+            hand.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.innerText = card;
+                handContainer.appendChild(cardElement);
+            });
+        }
         function sendMessage() {
             var message = document.getElementById('message').value;
-            ws.send(message);
+            ws.send(JSON.stringify({ type: 'chat_message', message: message }));
             document.getElementById('message').value = '';
         }
 
@@ -243,6 +302,19 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             setTimeout(function() {
                 messageElement.remove();
             }, 10000);
+        }
+
+        function updatePlayerList(players) {
+            const playerListContainer = document.getElementById('player-list');
+            playerListContainer.innerHTML = '<h3>Players in the game:</h3>';
+
+            // プレイヤーリストを更新する処理を実装
+            players.forEach(player => {
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player';
+                playerElement.innerText = player;
+                playerListContainer.appendChild(playerElement);
+            });
         }
 
         document.getElementById('menu-click-btn').addEventListener('click', function() {
