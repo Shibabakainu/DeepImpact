@@ -1,37 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>WebSocket Chat</title>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <style>
+        #hand {
+            display: flex;
+        }
+        .card {
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid black;
+        }
+        .player { margin: 10px 0; }
+        .player-name { font-weight: bold; }
+    </style>
 </head>
 <body>
-    <h1>WebSocket Chat</h1>
-    <div id="chatbox"></div>
-    <input type="text" id="message" placeholder="Enter message..." />
-    <button onclick="sendMessage()">Send</button>
-
+    <div id="game">
+        <div id="hand"></div>
+        <button onclick="drawCard()">Draw Card</button>
+        <div id="player-list"></div> <!-- プレイヤーリストを表示するための要素 -->
+    </div>
     <script>
-        var ws = new WebSocket('ws://localhost:8080');
+        const socket = new WebSocket('ws://192.168.1.100:8080');
 
-        ws.onopen = function() {
+        socket.onopen = function(event) {
             console.log('Connected to the server');
+            socket.send(JSON.stringify({ type: 'join', username: 'Player1' }));
         };
 
-        ws.onmessage = function(event) {
-            var chatbox = document.getElementById('chatbox');
-            var newMessage = document.createElement('div');
-            newMessage.textContent = event.data;
-            chatbox.appendChild(newMessage);
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+
+            switch (data.type) {
+                case 'game_state':
+                    updateGameState(data.state);
+                    break;
+                case 'update_hand':
+                    updateHand(data.hand);
+                    break;
+                case 'player_list':
+                    updatePlayerList(data.players);
+                    break;
+            }
         };
 
-        ws.onclose = function() {
-            console.log('Disconnected from the server');
-        };
+        function drawCard() {
+            socket.send(JSON.stringify({ type: 'draw_card' }));
+        }
 
-        function sendMessage() {
-            var messageInput = document.getElementById('message');
-            var message = messageInput.value;
-            ws.send(message);
-            messageInput.value = '';
+        function playCard(card) {
+            socket.send(JSON.stringify({ type: 'play_card', card: card }));
+        }
+
+        function vote(card) {
+            socket.send(JSON.stringify({ type: 'vote', card: card }));
+        }
+
+        function updateGameState(state) {
+            // ゲーム状態を更新する処理を実装
+            console.log('game state updated:', state);
+        }
+
+        function updateHand(hand) {
+            const handContainer = document.getElementById('hand');
+            handContainer.innerHTML = '';
+
+            // プレイヤーの手札を更新する処理を実装
+            hand.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.innerText = card;
+                handContainer.appendChild(cardElement);
+            });
+        }
+
+        function updatePlayerList(players) {
+            const playerListContainer = document.getElementById('player-list');
+            playerListContainer.innerHTML = '<h3>Players in the game:</h3>';
+
+            // プレイヤーリストを更新する処理を実装
+            players.forEach(player => {
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player';
+                playerElement.innerText = player;
+                playerListContainer.appendChild(playerElement);
+            });
         }
     </script>
 </body>
