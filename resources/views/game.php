@@ -121,23 +121,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <body>
 
     <div class="container">
-        <ul>
-            <li>
-                <div class="card" id="card1"><img src="/DeepImpact/images/card1.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card2"><img src="/DeepImpact/images/card2.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card3"><img src="/DeepImpact/images/card3.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card4"><img src="/DeepImpact/images/card4.png"></div>
-            </li>
-            <li>
-                <div class="card" id="card5"><img src="/DeepImpact/images/card5.png"></div>
-            </li>
-        </ul>
+        
     </div>
 
     <div id="textbox">
