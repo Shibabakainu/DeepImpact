@@ -17,50 +17,44 @@ body {
 .container {
     position: relative;
     bottom: -250px;
-    width: 40%;
+    width: 60%;
     padding: 50px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.3);
     text-align: center;
+    max-height: 1000px;
+    overflow-y: auto;
 }
 
-.container ul {
+.container .card-container {
     display: flex;
     justify-content: center;
-    list-style: none;
 }
 
-.container li:not(:last-child) {
-    /* :not(:last-child) に適用することで、基本的にすべて縮めて、最後の1枚だけ幅を保持する */
-    min-width: 0;
-    /* 最小の重なり幅。枚数が少ないときでもこの幅は重ねる */
-    margin-right: -5rem;
-}
-
-.container li {
+.container .card {
     /* ホバー時アニメーション */
     transition-property: flex-shrink, translate;
     transition-duration: 0.2s;
     /* ホバーしたカードが前面に出ないようにする */
 }
 
-.container li:hover {
+.container .card:hover {
     flex-shrink: 0;
     translate: 0 -1rem;
 }
 
 .container .card {
     /* カードの見た目 */
-    width: 10rem;
+    width: 8rem;
     background-color: #c00606;
     box-shadow: 0 0 6px black;
-    border: 0.5rem white solid;
+    border: 0.3rem white solid;
     border-radius: 0.5rem;
 }
 
-.container li img {
-    width: 10rem;
+.container .card img {
+    width: 8rem;
 }
 
 @media screen and (max-width: 1500px) {
