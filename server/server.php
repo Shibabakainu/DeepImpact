@@ -66,12 +66,24 @@ class StorytellerGame implements MessageComponentInterface {
         $this->broadcastPlayerList(); // プレイヤーリストを送信
     }
 
+
     protected function handleDrawCard(ConnectionInterface $conn) {
         // プレイヤーがカードを引く
         if (!empty($this->gameState['deck'])) {
             $card = array_pop($this->gameState['deck']);
-            $this->gameState['players'][$conn->resourceId]['hand'][] = $card;
-            $conn->send(json_encode(['type' => 'update_hand', 'hand' => $this->gameState['players'][$conn->resourceId]['hand']]));
+            $playerId = $conn->resourceId;
+            
+            // プレイヤーの手札を更新
+            $this->gameState['players'][$playerId]['hand'][] = $card;
+            
+            // 手札をクライアントに送信
+            $conn->send(json_encode([
+                'type' => 'update_hand',
+                'hand' => $this->gameState['players'][$playerId]['hand']
+            ]));
+            
+            // プレイヤーリストを全クライアントに送信
+            $this->broadcastPlayerList();
         }
     }
 
@@ -125,7 +137,23 @@ class StorytellerGame implements MessageComponentInterface {
 
     protected function initializeDeck() {
         // デッキを初期化する
-        return range(1, 52); // 例として52枚のカードを使用
+        $suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+        $ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+        $deck = [];
+        
+        // デッキを作成
+        foreach ($suits as $suit) {
+            foreach ($ranks as $rank) {
+                $deck[] = $rank . ' of ' . $suit;
+            }
+        }
+
+        // デッキをシャッフル
+        shuffle($deck);
+
+        return $deck;
+    
     }
 }
 
