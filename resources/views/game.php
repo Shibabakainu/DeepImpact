@@ -30,6 +30,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>game</title>
@@ -62,6 +63,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             from {
                 transform: translateX(100%);
             }
+
             to {
                 transform: translateX(-100%);
             }
@@ -105,22 +107,23 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             color: white;
             cursor: pointer;
         }
-        #hand {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
 
-.card {
-    width: 100px;
-    height: 150px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-    line-height: 150px;
-    font-size: 18px;
-}
+        #hand {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card {
+            width: 100px;
+            height: 150px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 150px;
+            font-size: 18px;
+        }
     </style>
     <script type="text/javascript">
         // Ensure it's hidden initially
@@ -129,11 +132,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             if (shouldShowPopup) {
                 document.getElementById('menu-popup-wrapper').style.display = 'none';
             } else {
-                document.getElementById('menu-popup-wrapper').style.display = 'flex'; 
+                document.getElementById('menu-popup-wrapper').style.display = 'flex';
             }
         });
     </script>
 </head>
+
 <body>
 
     <div class="container">
@@ -142,7 +146,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <li>
                 <div class="card" id="hand"></div>
             </li>
-            
+
         </ul>
 
 
@@ -154,11 +158,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <button onclick="sendMessage()">Send</button>
     </div>
 
-    
-        <div id="hand"></div>
-        <button onclick="drawCard()">Draw Card</button>
-        <div id="player-list"></div> <!-- プレイヤーリストを表示するための要素 -->
-    
+
+
+    <div id="hand"></div>
+    <button onclick="drawCard()">Draw Card</button>
+    <div id="player-list"></div> <!-- プレイヤーリストを表示するための要素 -->
+
 
     <div class="top-left-text">
         <p>現在のプレイヤー:</p>
@@ -233,11 +238,14 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         var ws = new WebSocket('ws://192.168.1.100:8080');
         ws.onopen = function() {
             console.log('Connected to the server');
-            ws.send(JSON.stringify({ type: 'join', username: 'Player1' }));
+            ws.send(JSON.stringify({
+                type: 'join',
+                username: 'Player1'
+            }));
         };
         ws.onmessage = function(event) {
-            var data=JSON.parse(event.data);
-            switch(data.type){
+            var data = JSON.parse(event.data);
+            switch (data.type) {
                 case 'update_hand':
                     updateHand(data.hand);
                     break;
@@ -267,16 +275,25 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         ws.onerror = function(error) {
             console.log('WebSocket Error: ' + error);
         };
+
         function drawCard() {
-            ws.send(JSON.stringify({ type: 'draw_card' }));
+            ws.send(JSON.stringify({
+                type: 'draw_card'
+            }));
         }
 
         function playCard(card) {
-            ws.send(JSON.stringify({ type: 'play_card', card: card }));
+            ws.send(JSON.stringify({
+                type: 'play_card',
+                card: card
+            }));
         }
 
         function vote(card) {
-            ws.send(JSON.stringify({ type: 'vote', card: card }));
+            ws.send(JSON.stringify({
+                type: 'vote',
+                card: card
+            }));
         }
 
         function updateGameState(state) {
@@ -296,11 +313,23 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 handContainer.appendChild(cardElement);
             });
         }
+        // メッセージ送信関数
         function sendMessage() {
             var message = document.getElementById('message').value;
-            ws.send(JSON.stringify({ type: 'chat_message', message: message }));
+            ws.send(JSON.stringify({
+                type: 'chat_message',
+                message: message
+            }));
             document.getElementById('message').value = '';
         }
+
+        // エンターキーでメッセージ送信
+        document.getElementById('message').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+                event.preventDefault(); // エンターキーでの改行を防ぐ
+            }
+        });
 
         function animateMessage(messageElement) {
             messageElement.style.animation = 'slide-in 10s linear forwards';
@@ -356,11 +385,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
     </script>
 
-<?php
+    <?php
     // 表示するテキストをPHPで定義
     $text = "これは右下に表示されるテキストです";
     echo "<div class='bottom-right-text'>{$text}</div>";
     ?>
 
 </body>
+
 </html>
