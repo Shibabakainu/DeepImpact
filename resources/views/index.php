@@ -61,7 +61,6 @@ $loggedIn = isset($_SESSION['user_id']);
                         <p>※注意事項※</p>
                         <ul>
                             <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
-                            <li>あとは適当に追加</li>
                         </ul>
                         <p>ゲーム開始時</p>
                         <ul>

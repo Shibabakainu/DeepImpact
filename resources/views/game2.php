@@ -42,6 +42,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>game</title>
@@ -54,11 +55,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             if (shouldShowPopup) {
                 document.getElementById('menu-popup-wrapper').style.display = 'none';
             } else {
-                document.getElementById('menu-popup-wrapper').style.display = 'flex'; 
+                document.getElementById('menu-popup-wrapper').style.display = 'flex';
             }
         });
     </script>
 </head>
+
 <body>
 
     <div class="container">
@@ -174,7 +176,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                             <p>※注意事項※</p>
                             <ul>
                                 <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
-                                <li>あとは適当に追加</li>
                             </ul>
                             <p>ゲーム開始時</p>
                             <ul>
@@ -226,11 +227,14 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         var ws = new WebSocket('ws://192.168.1.100:8080');
         ws.onopen = function() {
             console.log('Connected to the server');
-            ws.send(JSON.stringify({ type: 'join', username: 'Player1' }));
+            ws.send(JSON.stringify({
+                type: 'join',
+                username: 'Player1'
+            }));
         };
         ws.onmessage = function(event) {
-            var data=JSON.parse(event.data);
-            switch(data.type){
+            var data = JSON.parse(event.data);
+            switch (data.type) {
                 case 'update_hand':
                     updateHand(data.hand);
                     break;
@@ -260,16 +264,25 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         ws.onerror = function(error) {
             console.log('WebSocket Error: ' + error);
         };
+
         function drawCard() {
-            ws.send(JSON.stringify({ type: 'draw_card' }));
+            ws.send(JSON.stringify({
+                type: 'draw_card'
+            }));
         }
 
         function playCard(card) {
-            ws.send(JSON.stringify({ type: 'play_card', card: card }));
+            ws.send(JSON.stringify({
+                type: 'play_card',
+                card: card
+            }));
         }
 
         function vote(card) {
-            ws.send(JSON.stringify({ type: 'vote', card: card }));
+            ws.send(JSON.stringify({
+                type: 'vote',
+                card: card
+            }));
         }
 
         function updateGameState(state) {
@@ -289,9 +302,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 handContainer.appendChild(cardElement);
             });
         }
+
         function sendMessage() {
             var message = document.getElementById('message').value;
-            ws.send(JSON.stringify({ type: 'chat_message', message: message }));
+            ws.send(JSON.stringify({
+                type: 'chat_message',
+                message: message
+            }));
             document.getElementById('message').value = '';
         }
 
@@ -349,12 +366,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
     </script>
 
-<?php
+    <?php
     // 表示するテキストをPHPで定義
     $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
     そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
     echo "<div class='story-card'>{$text}</div>";
-?>
+    ?>
 
 </body>
+
 </html>
