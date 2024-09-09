@@ -35,7 +35,31 @@ if ($stmt = $conn->prepare($sql)) {
 } else {
     die("プレイヤーデータの取得に失敗しました: " . $conn->error);
 }
-$conn->close();
+
+// プレイヤーのポジション（1から6）を取得
+$player_position = isset($_SESSION['player_position']) ? $_SESSION['player_position'] : null;
+if (!$player_position) {
+    die("プレイヤーのポジションが不明です。");
+}
+
+// プレイヤーに配られた5枚のカードを取得
+$sql = "
+    SELECT c.Card_id, c.Card_name, c.Image_path 
+    FROM room_cards rc
+    JOIN Card c ON rc.card_id = c.Card_id
+    WHERE rc.room_id = ? AND rc.status = ?
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('ii', $room_id, $player_position);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$cards = [];
+while ($row = $result->fetch_assoc()) {
+    $cards[] = $row;
+}
+
 
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
@@ -61,58 +85,81 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 <body>
 
-    <div class="container">
+     <!-- Show player's hand -->
+     <div class="container">
         <div class="onhand">
             <div class="draw" id="draw"><button id="draw-cards">Draw Cards</button></div>
 
-            <!-- Display 5 face-down cards initially -->
             <div id="selected-card-area" class="selected-card-area">
-                <?php
-                for ($i = 1; $i <= 5; $i++) {
-                    echo '<div class="card">';
-                    echo '<img src="../../images/hide' . $i . '.jpg" alt="Face Down Card">';
-                    echo '</div>';
-                }
-                ?>
+                <?php foreach ($cards as $card): ?>
+                    <div class="card" data-card-id="<?= $card['Card_id'] ?>">
+                        <img src="../../images/<?= $card['Image_path'] ?>" alt="<?= htmlspecialchars($card['Card_name'], ENT_QUOTES) ?>">
+                    </div>
+                <?php endforeach; ?>
             </div>
-            <?php
-            include 'db_connect.php'; // データベース接続スクリプトをインクルード
-
-            // ランダムに6枚のカードを選択するSQLクエリ
-            $sql = "SELECT Card_id, Card_name, Image_path, IsVisible FROM Card WHERE IsVisible = 1 ORDER BY RAND() LIMIT 6";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                $selectedCardIds = [];
-                echo '<div id="selected-card-area" class="selected-card-area"></div>';
-                echo '<div id="card-container" class="card-container">';
-                while ($row = $result->fetch_assoc()) {
-                    $selectedCardIds[] = $row["Card_id"];
-                    $visibilityClass = $row['IsVisible'] == 3 ? 'selected-card' : '';
-                    echo '<div class="card ' . $visibilityClass . '" data-value="' . $row["Card_id"] . '">';
-                    echo '<img src="../../images/' . $row["Image_path"] . '" alt="' . $row["Card_name"] . '">';
-                    echo '</div>';
-                }
-                echo '</div>';
-
-                // 選択されたカードの IsVisible を 2 に更新
-                if (!empty($selectedCardIds)) {
-                    $idsToUpdate = implode(",", $selectedCardIds);
-                    $updateSql = "UPDATE Card SET IsVisible = 2 WHERE Card_id IN ($idsToUpdate)";
-                    $conn->query($updateSql);
-
-                    // 選択されていないカードの IsVisible を 1 に更新
-                    $updateOthersSql = "UPDATE Card SET IsVisible = 1 WHERE Card_id NOT IN ($idsToUpdate) AND IsVisible != 1";
-                    $conn->query($updateOthersSql);
-                }
-            } else {
-                echo " ";
-            }
-
-            $conn->close();
-            ?>
         </div>
     </div>
+
+    <!-- Voting section (for all cards with status 7) -->
+    <div class="vote-area">
+        <?php
+        // Get all cards with status 7 (submitted by players)
+        $sql_vote = "
+            SELECT c.Card_id, c.Card_name, c.Image_path 
+            FROM room_cards rc
+            JOIN Card c ON rc.card_id = c.Card_id
+            WHERE rc.room_id = ? AND rc.status = 7
+        ";
+        $stmt_vote = $conn->prepare($sql_vote);
+        $stmt_vote->bind_param('i', $room_id);
+        $stmt_vote->execute();
+        $result_vote = $stmt_vote->get_result();
+
+        while ($row_vote = $result_vote->fetch_assoc()) {
+            echo '<div class="vote-card" data-card-id="' . $row_vote['Card_id'] . '">';
+            echo '<img src="../../images/' . $row_vote['Image_path'] . '" width="130px" alt="' . htmlspecialchars($row_vote['Card_name'], ENT_QUOTES) . '">';
+            echo '</div>';
+        }
+        $stmt_vote->close();
+        ?>
+    </div>
+    <h2>Vote for the Best Card:</h2>
+
+    <script type="text/javascript">
+        // Card selection logic (updates the card's status to 7)
+        $(document).on('click', '.card', function() {
+            var cardId = $(this).data('card-id');
+            $.ajax({
+                url: 'select_card.php',
+                method: 'POST',
+                data: { card_id: cardId, room_id: <?= $room_id ?> },
+                success: function(response) {
+                    if (response.success) {
+                        alert('カードが選ばれました！');
+                    } else {
+                        alert('カードの選択に失敗しました。');
+                    }
+                }
+            });
+        });
+
+        // Voting logic
+        $(document).on('click', '.vote-card', function() {
+            var cardId = $(this).data('card-id');
+            $.ajax({
+                url: 'vote.php',
+                method: 'POST',
+                data: { card_id: cardId, room_id: <?= $room_id ?> },
+                success: function(response) {
+                    if (response.success) {
+                        alert('投票が完了しました！');
+                    } else {
+                        alert('投票に失敗しました。');
+                    }
+                }
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -146,6 +193,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             });
         });
     </script>
+
+    <div class="map">
+        <div class="turn"><h1>TURN 1</h1></div>
+    </div>
 
     <div id="textbox">
         <div id="chatbox"></div>
@@ -223,72 +274,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </div>
 
     <script>
-        var ws = new WebSocket('ws://192.168.1.100:8080');
-        ws.onopen = function() {
-            console.log('Connected to the server');
-            ws.send(JSON.stringify({ type: 'join', username: 'Player1' }));
-        };
-        ws.onmessage = function(event) {
-            var data=JSON.parse(event.data);
-            switch(data.type){
-                case 'update_hand':
-                    updateHand(data.hand);
-                    break;
-                case 'game_state':
-                    updateGameState(data.state);
-                    break;
-                case 'player_list':
-                    updatePlayerList(data.players);
-                    break;
-                case 'chat_message':
-                    var chatbox = document.getElementById('chatbox');
-                    var newMessage = document.createElement('div');
-                    newMessage.classList.add('message');
-                    newMessage.textContent = event.data;
-                    chatbox.appendChild(newMessage);
-                    animateMessage(newMessage);
-                    break;
-                default:
-                    console.log('unknown message type:', data.type);
-                    break;
-            }
-        };
-
-        ws.onclose = function() {
-            console.log('Disconnected from the server');
-        };
-        ws.onerror = function(error) {
-            console.log('WebSocket Error: ' + error);
-        };
-        function drawCard() {
-            ws.send(JSON.stringify({ type: 'draw_card' }));
-        }
-
-        function playCard(card) {
-            ws.send(JSON.stringify({ type: 'play_card', card: card }));
-        }
-
-        function vote(card) {
-            ws.send(JSON.stringify({ type: 'vote', card: card }));
-        }
-
-        function updateGameState(state) {
-            // ゲーム状態を更新する処理を実装
-            console.log('game state updated:', state);
-        }
-
-        function updateHand(hand) {
-            const handContainer = document.getElementById('hand');
-            handContainer.innerHTML = '';
-
-            // プレイヤーの手札を更新する処理を実装
-            hand.forEach(card => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card';
-                cardElement.innerText = card;
-                handContainer.appendChild(cardElement);
-            });
-        }
+        
         function sendMessage() {
             var message = document.getElementById('message').value;
             ws.send(JSON.stringify({ type: 'chat_message', message: message }));
@@ -354,6 +340,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
     そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
     echo "<div class='story-card'>{$text}</div>";
+?>
+
+<?php
+    $conn->close();
 ?>
 
 </body>

@@ -12,13 +12,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column-reverse;
 }
 
 .container {
-    position: relative;
-    bottom: -250px;
-    width: 60%;
-    padding: 50px;
+    position: fixed;
+    bottom: 10px;
+    width: 50%;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.3);
@@ -47,7 +48,7 @@ body {
 .container .card {
     /* カードの見た目 */
     width: 8rem;
-    background-color: #c00606;
+    background-color:white;
     box-shadow: 0 0 6px black;
     border: 0.3rem white solid;
     border-radius: 0.5rem;
@@ -55,6 +56,55 @@ body {
 
 .container .card img {
     width: 8rem;
+}
+
+.vote-area {
+    position: relative;
+    width: 50%;
+    padding: 30px;
+    margin-bottom: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-height: 1000px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.vote-area .vote-card {
+    width: 8rem;
+    margin-right: 30px;
+    background-color: white;
+    box-shadow: 0 0 6px black;
+    border: 0.3rem white solid;
+    border-radius: 0.5rem;
+    transition-property: flex-shrink, translate;
+    transition-duration: 0.2s;
+}
+
+.vote-area .vote-card:hover {
+    flex-shrink: 0;
+    translate: 0 -1rem;
+}
+
+.vote-area .vote-card .img {
+    width: 8rem;
+}
+
+.map {
+    position: fixed;
+    top: 10px;
+    left: 250px;
+    width: 70%;
+    padding: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-height: 1000px;
+    overflow-y: auto;
 }
 
 @media screen and (max-width: 1500px) {
@@ -417,4 +467,5 @@ gap: 10px;
 
 .selected-card-area {
     display: flex;
+    justify-content: center;
 }
