@@ -135,7 +135,7 @@ CREATE TABLE room_cards (
     card_id INT NOT NULL,
     status TINYINT NOT NULL DEFAULT 0,  -- 0: Default, 1-6: Player hands 
     selected TINYINT NOT NULL DEFAULT 0,  -- 0: Not selected, 1: Selected
-    voted TINYINT NOT NULL DEFAULT 0;    -- 0: Not voted, 1: Voted
+    voted TINYINT NOT NULL DEFAULT 0,    -- 0: Not voted, 1: Voted
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (card_id) REFERENCES Card(Card_id)
 );
