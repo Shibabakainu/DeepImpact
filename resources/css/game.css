@@ -326,6 +326,83 @@ p {
     font-weight: bold;
 }
 
+.story-card {
+    width: 300px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}
+
+.player-list {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+#chatbox {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    white-space: nowrap;
+}
+
+.message {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    animation: slide-in 10s linear forwards;
+}
+
+#textbox {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#textbox input[type="text"] {
+    padding: 10px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ccc;
+}
+
+#textbox button {
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
+    border: 1px solid #ccc;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+#hand {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+}
+
+
 /* スクロールバーの幅や高さを狭くしています */
 ::-webkit-scrollbar {
     width: 10px;
@@ -336,4 +413,8 @@ p {
 ::-webkit-scrollbar-thumb {
     background: rgb(132, 132, 132);
     border-radius: 5px;
+}
+
+.selected-card-area {
+    display: flex;
 }

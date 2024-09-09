@@ -79,16 +79,43 @@ CREATE TABLE Card (
 
 INSERT INTO Card (Card_id, Card_name, Image_path, IsVisible)
 VALUES
-(1, 'Card One', 'card1.jpg', 1),
-(2, 'Card Two', 'card2.jpg', 1),
-(3, 'Card Three', 'card3.jpg', 1),
-(4, 'Card Four', 'card4.jpg', 1),
-(5, 'Card Five', 'card5.jpg', 1),
-(6, 'Card Six', 'card6.jpg', 1),
-(7, 'Card Seven', 'card7.jpg', 1),
-(8, 'Card Eight', 'card8.jpg', 1),
-(9, 'Card Nine', 'card9.jpg', 1),
-(10, 'Card Ten', 'card10.jpg', 1);
+(1, 'One', 'card1.jpg', 1),
+(2, 'Two', 'card2.jpg', 1),
+(3, 'Three', 'card3.jpg', 1),
+(4, 'Four', 'card4.jpg', 1),
+(5, 'Five', 'card5.jpg', 1),
+(6, 'Six', 'card6.jpg', 1),
+(7, 'Seven', 'card7.jpg', 1),
+(8, 'Eight', 'card8.jpg', 1),
+(9, 'Nine', 'card9.jpg', 1),
+(10, 'Ten', 'card10.jpg', 1),
+(11, 'Eleven', 'card11.jpg', 1),
+(12, 'Twelve', 'card12.jpg', 1),
+(13, 'Thirteen', 'card13.jpg', 1),
+(14, 'Forteen', 'card14.jpg', 1),
+(15, 'Fifteen', 'card15.jpg', 1),
+(16, 'Sixteen', 'card16.jpg', 1),
+(17, 'Seventeen', 'card17.jpg', 1),
+(18, 'Eighteen', 'card18.jpg', 1),
+(19, 'Nineteen', 'card19.jpg', 1),
+(20, 'Twenty', 'card20.jpg', 1),
+(21, 'TwentyOne', 'card21.jpg', 1),
+(22, 'TwentyTwo', 'card22.jpg', 1),
+(23, 'TwentyThree', 'card23.jpg', 1),
+(24, 'TwentyFour', 'card24.jpg', 1),
+(25, 'TwentyFive', 'card25.jpg', 1),
+(26, 'TwentySix', 'card26.jpg', 1),
+(27, 'TwentySeven', 'card27.jpg', 1),
+(28, 'TwentyEight', 'card28.jpg', 1),
+(29, 'TwentyNine', 'card29.jpg', 1),
+(30, 'Thirty', 'card30.jpg', 1),
+(31, 'ThirtyOne', 'card31.jpg', 1),
+(32, 'ThirtyTwo', 'card32.jpg', 1),
+(33, 'ThirtyThree', 'card33.jpg', 1),
+(34, 'ThirtyFour', 'card34.jpg', 1),
+(35, 'ThirtyFive', 'card35.jpg', 1),
+(36, 'ThirtySix', 'card36.jpg', 1)
+;
 
 
 -- Remove the trigger if it exists

@@ -5,21 +5,33 @@ include 'db_connect.php';
 // セッションからユーザーIDを取得
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 if (!$user_id) {
-    // ユーザーIDがない場合は、適切なエラーメッセージを表示するかリダイレクト
     die("ログインが必要です。");
 }
 
-// URLのクエリパラメータからcurrent_playersを取得
-$current_players = isset($_GET['current_players']) ? $_GET['current_players'] : 1; // 設定されていない場合は1をデフォルトとする
+// URLまたはセッションからroom_idを取得（必要に応じて調整）
+$room_id = isset($_GET['room_id']) ? $_GET['room_id'] : null;
+if (!$room_id) {
+    die("ルームIDが指定されていません。");
+}
 
-// プレイヤー情報を取得
+// プレイヤー情報を取得（room_playerテーブルからプレイヤー名を取得）
 $players = [];
-$sql = "SELECT name FROM users";
-if ($result = $conn->query($sql)) {
+$sql = "
+    SELECT u.name 
+    FROM room_players rp
+    JOIN users u ON rp.user_id = u.id
+    WHERE rp.room_id = ?
+";
+
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param('i', $room_id);  // Bind the room_id to the query
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     while ($row = $result->fetch_assoc()) {
         $players[] = $row['name'];
     }
-    $result->free();
+    $stmt->close();
 } else {
     die("プレイヤーデータの取得に失敗しました: " . $conn->error);
 }
@@ -35,93 +47,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <title>game</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .bottom-right-text {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
-        }
-
-        .top-left-text {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
-        }
-
-        @keyframes slide-in {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
-        }
-
-        #chatbox {
-            position: fixed;
-            top: 50px;
-            right: 10px;
-            white-space: nowrap;
-        }
-
-        .message {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px;
-            margin: 5px;
-            border-radius: 3px;
-            animation: slide-in 10s linear forwards;
-        }
-
-        #textbox {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        #textbox input[type="text"] {
-            padding: 10px;
-            border-radius: 5px 0 0 5px;
-            border: 1px solid #ccc;
-        }
-
-        #textbox button {
-            padding: 10px;
-            border-radius: 0 5px 5px 0;
-            border: 1px solid #ccc;
-            background-color: #007BFF;
-            color: white;
-            cursor: pointer;
-        }
-        #hand {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.card {
-    width: 100px;
-    height: 150px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-    line-height: 150px;
-    font-size: 18px;
-}
-    </style>
     <script type="text/javascript">
         // Ensure it's hidden initially
         document.addEventListener("DOMContentLoaded", function() {
@@ -137,16 +62,90 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <body>
 
     <div class="container">
+        <div class="onhand">
+            <div class="draw" id="draw"><button id="draw-cards">Draw Cards</button></div>
 
-        <ul>
-            <li>
-                <div class="card" id="hand"></div>
-            </li>
-            
-        </ul>
+            <!-- Display 5 face-down cards initially -->
+            <div id="selected-card-area" class="selected-card-area">
+                <?php
+                for ($i = 1; $i <= 5; $i++) {
+                    echo '<div class="card">';
+                    echo '<img src="../../images/hide' . $i . '.jpg" alt="Face Down Card">';
+                    echo '</div>';
+                }
+                ?>
+            </div>
+            <?php
+            include 'db_connect.php'; // データベース接続スクリプトをインクルード
 
+            // ランダムに6枚のカードを選択するSQLクエリ
+            $sql = "SELECT Card_id, Card_name, Image_path, IsVisible FROM Card WHERE IsVisible = 1 ORDER BY RAND() LIMIT 6";
+            $result = $conn->query($sql);
 
+            if ($result->num_rows > 0) {
+                $selectedCardIds = [];
+                echo '<div id="selected-card-area" class="selected-card-area"></div>';
+                echo '<div id="card-container" class="card-container">';
+                while ($row = $result->fetch_assoc()) {
+                    $selectedCardIds[] = $row["Card_id"];
+                    $visibilityClass = $row['IsVisible'] == 3 ? 'selected-card' : '';
+                    echo '<div class="card ' . $visibilityClass . '" data-value="' . $row["Card_id"] . '">';
+                    echo '<img src="../../images/' . $row["Image_path"] . '" alt="' . $row["Card_name"] . '">';
+                    echo '</div>';
+                }
+                echo '</div>';
+
+                // 選択されたカードの IsVisible を 2 に更新
+                if (!empty($selectedCardIds)) {
+                    $idsToUpdate = implode(",", $selectedCardIds);
+                    $updateSql = "UPDATE Card SET IsVisible = 2 WHERE Card_id IN ($idsToUpdate)";
+                    $conn->query($updateSql);
+
+                    // 選択されていないカードの IsVisible を 1 に更新
+                    $updateOthersSql = "UPDATE Card SET IsVisible = 1 WHERE Card_id NOT IN ($idsToUpdate) AND IsVisible != 1";
+                    $conn->query($updateOthersSql);
+                }
+            } else {
+                echo " ";
+            }
+
+            $conn->close();
+            ?>
+        </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Click event for drawing cards
+            $("#draw-cards").click(function() {
+                $.ajax({
+                    url: 'draw_cards.php', // Server-side script to handle card drawing
+                    method: 'POST',
+                    dataType: 'json', // Expecting JSON response
+                    success: function(response) {
+                        // Clear the existing cards
+                        $('#selected-card-area').empty();
+
+                        // Loop through the response and display the cards
+                        if (response.success) {
+                            response.cards.forEach(function(card) {
+                                $('#selected-card-area').append(
+                                    '<div class="card" data-value="' + card.Card_id + '">' +
+                                    '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                                    '</div>'
+                                );
+                            });
+                        } else {
+                            alert("Failed to draw cards: " + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("Error drawing cards.");
+                    }
+                });
+            });
+        });
+    </script>
 
     <div id="textbox">
         <div id="chatbox"></div>
@@ -154,13 +153,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <button onclick="sendMessage()">Send</button>
     </div>
 
-    
-        <div id="hand"></div>
-        <button onclick="drawCard()">Draw Card</button>
-        <div id="player-list"></div> <!-- プレイヤーリストを表示するための要素 -->
-    
-
-    <div class="top-left-text">
+    <div class="player-list">
         <p>現在のプレイヤー:</p>
         <ul>
             <?php foreach ($players as $player): ?>
@@ -358,9 +351,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 <?php
     // 表示するテキストをPHPで定義
-    $text = "これは右下に表示されるテキストです";
-    echo "<div class='bottom-right-text'>{$text}</div>";
-    ?>
+    $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
+    そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
+    echo "<div class='story-card'>{$text}</div>";
+?>
 
 </body>
 </html>
