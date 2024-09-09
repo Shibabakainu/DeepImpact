@@ -16,10 +16,6 @@ CREATE TABLE users (
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert a demo user
-INSERT INTO users (id, email, password, profile_image, name, created_at) VALUES 
-(1, 'demo@demo', 'demo', '', 'demo', NOW());
-
 -- roomsテーブルを作成
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
