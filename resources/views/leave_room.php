@@ -2,7 +2,7 @@
 session_start();
 include 'db_connect.php';
 
-// Get the room_id and user_id
+//room_idとuser_idを取得
 $room_id = isset($_POST['room_id']) ? (int)$_POST['room_id'] : null;
 $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 
@@ -10,7 +10,7 @@ $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 if ($room_id && $user_id) {
     // Start a transaction
     $conn->begin_transaction();
-    
+
     try {
         // Remove the player from the room_players table
         $sql_remove_player = "DELETE FROM room_players WHERE room_id = ? AND user_id = ?";
@@ -23,7 +23,7 @@ if ($room_id && $user_id) {
             throw new Exception($stmt_remove_player->error);
         }
         $stmt_remove_player->close();
-        
+
         // Decrement the current_players count in the rooms table
         $sql_decrement_players = "UPDATE rooms SET current_players = current_players - 1 WHERE room_id = ?";
         $stmt_decrement_players = $conn->prepare($sql_decrement_players);
@@ -35,7 +35,7 @@ if ($room_id && $user_id) {
             throw new Exception($stmt_decrement_players->error);
         }
         $stmt_decrement_players->close();
-        
+
         // Check if the current_players is now 0, and if so, delete the room
         $sql_check_players = "SELECT current_players FROM rooms WHERE room_id = ?";
         $stmt_check_players = $conn->prepare($sql_check_players);
@@ -61,7 +61,7 @@ if ($room_id && $user_id) {
             }
             $stmt_delete_room->close();
         }
-        
+
         // Commit the transaction
         $conn->commit();
         echo "success";
@@ -70,9 +70,8 @@ if ($room_id && $user_id) {
         $conn->rollback();
         echo "エラー: " . $e->getMessage();
     }
-    
+
     $conn->close();
 } else {
     echo "エラー: 無効なルームIDまたはユーザーIDです。";
 }
-?>

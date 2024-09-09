@@ -63,7 +63,7 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     document.getElementById('room-list').innerHTML = xhr.responseText;
-                    attachJoinEventListeners(); // Reattach event listeners after updating room-list
+                    attachJoinEventListeners(); // room-list の更新後にイベントリスナーを再度アタッチする
                 }
             };
             xhr.send();
@@ -74,31 +74,39 @@
             joinButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const roomDiv = this.closest('.room');
+                    const roomStatus = roomDiv.querySelector('.room-progress').textContent.trim().toLowerCase();
                     const roomName = roomDiv.getAttribute('data-room-name');
 
-                    document.getElementById('password-popup').style.display = 'block';
-                    document.getElementById('overlay').style.display = 'block';
-                    document.getElementById('submit-password').onclick = function() {
-                        const password = document.getElementById('room-password').value;
-                        fetch('password_room.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded'
-                                },
-                                body: `room_name=${encodeURIComponent(roomName)}&password=${encodeURIComponent(password)}`
-                            })
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === 'success') {
-                                    joinRoom(roomName);
-                                } else {
-                                    alert('パスワードが間違っています');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    };
+                    if (roomStatus === 'in_game') {
+                        // ゲーム中の場合、アラートポップアップを表示
+                        alert('ゲーム中なので参加できません。');
+                    } else {
+                        // ゲーム中でない場合、パスワードポップアップを表示
+                        document.getElementById('password-popup').style.display = 'block';
+                        document.getElementById('overlay').style.display = 'block';
+
+                        document.getElementById('submit-password').onclick = function() {
+                            const password = document.getElementById('room-password').value;
+                            fetch('password_room.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: `room_name=${encodeURIComponent(roomName)}&password=${encodeURIComponent(password)}`
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    if (data === 'success') {
+                                        joinRoom(roomName);
+                                    } else {
+                                        alert('パスワードが間違っています');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                        };
+                    }
                 });
             });
 
@@ -135,6 +143,7 @@
             attachJoinEventListeners();
         });
     </script>
+
 </body>
 
 </html>

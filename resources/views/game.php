@@ -377,7 +377,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
         document.getElementById('exit-btn').addEventListener('click', function() {
-            window.location.href = '/DeepImpact/exit.php';
+            window.location.href = '/DeepImpact/resources/views/index.php';
         });
 
         $("button").click(function() {
