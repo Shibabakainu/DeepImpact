@@ -49,7 +49,19 @@ if ($room_id && $user_id) {
         $stmt_check_players->close();
 
         if ($current_players === 0) {
-            // Delete the room if no players are left
+            // First, delete related room_cards records
+            $sql_delete_room_cards = "DELETE FROM room_cards WHERE room_id = ?";
+            $stmt_delete_room_cards = $conn->prepare($sql_delete_room_cards);
+            if (!$stmt_delete_room_cards) {
+                throw new Exception($conn->error);
+            }
+            $stmt_delete_room_cards->bind_param("i", $room_id);
+            if (!$stmt_delete_room_cards->execute()) {
+                throw new Exception($stmt_delete_room_cards->error);
+            }
+            $stmt_delete_room_cards->close();
+
+            // Then, delete the room if no players are left
             $sql_delete_room = "DELETE FROM rooms WHERE room_id = ?";
             $stmt_delete_room = $conn->prepare($sql_delete_room);
             if (!$stmt_delete_room) {
