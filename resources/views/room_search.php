@@ -79,7 +79,7 @@
 
                     if (roomStatus === 'in_game') {
                         // ゲーム中の場合、アラートポップアップを表示
-                        alert('ゲーム中なので参加できません。');
+                        alert('ゲーム中のため参加できません。');
                     } else {
                         // ゲーム中でない場合、パスワードポップアップを表示
                         document.getElementById('password-popup').style.display = 'block';
