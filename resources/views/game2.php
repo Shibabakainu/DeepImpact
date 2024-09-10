@@ -42,6 +42,7 @@ if (!$player_position) {
     die("プレイヤーのポジションが不明です。");
 }
 
+
 // プレイヤーに配られた5枚のカードを取得
 $sql = "
     SELECT c.Card_id, c.Card_name, c.Image_path 
@@ -87,30 +88,32 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 <body>
 
-     <!-- Show player's hand -->
-     <div class="container">
+    <!-- Show player's hand -->
+    <div class="container">
         <div class="onhand">
             <div class="draw" id="draw"><button id="draw-cards">Draw Cards</button></div>
 
-            <div id="selected-card-area" class="selected-card-area">
+            <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
-                    <div class="card" data-card-id="<?= $card['Card_id'] ?>">
-                        <img src="../../images/<?= $card['Image_path'] ?>" alt="<?= htmlspecialchars($card['Card_name'], ENT_QUOTES) ?>">
-                    </div>
+                    <?php if ($card['selected'] == 0): // Only show cards that are not selected ?>
+                        <div class="card" data-card-id="<?= $card['Card_id'] ?>">
+                            <img src="../../images/<?= $card['Image_path'] ?>" alt="<?= htmlspecialchars($card['Card_name'], ENT_QUOTES) ?>">
+                        </div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </div>
         </div>
     </div>
 
-    <!-- Voting section (for all cards with status 7) -->
+    <!-- Voting section (for all cards with selected 1) -->
     <div class="vote-area">
         <?php
-        // Get all cards with status 7 (submitted by players)
+        // Get all cards with selected 1 (submitted by players)
         $sql_vote = "
             SELECT c.Card_id, c.Card_name, c.Image_path 
             FROM room_cards rc
             JOIN Card c ON rc.card_id = c.Card_id
-            WHERE rc.room_id = ? AND rc.status = 7
+            WHERE rc.room_id = ? AND rc.selected = 1
         ";
         $stmt_vote = $conn->prepare($sql_vote);
         $stmt_vote->bind_param('i', $room_id);
@@ -118,7 +121,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         $result_vote = $stmt_vote->get_result();
 
         while ($row_vote = $result_vote->fetch_assoc()) {
-            echo '<div class="vote-card" data-card-id="' . $row_vote['Card_id'] . '">';
+            echo '<div class="selected-card" data-card-id="' . $row_vote['Card_id'] . '">';
             echo '<img src="../../images/' . $row_vote['Image_path'] . '" width="130px" alt="' . htmlspecialchars($row_vote['Card_name'], ENT_QUOTES) . '">';
             echo '</div>';
         }
@@ -128,7 +131,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <h2>Vote for the Best Card:</h2>
 
     <script type="text/javascript">
-        // Card selection logic (updates the card's status to 7)
+        // Card selection logic (updates the card's selected to 1)
         $(document).on('click', '.card', function() {
             var cardId = $(this).data('card-id');
             $.ajax({
@@ -138,6 +141,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 success: function(response) {
                     if (response.success) {
                         alert('カードが選ばれました！');
+                        // Mark the card as selected in the UI
+                        cardElement.addClass('selected-card');
+
+                        // Optionally disable future clicks
+                        //cardElement.off('click');
                     } else {
                         alert('カードの選択に失敗しました。');
                     }

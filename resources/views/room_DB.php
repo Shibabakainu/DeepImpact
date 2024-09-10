@@ -74,13 +74,15 @@ if ($stmt->execute()) {
 
     if ($stmt_password->execute()) {
         // room_playersテーブルにホストプレイヤーを挿入
-        $sql_room_players = "INSERT INTO room_players (room_id, user_id, host) VALUES (?, ?, ?)";
+        $host_position = 1;
+        $sql_room_players = "INSERT INTO room_players (room_id, user_id, host, player_position) VALUES (?, ?, ?, ?)";
         $stmt_room_players = $conn->prepare($sql_room_players);
         if (!$stmt_room_players) {
             die("Error preparing room_players statement: " . $conn->error);
         }
         $host = true;
-        $stmt_room_players->bind_param("iii", $room_id, $user_id, $host);
+        $stmt_room_players->bind_param("iiii", $room_id, $user_id, $host, $host_position);
+        $_SESSION['player_position'] = $host_position;
 
         if ($stmt_room_players->execute()) {
             // ルーム詳細ページにリダイレクト

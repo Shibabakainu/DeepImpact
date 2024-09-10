@@ -73,7 +73,7 @@ body {
     justify-content: center;
 }
 
-.vote-area .vote-card {
+.vote-area .selected-card {
     width: 8rem;
     margin-right: 30px;
     background-color: white;
@@ -84,12 +84,12 @@ body {
     transition-duration: 0.2s;
 }
 
-.vote-area .vote-card:hover {
+.vote-area .selected-card:hover {
     flex-shrink: 0;
     translate: 0 -1rem;
 }
 
-.vote-area .vote-card .img {
+.vote-area .selected-card .img {
     width: 8rem;
 }
 
@@ -465,7 +465,7 @@ gap: 10px;
     border-radius: 5px;
 }
 
-.selected-card-area {
+.drawed-card-area {
     display: flex;
     justify-content: center;
 }
