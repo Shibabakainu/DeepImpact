@@ -21,9 +21,10 @@ if ($selected == 1) {
     exit;
 }
 
-// カードの`selected`カラムを1に更新
-$sql_update = "UPDATE room_cards SET selected = 1 WHERE card_id = ? AND room_id = ?";
-$stmt = $conn->prepare($sql_update);
+$sql = "UPDATE room_cards SET selected = 1 WHERE room_id = ? AND card_id = ? AND selected = 0 LIMIT 1";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('ii', $room_id, $card_id);
+$result = $stmt->execute();
 
 if ($stmt === false) {
     echo json_encode(['success' => false, 'message' => 'SQLの準備に失敗しました: ' . $conn->error]);

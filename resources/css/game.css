@@ -48,7 +48,7 @@ body {
 .container .card {
     /* カードの見た目 */
     width: 8rem;
-    background-color:white;
+    background-color: white;
     box-shadow: 0 0 6px black;
     border: 0.3rem white solid;
     border-radius: 0.5rem;
@@ -403,6 +403,7 @@ p {
     from {
         transform: translateX(100%);
     }
+
     to {
         transform: translateX(-100%);
     }
@@ -446,10 +447,11 @@ p {
     color: white;
     cursor: pointer;
 }
+
 #hand {
-display: flex;
-flex-wrap: wrap;
-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 
@@ -468,4 +470,26 @@ gap: 10px;
 .drawed-card-area {
     display: flex;
     justify-content: center;
+}
+
+/* vote-area内のカードのスタイル */
+.vote-area .selected-card {
+    display: inline-block;
+    width: 130px;
+    /* カードの幅を固定 */
+    height: 200px;
+    /* カードの高さを固定（必要に応じて調整） */
+    margin: 5px;
+    /* カード間のスペース */
+    box-sizing: border-box;
+    /* パディングやボーダーをサイズに含める */
+}
+
+.vote-area .selected-card img {
+    width: 100%;
+    /* 画像をカードの幅に合わせる */
+    height: auto;
+    /* 画像の高さを自動で調整 */
+    display: block;
+    /* 画像の下に余白を防ぐ */
 }

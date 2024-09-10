@@ -136,9 +136,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     var result = JSON.parse(response);
                     if (result.success) {
                         alert('カードが選ばれました！');
-                        // Remove the selected card from drawed-card-area
                         $('#drawed-card-area').find('.card[data-card-id="' + cardId + '"]').remove();
-                        // Update the vote area
                         updateVoteArea();
                     } else {
                         alert('カードの選択に失敗しました: ' + result.message);
@@ -169,21 +167,25 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         }
 
         // Voting logic
-        $(document).on('click', '.vote-card', function() {
+        $(document).on('click', '.selected-card', function() {
             var cardId = $(this).data('card-id');
             $.ajax({
                 url: 'vote.php',
                 method: 'POST',
                 data: {
-                    card_id: cardId,
-                    room_id: <?= $room_id ?>
+                    room_card_id: cardId,
+                    room_id: roomId
                 },
                 success: function(response) {
-                    if (response.success) {
+                    var result = JSON.parse(response);
+                    if (result.success) {
                         alert('投票が完了しました！');
                     } else {
-                        alert('投票に失敗しました。');
+                        alert('投票に失敗しました: ' + result.message);
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error("エラーが発生しました:", status, error);
                 }
             });
         });
