@@ -12,7 +12,7 @@ if (!$room_id) {
 
 // Fetch all selected cards
 $sql = "
-    SELECT c.Card_id, c.Card_name, c.Image_path, rc.selected 
+    SELECT c.Card_id, c.Card_name, c.Image_path 
     FROM room_cards rc
     JOIN Card c ON rc.card_id = c.Card_id
     WHERE rc.room_id = ? AND rc.selected = 1
@@ -33,4 +33,3 @@ echo $html;
 
 $stmt->close();
 $conn->close();
-?>

@@ -95,8 +95,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
-                    <?php if (isset($card['selected']) && $card['selected'] == 0): // Only show cards that are not selected ?>
-                        <div class="card" data-card-id="<?= $card['Card_id'] ?>">
+                    <?php if ($card['selected'] == 0): // Only show cards that are not selected 
+                    ?>
+                        <div class="card" data-card-id="<?= $card['Card_id'] ?>" draggable="true">
                             <img src="../../images/<?= $card['Image_path'] ?>" alt="<?= htmlspecialchars($card['Card_name'], ENT_QUOTES) ?>">
                         </div>
                     <?php endif; ?>
@@ -112,35 +113,39 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <h2>Vote for the Best Card:</h2>
 
     <script type="text/javascript">
-        // Card selection logic (updates the card's status to 1)
-        $(document).on('click', '.card', function() {
-            var cardId = $(this).data('card-id');
-            var roomId = <?= $room_id ?>; // Ensure this value is set correctly
-            var selectedCard = $(this); // Store the selected card element
+        // URLからroom_idを取得する関数
+        function getRoomIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('room_id');
+        }
 
-            console.log('Card ID:', cardId);
-            console.log('Room ID:', roomId);
+        const roomId = getRoomIdFromUrl(); // URLからroom_idを取得
+
+        $(document).on('click', '.card', function() {
+            var cardElement = $(this);
+            var cardId = cardElement.data('card-id');
 
             $.ajax({
                 url: 'select_card.php',
                 method: 'POST',
-                data: { card_id: cardId, room_id: roomId },
-                dataType: 'json',
+                data: {
+                    card_id: cardId,
+                    room_id: roomId
+                },
                 success: function(response) {
-                    console.log(response); // Log the response for debugging
-
-                    if (response.success) {
+                    var result = JSON.parse(response);
+                    if (result.success) {
                         alert('カードが選ばれました！');
-                        // Remove the selected card from the UI
-                        selectedCard.remove();
-                        // Fetch and update the vote area
+                        // Remove the selected card from drawed-card-area
+                        $('#drawed-card-area').find('.card[data-card-id="' + cardId + '"]').remove();
+                        // Update the vote area
                         updateVoteArea();
                     } else {
-                        alert('カードの選択に失敗しました: ' + response.message);
+                        alert('カードの選択に失敗しました: ' + result.message);
                     }
                 },
-                error: function() {
-                    alert('カードの選択に失敗しました。');
+                error: function(xhr, status, error) {
+                    console.error("エラーが発生しました:", status, error);
                 }
             });
         });
@@ -150,7 +155,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             $.ajax({
                 url: 'get_votes.php',
                 method: 'GET',
-                data: { room_id: <?= $room_id ?> },
+                data: {
+                    room_id: roomId
+                },
                 dataType: 'html',
                 success: function(response) {
                     $('#vote-area').html(response); // Update the vote area with new content
@@ -167,7 +174,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             $.ajax({
                 url: 'vote.php',
                 method: 'POST',
-                data: { card_id: cardId, room_id: <?= $room_id ?> },
+                data: {
+                    card_id: cardId,
+                    room_id: <?= $room_id ?>
+                },
                 success: function(response) {
                     if (response.success) {
                         alert('投票が完了しました！');
@@ -213,7 +223,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </script>
 
     <div class="map">
-        <div class="turn"><h1>TURN 1</h1></div>
+        <div class="turn">
+            <h1>TURN 1</h1>
+        </div>
     </div>
 
     <div id="textbox">
@@ -361,9 +373,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     echo "<div class='story-card'>{$text}</div>";
     ?>
 
-<?php
+    <?php
     $conn->close();
-?>
+    ?>
 
 </body>
 
