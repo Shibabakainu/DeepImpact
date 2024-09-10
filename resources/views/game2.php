@@ -45,7 +45,7 @@ if (!$player_position) {
 
 // プレイヤーに配られた5枚のカードを取得
 $sql = "
-    SELECT c.Card_id, c.Card_name, c.Image_path 
+    SELECT c.Card_id, c.Card_name, c.Image_path, rc.selected
     FROM room_cards rc
     JOIN Card c ON rc.card_id = c.Card_id
     WHERE rc.room_id = ? AND rc.status = ?
@@ -95,7 +95,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
-                    <?php if ($card['selected'] == 0): // Only show cards that are not selected ?>
+                    <?php if (isset($card['selected']) && $card['selected'] == 0): // Only show cards that are not selected ?>
                         <div class="card" data-card-id="<?= $card['Card_id'] ?>">
                             <img src="../../images/<?= $card['Image_path'] ?>" alt="<?= htmlspecialchars($card['Card_name'], ENT_QUOTES) ?>">
                         </div>
@@ -106,52 +106,60 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </div>
 
     <!-- Voting section (for all cards with selected 1) -->
-    <div class="vote-area">
-        <?php
-        // Get all cards with selected 1 (submitted by players)
-        $sql_vote = "
-            SELECT c.Card_id, c.Card_name, c.Image_path 
-            FROM room_cards rc
-            JOIN Card c ON rc.card_id = c.Card_id
-            WHERE rc.room_id = ? AND rc.selected = 1
-        ";
-        $stmt_vote = $conn->prepare($sql_vote);
-        $stmt_vote->bind_param('i', $room_id);
-        $stmt_vote->execute();
-        $result_vote = $stmt_vote->get_result();
-
-        while ($row_vote = $result_vote->fetch_assoc()) {
-            echo '<div class="selected-card" data-card-id="' . $row_vote['Card_id'] . '">';
-            echo '<img src="../../images/' . $row_vote['Image_path'] . '" width="130px" alt="' . htmlspecialchars($row_vote['Card_name'], ENT_QUOTES) . '">';
-            echo '</div>';
-        }
-        $stmt_vote->close();
-        ?>
+    <div class="vote-area" id="vote-area">
+        <!-- Cards with selected 1 will be loaded here -->
     </div>
     <h2>Vote for the Best Card:</h2>
 
     <script type="text/javascript">
-        // Card selection logic (updates the card's selected to 1)
+        // Card selection logic (updates the card's status to 1)
         $(document).on('click', '.card', function() {
             var cardId = $(this).data('card-id');
+            var roomId = <?= $room_id ?>; // Ensure this value is set correctly
+            var selectedCard = $(this); // Store the selected card element
+
+            console.log('Card ID:', cardId);
+            console.log('Room ID:', roomId);
+
             $.ajax({
                 url: 'select_card.php',
                 method: 'POST',
-                data: { card_id: cardId, room_id: <?= $room_id ?> },
+                data: { card_id: cardId, room_id: roomId },
+                dataType: 'json',
                 success: function(response) {
+                    console.log(response); // Log the response for debugging
+
                     if (response.success) {
                         alert('カードが選ばれました！');
-                        // Mark the card as selected in the UI
-                        cardElement.addClass('selected-card');
-
-                        // Optionally disable future clicks
-                        //cardElement.off('click');
+                        // Remove the selected card from the UI
+                        selectedCard.remove();
+                        // Fetch and update the vote area
+                        updateVoteArea();
                     } else {
-                        alert('カードの選択に失敗しました。');
+                        alert('カードの選択に失敗しました: ' + response.message);
                     }
+                },
+                error: function() {
+                    alert('カードの選択に失敗しました。');
                 }
             });
         });
+
+        // Function to fetch and update the vote area
+        function updateVoteArea() {
+            $.ajax({
+                url: 'get_votes.php',
+                method: 'GET',
+                data: { room_id: <?= $room_id ?> },
+                dataType: 'html',
+                success: function(response) {
+                    $('#vote-area').html(response); // Update the vote area with new content
+                },
+                error: function() {
+                    alert('投票エリアの更新に失敗しました。');
+                }
+            });
+        }
 
         // Voting logic
         $(document).on('click', '.vote-card', function() {
@@ -181,12 +189,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     dataType: 'json', // Expecting JSON response
                     success: function(response) {
                         // Clear the existing cards
-                        $('#selected-card-area').empty();
+                        $('#drawed-card-area').empty();
 
                         // Loop through the response and display the cards
                         if (response.success) {
                             response.cards.forEach(function(card) {
-                                $('#selected-card-area').append(
+                                $('#drawed-card-area').append(
                                     '<div class="card" data-value="' + card.Card_id + '">' +
                                     '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
                                     '</div>'
