@@ -87,6 +87,10 @@ main {
 }
 
 .create {
+    display: none;
+}
+
+.game2 {
     width: 140px;
     height: 60px;
     border-radius: 10px;
@@ -97,7 +101,7 @@ main {
     transition: 0.5s ease;
 }
 
-.create:hover {
+.game2:hover {
     background-color: #e77a34;
 }
 

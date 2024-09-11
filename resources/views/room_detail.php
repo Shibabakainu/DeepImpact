@@ -96,7 +96,7 @@ if ($host_id) {
             <div class="buttons">
                 <button class="leave-room" data-room-id="<?php echo $room_id; ?>">ルームを退出</button>
                 <button class="create" data-room-id="<?php echo $room_id; ?>">物語を作る</button>
-                <button class="game2" data-room-id="<?php echo $room_id; ?>">game2</button>
+                <button class="game2" data-room-id="<?php echo $room_id; ?>">物語を作る</button>
             </div>
         </div>
     </main>
