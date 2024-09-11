@@ -60,7 +60,36 @@ $cards = [];
 while ($row = $result->fetch_assoc()) {
     $cards[] = $row;
 }
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
+// ターン数の初期化（初回のみ）
+if (!isset($_SESSION['turn'])) {
+    $_SESSION['turn'] = 1; // 初期ターンは1
+}
+
+// ユーザーがポップアップでOKを押した場合、ターンを進める
+if (isset($_POST['next_turn'])) {
+    $_SESSION['turn']++;
+}
+
+// 新しく始めるボタンが押されたらセッションをリセット
+if (isset($_POST['reset_game'])) {
+    $_SESSION['turn'] = 1;
+}
+
+// 最大ターン数
+$max_turns = 6;
+
+// 現在のターン数を取得
+$turn = $_SESSION['turn'];
+
+// ターンが最大に達したらセッションをリセット（任意の条件で）
+if ($turn > $max_turns) {
+    $_SESSION['turn'] = $max_turns;
+    $message = "ゲーム終了！全てのターンが終了しました。";
+}
 
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
@@ -225,9 +254,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </script>
 
     <div class="map">
-        <div class="turn">
-            <h1>TURN 1</h1>
-        </div>
+
     </div>
 
     <div id="textbox">
@@ -243,6 +270,29 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 <li><?php echo htmlspecialchars($player, ENT_QUOTES, 'UTF-8'); ?></li>
             <?php endforeach; ?>
         </ul>
+        <script>
+            // ポップアップで確認する関数
+            function showPopup() {
+                if (confirm("次のターンに進みますか？")) {
+                    document.getElementById("nextTurnForm").submit(); // ユーザーが承認したらフォーム送信
+                }
+            }
+        </script>
+        <h1>現在のターン: <?php echo $turn; ?> / 6</h1>
+
+        <?php if ($turn < 6): ?>
+            <form id="nextTurnForm" method="POST">
+                <input type="hidden" name="next_turn" value="1">
+                <button type="button" onclick="showPopup()">次のターンに進む</button>
+            </form>
+        <?php else: ?>
+            <p>ゲーム終了！全てのターンが終了しました。</p>
+        <?php endif; ?>
+
+        <form method="POST">
+            <input type="hidden" name="reset_game" value="1">
+            <button type="submit">新しく始める</button>
+        </form>
     </div>
 
     <div class="menu-">
