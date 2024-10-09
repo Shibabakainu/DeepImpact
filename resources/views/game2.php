@@ -116,7 +116,18 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
-
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+    <script>
+    window.onload = function() {
+        var bgm = document.getElementById('bgm');
+        
+        // 音量調整
+        bgm.volume = 0.5; // 音量を50%に設定
+    };
+    </script>
     <!-- Show player's hand -->
     <div class="container">
         <div class="onhand">
