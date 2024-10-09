@@ -283,7 +283,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <?php if ($turn < 6): ?>
             <form id="nextTurnForm" method="POST">
                 <input type="hidden" name="next_turn" value="1">
-                <button type="button" onclick="showPopup()">次のターンに進む</button>
+                <button class="nextturn" type="button" onclick="showPopup()">次のターンに進む</button>
             </form>
         <?php else: ?>
             <p>ゲーム終了！全てのターンが終了しました。</p>
@@ -291,7 +291,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         <form method="POST">
             <input type="hidden" name="reset_game" value="1">
-            <button type="submit">新しく始める</button>
+            <button class="newgame" type="submit">新しく始める</button>
         </form>
     </div>
 
@@ -410,7 +410,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
         document.getElementById('exit-btn').addEventListener('click', function() {
-            window.location.href = '/DeepImpact/exit.php';
+            window.location.href = '/DeepImpact/resources/views/index.php';
         });
 
         $("button").click(function() {
@@ -418,12 +418,47 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
     </script>
 
-    <?php
-    // 表示するテキストをPHPで定義
-    $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
+<?php
+    // Define the story text for each turn
+    $text1 = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しました。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
     そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
-    echo "<div class='story-card'>{$text}</div>";
-    ?>
+    $text2 = "正義感の強い若い戦士は魔王を倒しに行こうと決心しました。しかし３つの心臓と軍勢相手に一人で行くのはあまりにも無謀だと思いました。それに３つの心臓はそれぞれ火と水と風の剣でないと効果がないことが分かりその剣の持ち主を探しに行きました。まず火の洞窟へ持ち主に会いに行きました。火の剣の持ち主は<b>すごく協力的で体中に傷があり鋭い目</b>をしていました。";
+    $text3 = "次に水の剣の持ち主に会いに行きました。水の剣の持ち主は協力してくれたものの<b>愛想の悪い面倒くさがりの性格</b>でした。";
+    $text4 = "最後に風の剣の持ち主に会いに行きました。風の剣の持ち主は<b>警戒心が強く目力も強い背の高い力持ち</b>でした。";
+    $text5 = "四人は準備を整えて魔王を倒しにいきました。待ち構えていた軍勢を倒し魔王の部屋につきました。そこにいたのは<b>背の低い威圧感のある強そうな魔王</b>でした。";
+    $text6 = "壮絶な戦いの末、勇者たちは魔王を倒し、国に平和を取り戻しました。";
+
+    $storyText = ""; // Variable to hold the current turn's story
+
+    // Switch case to display the story based on the turn
+    switch ($turn) {
+        case 1:
+            $storyText = $text1;
+            break;
+        case 2:
+        $storyText = $text2;
+            break;
+        case 3:
+            $storyText = $text3;
+            break;
+        case 4:
+            $storyText = $text4;
+            break;
+        case 5:
+            $storyText = $text5;
+            break;
+        case 6:
+            $storyText = $text6;
+            break;
+        default:
+            $storyText = "物語が終了しました。";
+            break;
+    }
+
+    // Display the story for the current turn
+    echo "<div class='story-card'>{$storyText}</div>";
+?>
+
 
     <?php
     $conn->close();
