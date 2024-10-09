@@ -177,12 +177,46 @@ body {
     border-radius: 5px;
 }
 
+.popup-btn:hover {
+    background-color: #e77a34;
+}
+
 #back-btn {
     background-color: red;
     position: relative;
     z-index: 995;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.nextturn {
+    border-radius: 5px;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nextturn:hover {
+    background-color: #e77a34;
+}
+
+.newgame {
+    border-radius: 5px;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.newgame:hover {
+    background-color: lime;
 }
 
 .button_1 {

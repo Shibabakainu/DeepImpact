@@ -46,6 +46,18 @@ $loggedIn = isset($_SESSION['user_id']);
 </head>
 
 <body>
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+    <script>
+        window.onload = function() {
+            var bgm = document.getElementById('bgm');
+
+            // 前回の再生位置があれば取得して、そこから再生する
+            var savedTime = localStorage.getItem('bgmTime');
+        };
+    </script>
     <?php include 'header.php'; ?>
     <div class="main-container">
         <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="header-image">
@@ -53,47 +65,22 @@ $loggedIn = isset($_SESSION['user_id']);
             <button onclick="window.location.href='room_setting.php'">ルーム作成</button>
             <button onclick="window.location.href='room_search.php'">ルーム検索</button>
             <button onclick="window.location.href='frieview.php'">フレンド</button>
-            <button id="index-click-btn">ルール</button>
+            <button id="index-click-btn">ヘルプ</button>
             <div id="index-popup-wrapper">
                 <div id="index-popup-inside">
-                    <div class="text">
-                        <div id="index-close">X</div>
-                        <p>※注意事項※</p>
-                        <ul>
-                            <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
-                        </ul>
-                        <p>ゲーム開始時</p>
-                        <ul>
-                            <li>各プレイヤーに5枚のカードを配ります。</li>
-                        </ul>
-                        <p>カードの提出</p>
-                        <ul>
-                            <li>物語を確認し、自分の手札から物語のフレーズに合うと思うカードを1枚選択し、待機します。</li><br>
-                            <li>全てのプレイヤーが選び終えると、画面中央に選ばれたカードが表示されます。</li>
-                        </ul>
-                        <p>投票</p>
-                        <ul>
-                            <li>各プレイヤーは、物語のフレーズに1番あっていると思うカードを選び、投票することができます。</li><br>
-                            <li>注意として、自身が提出したカードに投票することはできません。</li>
-                        </ul>
-                        <p>得点</p>
-                        <ul>
-                            <li>投票が入ったカードを出したプレイヤーは、投票1つにつき、+1点を獲得します。</li><br>
-                            <li>1番票を集めたカードに、投票をしていた場合には投票者にも+1点を獲得します。</li>
-                        </ul>
-                        <p>ラウンド終了</p>
-                        <ul>
-                            <li>各プレイヤーは新しいカードを1枚手に入れ、手札が5枚に戻ります。</li>
-                        </ul>
-                        <p>ゲーム終了</p>
-                        <ul>
-                            <li>物語の決められたチャプター(ターン)が全て終えると、ゲーム終了です。</li><br>
-                            <li>最も得点の多いプレイヤーの勝利となります。</li>
-                        </ul>
+                    <div id="index-close">X</div>
+                    <div id="popup-content">
+                        <!-- ここにチュートリアルコンテンツが読み込まれます -->
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 画像を拡大表示するためのモーダル -->
+    <div id="imageModal" class="modal" style="display: none;">
+        <span id="closeModal" class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
     </div>
 
     <?php if (!$loggedIn) : ?>
@@ -109,13 +96,61 @@ $loggedIn = isset($_SESSION['user_id']);
         const indexClickBtn = document.getElementById('index-click-btn');
         const indexPopupWrapper = document.getElementById('index-popup-wrapper');
         const indexClose = document.getElementById('index-close');
+        const popupContent = document.getElementById('popup-content');
 
-        // ボタンをクリックしたときにポップアップを表示させる
+        function loadTutorial() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/DeepImpact/resources/views/tutorial.php', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        popupContent.innerHTML = xhr.responseText;
+
+
+                        // tutorial.php内の画像クリック処理
+                        const clickableImage = document.getElementById('clickableImage');
+                        if (clickableImage) {
+                            clickableImage.addEventListener('click', function() {
+                                const modal = document.getElementById('imageModal');
+                                const modalImage = document.getElementById('modalImage');
+                                modal.style.display = 'flex'; // モーダルを表示
+                                modalImage.src = this.src; // クリックした画像のsrcをモーダルに設定
+                            });
+                        }
+
+                        // モーダルを閉じる処理
+                        const closeModal = document.getElementById('closeModal');
+                        const modal = document.getElementById('imageModal');
+                        closeModal.addEventListener('click', function() {
+                            modal.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
+                        });
+
+                        // モーダルの外側をクリックして閉じる
+                        modal.addEventListener('click', function(e) {
+                            if (e.target === modal) {
+                                modal.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
+                            }
+                        });
+
+
+                    } else {
+                        console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
+                    }
+                }
+            };
+            xhr.onerror = function() {
+                console.error("Request failed.");
+            };
+            xhr.send();
+        }
+
+        // ルールボタンをクリックしたときにポップアップを表示し、チュートリアルを読み込む
         indexClickBtn.addEventListener('click', () => {
             indexPopupWrapper.style.display = "block";
+            loadTutorial(); // コンテンツを動的に読み込む
         });
 
-        // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる
+        // ポップアップ外や「X」ボタンをクリックしたらポップアップを閉じる
         indexPopupWrapper.addEventListener('click', e => {
             if (e.target.id === indexPopupWrapper.id || e.target.id === indexClose.id) {
                 indexPopupWrapper.style.display = 'none';

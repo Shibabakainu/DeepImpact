@@ -106,28 +106,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         // Ensure it's hidden initially
         document.addEventListener("DOMContentLoaded", function() {
             var shouldShowPopup = <?php echo json_encode($shouldShowPopup); ?>;
-            if (shouldShowPopup) {
-                document.getElementById('menu-popup-wrapper').style.display = 'none';
-            } else {
+            if (!shouldShowPopup) {
                 document.getElementById('menu-popup-wrapper').style.display = 'flex';
+            } else {
+                document.getElementById('menu-popup-wrapper').style.display = 'none';
             }
         });
     </script>
 </head>
 
 <body>
-    <audio autoplay loop>
-        <source src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
-        Your browser does not support the audio tag.
-    </audio>
-    <script>
-        window.onload = function() {
-            var bgm = document.getElementById('bgm');
 
-            // 音量調整
-            bgm.volume = 0.5; // 音量を50%に設定
-        };
-    </script>
     <!-- Show player's hand -->
     <div class="container">
         <div class="onhand">
@@ -294,7 +283,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <?php if ($turn < 6): ?>
             <form id="nextTurnForm" method="POST">
                 <input type="hidden" name="next_turn" value="1">
-                <button class="nextturn" type="button" onclick="showPopup()">次のターンに進む</button>
+                <button type="button" onclick="showPopup()">次のターンに進む</button>
             </form>
         <?php else: ?>
             <p>ゲーム終了！全てのターンが終了しました。</p>
@@ -302,7 +291,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         <form method="POST">
             <input type="hidden" name="reset_game" value="1">
-            <button class="newgame" type="submit">新しく始める</button>
+            <button type="submit">新しく始める</button>
         </form>
     </div>
 
@@ -310,170 +299,161 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <div id="menu-popup-wrapper">
             <div class="button_1">
                 <button class="back-btn">退出する</button>
-                <button class="popup-btn" id="rule-click-btn">ルール</button>
+                <button class="popup-btn" id="rule-click-btn">ヘルプ</button>
                 <div id="rule-popup-wrapper" style="display: none;">
                     <div id="rule-popup-inside">
-                        <div class="text">
-                            <div id="rule-close">X</div>
-                            <p>※注意事項※</p>
-                            <ul>
-                                <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
-                            </ul>
-                            <p>ゲーム開始時</p>
-                            <ul>
-                                <li>各プレイヤーに5枚のカードを配ります。</li>
-                            </ul>
-                            <p>カードの提出</p>
-                            <ul>
-                                <li>物語を確認し、自分の手札から物語のフレーズに合うと思うカードを1枚選択し、待機します。</li><br>
-                                <li>全てのプレイヤーが選び終えると、画面中央に選ばれたカードが表示されます。</li>
-                            </ul>
-                            <p>投票</p>
-                            <ul>
-                                <li>各プレイヤーは、物語のフレーズに1番あっていると思うカードを選び、投票することができます。</li><br>
-                                <li>注意として、自身が提出したカードに投票することはできません。</li>
-                            </ul>
-                            <p>得点</p>
-                            <ul>
-                                <li>投票が入ったカードを出したプレイヤーは、投票1つにつき、+1点を獲得します。</li><br>
-                                <li>1番票を集めたカードに、投票をしていた場合には投票者にも+1点を獲得します。</li>
-                            </ul>
-                            <p>ラウンド終了</p>
-                            <ul>
-                                <li>各プレイヤーは新しいカードを1枚手に入れ、手札が5枚に戻ります。</li>
-                            </ul>
-                            <p>ゲーム終了</p>
-                            <ul>
-                                <li>物語の決められたチャプター(ターン)が全て終えると、ゲーム終了です。</li><br>
-                                <li>最も得点の多いプレイヤーの勝利となります。</li>
-                            </ul>
+                        <div id="rule-close">X</div>
+                        <div id="popup-content-game">
+                            <!-- ここにチュートリアルコンテンツが読み込まれます -->
                         </div>
                     </div>
                 </div>
             </div>
+            <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
+                <span></span>
+            </button>
         </div>
-        <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
-            <span></span>
-        </button>
-    </div>
 
-    <div id="second-popup-wrapper">
-        <div class="button_2">
-            <p class="warning-text">本当に退出しますか？</p>
-            <button class="popup-btn" id="second-popup-close">キャンセル</button>
-            <button class="other-btn" id="exit-btn">退出</button>
+        <div id="second-popup-wrapper">
+            <div class="button_2">
+                <p class="warning-text">本当に退出しますか？</p>
+                <button class="popup-btn" id="second-popup-close">キャンセル</button>
+                <button class="other-btn" id="exit-btn">退出</button>
+            </div>
         </div>
-    </div>
 
-    <script>
-        function sendMessage() {
-            var message = document.getElementById('message').value;
-            ws.send(JSON.stringify({
-                type: 'chat_message',
-                message: message
-            }));
-            document.getElementById('message').value = '';
-        }
+        <!-- 画像を拡大表示するためのモーダル -->
+        <div id="imageModalgame" class="modalgame" style="display: none;">
+            <span id="closeModalgame" class="close">&times;</span>
+            <img class="modal-content-game" id="modalImagegame">
+        </div>
 
-        function animateMessage(messageElement) {
-            messageElement.style.animation = 'slide-in 10s linear forwards';
-            setTimeout(function() {
-                messageElement.remove();
-            }, 10000);
-        }
 
-        function updatePlayerList(players) {
-            const playerListContainer = document.getElementById('player-list');
-            playerListContainer.innerHTML = '<h3>Players in the game:</h3>';
-
-            // プレイヤーリストを更新する処理を実装
-            players.forEach(player => {
-                const playerElement = document.createElement('div');
-                playerElement.className = 'player';
-                playerElement.innerText = player;
-                playerListContainer.appendChild(playerElement);
-            });
-        }
-
-        document.getElementById('menu-click-btn').addEventListener('click', function() {
-            const menuPopupWrapper = document.getElementById('menu-popup-wrapper');
-            if (menuPopupWrapper.style.display === 'flex') {
-                menuPopupWrapper.style.display = 'none';
-            } else {
-                menuPopupWrapper.style.display = 'flex';
+        <script>
+            function sendMessage() {
+                var message = document.getElementById('message').value;
+                ws.send(JSON.stringify({
+                    type: 'chat_message',
+                    message: message
+                }));
+                document.getElementById('message').value = '';
             }
-        });
 
-        document.getElementById('rule-click-btn').addEventListener('click', function() {
-            document.getElementById('rule-popup-wrapper').style.display = 'block';
-        });
+            function animateMessage(messageElement) {
+                messageElement.style.animation = 'slide-in 10s linear forwards';
+                setTimeout(function() {
+                    messageElement.remove();
+                }, 10000);
+            }
 
-        document.getElementById('rule-close').addEventListener('click', function() {
-            document.getElementById('rule-popup-wrapper').style.display = 'none';
-        });
+            function updatePlayerList(players) {
+                const playerListContainer = document.getElementById('player-list');
+                playerListContainer.innerHTML = '<h3>Players in the game:</h3>';
 
-        document.querySelector('.back-btn').addEventListener('click', function() {
-            document.getElementById('second-popup-wrapper').style.display = 'flex';
-        });
+                // プレイヤーリストを更新する処理を実装
+                players.forEach(player => {
+                    const playerElement = document.createElement('div');
+                    playerElement.className = 'player';
+                    playerElement.innerText = player;
+                    playerListContainer.appendChild(playerElement);
+                });
+            }
 
-        document.getElementById('second-popup-close').addEventListener('click', function() {
-            document.getElementById('second-popup-wrapper').style.display = 'none';
-        });
+            document.getElementById('menu-click-btn').addEventListener('click', function() {
+                const menuPopupWrapper = document.getElementById('menu-popup-wrapper');
+                if (menuPopupWrapper.style.display === 'flex') {
+                    menuPopupWrapper.style.display = 'none';
+                } else {
+                    menuPopupWrapper.style.display = 'flex';
+                }
+            });
 
-        document.getElementById('exit-btn').addEventListener('click', function() {
-            window.location.href = '/DeepImpact/resources/views/index.php';
-        });
+            document.getElementById('rule-click-btn').addEventListener('click', function() {
+                document.getElementById('rule-popup-wrapper').style.display = 'block';
+            });
 
-        $("button").click(function() {
-            $(this).toggleClass("toggle");
-        });
-    </script>
+            document.getElementById('rule-close').addEventListener('click', function() {
+                document.getElementById('rule-popup-wrapper').style.display = 'none';
+            });
 
-    <?php
-    // Define the story text for each turn
-    $text1 = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しました。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
+            document.querySelector('.back-btn').addEventListener('click', function() {
+                document.getElementById('second-popup-wrapper').style.display = 'flex';
+            });
+
+            document.getElementById('second-popup-close').addEventListener('click', function() {
+                document.getElementById('second-popup-wrapper').style.display = 'none';
+            });
+
+            document.getElementById('exit-btn').addEventListener('click', function() {
+                window.location.href = '/DeepImpact/exit.php';
+            });
+
+            $("button").click(function() {
+                $(this).toggleClass("toggle");
+            });
+
+            const popupContentgame = document.getElementById('popup-content-game');
+
+            function loadTutorialgame() {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', '/DeepImpact/resources/views/tutorial.php', true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        popupContentgame.innerHTML = xhr.responseText;
+
+                        // tutorial.php内の画像クリック処理
+                        const clickableImagegame = document.getElementById('clickableImage');
+                        if (clickableImagegame) {
+                            clickableImagegame.addEventListener('click', function() {
+                                const modalgame = document.getElementById('imageModal');
+                                const modalImagegame = document.getElementById('modalImage');
+                                modalgame.style.display = 'flex'; // モーダルを表示
+                                modalImagegame.src = this.src; // クリックした画像のsrcをモーダルに設定
+                            });
+                        }
+
+                        // モーダルを閉じる処理
+                        const closeModalgame = document.getElementById('closeModalgame');
+                        const modalgame = document.getElementById('imageModalgame');
+                        closeModalgame.addEventListener('click', function() {
+                            modalgame.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
+                        });
+
+                        // モーダルの外側をクリックして閉じる
+                        modalgame.addEventListener('click', function(e) {
+                            if (e.target === modalSidebar) {
+                                modalgame.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
+                            }
+                        });
+
+                    } else {
+                        console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
+                    }
+                };
+                xhr.onerror = function() {
+                    console.error("Request failed.");
+                };
+                xhr.send();
+            }
+
+
+            // ルールボタンをクリックしたときにポップアップを表示し、チュートリアルを読み込む
+            sidebarClickBtn.addEventListener('click', () => {
+                sidebarPopupWrapper.style.display = "block";
+                loadTutorialSidebar(); // コンテンツを動的に読み込む
+            });
+        </script>
+
+        <?php
+        // 表示するテキストをPHPで定義
+        $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
     そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
-    $text2 = "正義感の強い若い戦士は魔王を倒しに行こうと決心しました。しかし３つの心臓と軍勢相手に一人で行くのはあまりにも無謀だと思いました。それに３つの心臓はそれぞれ火と水と風の剣でないと効果がないことが分かりその剣の持ち主を探しに行きました。まず火の洞窟へ持ち主に会いに行きました。火の剣の持ち主は<b>すごく協力的で体中に傷があり鋭い目</b>をしていました。";
-    $text3 = "次に水の剣の持ち主に会いに行きました。水の剣の持ち主は協力してくれたものの<b>愛想の悪い面倒くさがりの性格</b>でした。";
-    $text4 = "最後に風の剣の持ち主に会いに行きました。風の剣の持ち主は<b>警戒心が強く目力も強い背の高い力持ち</b>でした。";
-    $text5 = "四人は準備を整えて魔王を倒しにいきました。待ち構えていた軍勢を倒し魔王の部屋につきました。そこにいたのは<b>背の低い威圧感のある強そうな魔王</b>でした。";
-    $text6 = "壮絶な戦いの末、勇者たちは魔王を倒し、国に平和を取り戻しました。";
+        echo "<div class='story-card'>{$text}</div>";
+        ?>
 
-    $storyText = ""; // Variable to hold the current turn's story
-
-    // Switch case to display the story based on the turn
-    switch ($turn) {
-        case 1:
-            $storyText = $text1;
-            break;
-        case 2:
-            $storyText = $text2;
-            break;
-        case 3:
-            $storyText = $text3;
-            break;
-        case 4:
-            $storyText = $text4;
-            break;
-        case 5:
-            $storyText = $text5;
-            break;
-        case 6:
-            $storyText = $text6;
-            break;
-        default:
-            $storyText = "物語が終了しました。";
-            break;
-    }
-
-    // Display the story for the current turn
-    echo "<div class='story-card'>{$storyText}</div>";
-    ?>
-
-
-    <?php
-    $conn->close();
-    ?>
+        <?php
+        $conn->close();
+        ?>
 
 </body>
 

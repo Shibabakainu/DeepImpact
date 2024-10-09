@@ -21,6 +21,36 @@ if (isset($_SESSION['error_message'])) {
 </head>
 
 <body>
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            var bgm = document.getElementById('bgm');
+
+            // 前回の再生位置があれば取得して、そこから再生する
+            var savedTime = localStorage.getItem('bgmTime');
+            if (savedTime) {
+                bgm.currentTime = parseFloat(savedTime); // 保存された再生位置に移動
+            }
+
+
+            // BGMの自動再生
+            bgm.play();
+
+            // BGMの再生位置を定期的に保存
+            setInterval(function() {
+                localStorage.setItem('bgmTime', bgm.currentTime); // 再生位置を保存
+            }, 1000); // 1秒ごとに再生位置を保存
+
+            // ページが閉じる/リロードされるときに再生位置を保存
+            window.addEventListener('beforeunload', function() {
+                localStorage.setItem('bgmTime', bgm.currentTime);
+            });
+        };
+    </script>
     <?php include 'header.php'; ?>
     <div class="container">
         <form action="room_DB.php" method="POST">

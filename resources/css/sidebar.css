@@ -91,8 +91,9 @@ body {
 #sidebar-popup-inside {
     text-align: center;
     width: 100%;
-    max-width: 60%;
-    height: 60%;
+    max-width: 70%;
+    height: 70%;
+    top: -30px;
     background: white;
     margin: 10% auto;
     padding: 20px;
