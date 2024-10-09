@@ -46,6 +46,18 @@ $loggedIn = isset($_SESSION['user_id']);
 </head>
 
 <body>
+<audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+    <script>
+    window.onload = function() {
+        var bgm = document.getElementById('bgm');
+        
+        // 前回の再生位置があれば取得して、そこから再生する
+        var savedTime = localStorage.getItem('bgmTime');
+    };
+    </script>
     <?php include 'header.php'; ?>
     <div class="main-container">
         <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="header-image">
