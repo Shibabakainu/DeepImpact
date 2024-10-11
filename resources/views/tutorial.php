@@ -1,5 +1,5 @@
 <style>
-    .container {
+    .tutorial-container {
         min-height: 100vh;
         padding: 40px;
     }
@@ -19,6 +19,7 @@
         padding: 0 20px 20px;
         text-align: center;
         /* 画像を中央に配置 */
+        font-size: 24px;
     }
 
     .answerInner img {
@@ -31,6 +32,7 @@
     }
 
     .summary {
+        font-size: 24px;
         background-color: lightblue;
         cursor: pointer;
         font-weight: bold;
@@ -57,14 +59,14 @@
     }
 
     .modal img {
-        max-width: 90%;
-        max-height: 90%;
+        max-width: 80%;
+        max-height: 80%;
         margin: auto;
         display: block;
     }
 </style>
 
-<div class="container">
+<div class="tutorial-container">
     <details class="details">
         <summary class="summary">ゲーム概要</summary>
         <div class="answer">
@@ -80,7 +82,9 @@
             <div class="answerInner">
                 画像クリックで拡大表示できます。<br>
                 <img src="/DeepImpact/images/tutorial_1.jpg" alt="説明画像" style="max-width: 40%; height: auto;" id="clickableImage"><br>
-                上の画像がゲーム開始時の画面です。
+                上の画像がゲーム開始時の画面です。<br>
+                <u>Draw Cards</u>ボタンでカードを引くことができます。<br>
+                <br>左下には物語があり、物語のキーワードを確認してからカードを提出しましょう。<br>
             </div>
         </div>
     </details>

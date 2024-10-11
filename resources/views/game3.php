@@ -100,20 +100,51 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <head>
     <meta charset="UTF-8">
     <title>game</title>
-    <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/game3.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         // Ensure it's hidden initially
         document.addEventListener("DOMContentLoaded", function() {
             var shouldShowPopup = <?php echo json_encode($shouldShowPopup); ?>;
-            if (!shouldShowPopup) {
-                document.getElementById('menu-popup-wrapper').style.display = 'flex';
+            if (shouldShowPopup) {
+                document.getElementById('menu-popup-wrapper').style.display = 'flex'; // ポップアップを表示
             } else {
-                document.getElementById('menu-popup-wrapper').style.display = 'none';
+                document.getElementById('menu-popup-wrapper').style.display = 'none'; // ポップアップを非表示
             }
         });
     </script>
 </head>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        max-width: 90%;
+        max-height: 90%;
+        margin: auto;
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
 
 <body>
 
@@ -295,165 +326,162 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         </form>
     </div>
 
-    <div class="menu-">
-        <div id="menu-popup-wrapper">
-            <div class="button_1">
-                <button class="back-btn">退出する</button>
-                <button class="popup-btn" id="rule-click-btn">ヘルプ</button>
-                <div id="rule-popup-wrapper" style="display: none;">
-                    <div id="rule-popup-inside">
-                        <div id="rule-close">X</div>
-                        <div id="popup-content-game">
-                            <!-- ここにチュートリアルコンテンツが読み込まれます -->
-                        </div>
-                    </div>
+    <?php
+    // 表示するテキストをPHPで定義
+    $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
+    そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
+    echo "<div class='story-card'>{$text}</div>";
+    ?>
+
+    <div class="button_1">
+        <button class="back-btn">退出する</button>
+        <button class="popup-btn" id="rule-click-btn">ヘルプ</button>
+        <div id="rule-popup-wrapper" style="display: none;">
+            <div id="rule-popup-inside">
+                <div id="rule-close">X</div>
+                <div id="popup-content-game">
+                    <!-- ここにチュートリアルコンテンツが読み込まれます -->
                 </div>
             </div>
-            <button data-action="Menu-Close" class="hamburger-close" id="menu-click-btn">
-                <span></span>
-            </button>
         </div>
+    </div>
 
-        <div id="second-popup-wrapper">
-            <div class="button_2">
-                <p class="warning-text">本当に退出しますか？</p>
-                <button class="popup-btn" id="second-popup-close">キャンセル</button>
-                <button class="other-btn" id="exit-btn">退出</button>
-            </div>
+    <div id="second-popup-wrapper">
+        <div class="button_2">
+            <p class="warning-text">本当に退出しますか？</p>
+            <button class="popup-btn" id="second-popup-close">キャンセル</button>
+            <button class="other-btn" id="exit-btn">退出</button>
         </div>
+    </div>
 
-        <!-- 画像を拡大表示するためのモーダル -->
-        <div id="imageModalgame" class="modalgame" style="display: none;">
-            <span id="closeModalgame" class="close">&times;</span>
-            <img class="modal-content-game" id="modalImagegame">
-        </div>
+    <!-- 画像を拡大表示するためのモーダル -->
+    <div id="imageModalgame" class="modalgame" style="display: none;">
+        <span id="closeModalgame" class="close">&times;</span>
+        <img class="modal-content-game" id="modalImagegame">
+    </div>
 
 
-        <script>
-            function sendMessage() {
-                var message = document.getElementById('message').value;
-                ws.send(JSON.stringify({
-                    type: 'chat_message',
-                    message: message
-                }));
-                document.getElementById('message').value = '';
-            }
+    <script>
+        const ruleclickbtn = document.getElementById('rule-click-btn');
+        const rulepopupwrapper = document.getElementById('rule-popup-wrapper');
+        const ruleclose = document.getElementById('rule-close');
+        const popupContentgame = document.getElementById('popup-content-game');
 
-            function animateMessage(messageElement) {
-                messageElement.style.animation = 'slide-in 10s linear forwards';
-                setTimeout(function() {
-                    messageElement.remove();
-                }, 10000);
-            }
+        function loadTutorialgame() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/DeepImpact/resources/views/tutorial.php', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    popupContentgame.innerHTML = xhr.responseText;
 
-            function updatePlayerList(players) {
-                const playerListContainer = document.getElementById('player-list');
-                playerListContainer.innerHTML = '<h3>Players in the game:</h3>';
-
-                // プレイヤーリストを更新する処理を実装
-                players.forEach(player => {
-                    const playerElement = document.createElement('div');
-                    playerElement.className = 'player';
-                    playerElement.innerText = player;
-                    playerListContainer.appendChild(playerElement);
-                });
-            }
-
-            document.getElementById('menu-click-btn').addEventListener('click', function() {
-                const menuPopupWrapper = document.getElementById('menu-popup-wrapper');
-                if (menuPopupWrapper.style.display === 'flex') {
-                    menuPopupWrapper.style.display = 'none';
-                } else {
-                    menuPopupWrapper.style.display = 'flex';
-                }
-            });
-
-            document.getElementById('rule-click-btn').addEventListener('click', function() {
-                document.getElementById('rule-popup-wrapper').style.display = 'block';
-            });
-
-            document.getElementById('rule-close').addEventListener('click', function() {
-                document.getElementById('rule-popup-wrapper').style.display = 'none';
-            });
-
-            document.querySelector('.back-btn').addEventListener('click', function() {
-                document.getElementById('second-popup-wrapper').style.display = 'flex';
-            });
-
-            document.getElementById('second-popup-close').addEventListener('click', function() {
-                document.getElementById('second-popup-wrapper').style.display = 'none';
-            });
-
-            document.getElementById('exit-btn').addEventListener('click', function() {
-                window.location.href = '/DeepImpact/exit.php';
-            });
-
-            $("button").click(function() {
-                $(this).toggleClass("toggle");
-            });
-
-            const popupContentgame = document.getElementById('popup-content-game');
-
-            function loadTutorialgame() {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', '/DeepImpact/resources/views/tutorial.php', true);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        popupContentgame.innerHTML = xhr.responseText;
-
-                        // tutorial.php内の画像クリック処理
-                        const clickableImagegame = document.getElementById('clickableImage');
-                        if (clickableImagegame) {
-                            clickableImagegame.addEventListener('click', function() {
-                                const modalgame = document.getElementById('imageModal');
-                                const modalImagegame = document.getElementById('modalImage');
-                                modalgame.style.display = 'flex'; // モーダルを表示
-                                modalImagegame.src = this.src; // クリックした画像のsrcをモーダルに設定
-                            });
-                        }
-
-                        // モーダルを閉じる処理
-                        const closeModalgame = document.getElementById('closeModalgame');
-                        const modalgame = document.getElementById('imageModalgame');
-                        closeModalgame.addEventListener('click', function() {
-                            modalgame.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
+                    // tutorial.php内の画像クリック処理
+                    const clickableImagegame = document.getElementById('clickableImage');
+                    if (clickableImagegame) {
+                        clickableImagegame.addEventListener('click', function() {
+                            const modalgame = document.getElementById('imageModal');
+                            const modalImagegame = document.getElementById('modalImage');
+                            modalgame.style.display = 'flex'; // モーダルを表示
+                            modalImagegame.src = this.src; // クリックした画像のsrcをモーダルに設定
                         });
-
-                        // モーダルの外側をクリックして閉じる
-                        modalgame.addEventListener('click', function(e) {
-                            if (e.target === modalSidebar) {
-                                modalgame.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
-                            }
-                        });
-
-                    } else {
-                        console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
                     }
-                };
-                xhr.onerror = function() {
-                    console.error("Request failed.");
-                };
-                xhr.send();
+
+                    // モーダルを閉じる処理
+                    const closeModalgame = document.getElementById('closeModalgame');
+                    const modalgame = document.getElementById('imageModalgame');
+                    closeModalgame.addEventListener('click', function() {
+                        modalgame.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
+                    });
+
+                    // モーダルの外側をクリックして閉じる
+                    modalgame.addEventListener('click', function(e) {
+                        if (e.target === modalSidebar) {
+                            modalgame.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
+                        }
+                    });
+
+                } else {
+                    console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error("Request failed.");
+            };
+            xhr.send();
+        }
+
+
+        // ルールボタンをクリックしたときにポップアップを表示し、チュートリアルを読み込む
+        ruleclickbtn.addEventListener('click', () => {
+            rulepopupwrapper.style.display = "block";
+            loadTutorialgame(); // コンテンツを動的に読み込む
+        });
+
+        // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる
+        rulepopupwrapper.addEventListener('click', e => {
+            if (e.target.id === rulepopupwrapper.id || e.target.id === ruleclose.id) {
+                rulepopupwrapper.style.display = 'none';
             }
+        });
 
 
-            // ルールボタンをクリックしたときにポップアップを表示し、チュートリアルを読み込む
-            sidebarClickBtn.addEventListener('click', () => {
-                sidebarPopupWrapper.style.display = "block";
-                loadTutorialSidebar(); // コンテンツを動的に読み込む
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            ws.send(JSON.stringify({
+                type: 'chat_message',
+                message: message
+            }));
+            document.getElementById('message').value = '';
+        }
+
+        function animateMessage(messageElement) {
+            messageElement.style.animation = 'slide-in 10s linear forwards';
+            setTimeout(function() {
+                messageElement.remove();
+            }, 10000);
+        }
+
+        function updatePlayerList(players) {
+            const playerListContainer = document.getElementById('player-list');
+            playerListContainer.innerHTML = '<h3>Players in the game:</h3>';
+
+            // プレイヤーリストを更新する処理を実装
+            players.forEach(player => {
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player';
+                playerElement.innerText = player;
+                playerListContainer.appendChild(playerElement);
             });
-        </script>
+        }
 
-        <?php
-        // 表示するテキストをPHPで定義
-        $text = "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。
-    そんな時、小さな町に住む<b>正義感の強い若い戦士</b>が立ち上がりました。";
-        echo "<div class='story-card'>{$text}</div>";
-        ?>
+        document.getElementById('rule-click-btn').addEventListener('click', function() {
+            document.getElementById('rule-popup-wrapper').style.display = 'block';
+        });
 
-        <?php
-        $conn->close();
-        ?>
+        document.getElementById('rule-close').addEventListener('click', function() {
+            document.getElementById('rule-popup-wrapper').style.display = 'none';
+        });
+
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            document.getElementById('second-popup-wrapper').style.display = 'flex';
+        });
+
+        document.getElementById('second-popup-close').addEventListener('click', function() {
+            document.getElementById('second-popup-wrapper').style.display = 'none';
+        });
+
+        document.getElementById('exit-btn').addEventListener('click', function() {
+            window.location.href = '/DeepImpact/resources/views/index.php';
+        });
+
+        $("button").click(function() {
+            $(this).toggleClass("toggle");
+        });
+    </script>
+
+    <?php
+    $conn->close();
+    ?>
 
 </body>
 
