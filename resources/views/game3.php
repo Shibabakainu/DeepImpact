@@ -387,15 +387,15 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
                     // モーダルを閉じる処理
                     const closeModalgame = document.getElementById('closeModalgame');
-                    const modalgame = document.getElementById('imageModalgame');
+                    const modalGame = document.getElementById('imageModal');
                     closeModalgame.addEventListener('click', function() {
-                        modalgame.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
+                        modalGame.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
                     });
 
                     // モーダルの外側をクリックして閉じる
-                    modalgame.addEventListener('click', function(e) {
-                        if (e.target === modalSidebar) {
-                            modalgame.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
+                    modalGame.addEventListener('click', function(e) {
+                        if (e.target === modalGame) {
+                            modalGame.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
                         }
                     });
 

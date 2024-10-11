@@ -1,5 +1,5 @@
 <style>
-    .modal {
+    .modalSidebar {
         display: none;
         position: fixed;
         z-index: 1000;
@@ -12,7 +12,7 @@
         align-items: center;
     }
 
-    .modal-content {
+    .modal-content-Sidebar {
         max-width: 90%;
         max-height: 90%;
         margin: auto;
