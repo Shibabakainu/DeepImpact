@@ -140,6 +140,17 @@ CREATE TABLE room_cards (
     FOREIGN KEY (card_id) REFERENCES Card(Card_id)
 );
 
+-- New table to manage votes
+DROP TABLE IF EXISTS votes;
+CREATE TABLE votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    room_id INT NOT NULL,
+    player_id INT NOT NULL,
+    card_id INT NOT NULL,
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+    FOREIGN KEY (player_id) REFERENCES users(id),
+    FOREIGN KEY (card_id) REFERENCES room_cards(card_id)
+);
 
 -- Remove the trigger if it exists
 DROP TRIGGER IF EXISTS after_accept_friend;
