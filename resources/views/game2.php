@@ -150,7 +150,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="vote-area" id="vote-area">
         <!-- Cards with selected 1 will be loaded here -->
     </div>
-    <h2>Vote for the Best Card:</h2>
+    <div class="title">
+        最高のカードに投票してください
+    </div>
 
     <script type="text/javascript">
         // URLからroom_idを取得する関数
@@ -263,10 +265,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             });
         });
     </script>
-
-    <div class="map">
-
-    </div>
 
     <div id="textbox">
         <div id="chatbox"></div>
@@ -470,6 +468,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     echo "<div class='story-card'>{$storyText}</div>";
     ?>
 
+    <div class="scoreboard">
+        <p>スコアボード</p>
+    </div>
 
     <?php
     $conn->close();
