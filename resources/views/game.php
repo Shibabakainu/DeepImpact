@@ -383,6 +383,15 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             $(this).toggleClass("toggle");
         });
     </script>
+    <script>
+        window.onload = function () {
+    const card = document.querySelector('.selected-card');
+    // カードに 'show' クラスを追加して発光演出を発動
+    setTimeout(() => {
+        card.classList.add('show');
+    }, 100); // 0.1秒後に発光開始
+};
+    </script>
 
     <?php
     // 表示するテキストをPHPで定義
