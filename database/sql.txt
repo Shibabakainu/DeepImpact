@@ -5,6 +5,7 @@ CREATE DATABASE storyteller CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE storyteller;
 
+
 -- Create the users table
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (

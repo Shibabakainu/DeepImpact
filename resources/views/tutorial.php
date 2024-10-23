@@ -59,8 +59,8 @@
     }
 
     .modal img {
-        max-width: 80%;
-        max-height: 80%;
+        max-width: 90%;
+        max-height: 90%;
         margin: auto;
         display: block;
     }
@@ -81,10 +81,12 @@
         <div class="answer">
             <div class="answerInner">
                 画像クリックで拡大表示できます。<br>
-                <img src="/DeepImpact/images/tutorial_1.jpg" alt="説明画像" style="max-width: 40%; height: auto;" id="clickableImage"><br>
+                <img src="/DeepImpact/images/tutorial_1.jpg" alt="説明画像" style="max-width: 40%; height: auto;" class="clickableImage"><br>
                 上の画像がゲーム開始時の画面です。<br>
                 <u>Draw Cards</u>ボタンでカードを引くことができます。<br>
-                <br>左下には物語があり、物語のキーワードを確認してからカードを提出しましょう。<br>
+                <br>
+                <img src="/DeepImpact/images/tutorial_2.jpg" alt="説明画像" style="max-width: 40%; height: auto;" class="clickableImage"><br>
+                カードを手札に加えたら画面上部の物語を確認し、キーワードに適していると思うカードをクリックし提出しましょう。
             </div>
         </div>
     </details>
@@ -105,15 +107,16 @@
 
 <script>
     // tutorial.php内の画像クリック処理を再定義
-    const clickableImage = document.getElementById('clickableImage');
-    if (clickableImage) {
-        clickableImage.addEventListener('click', function() {
+    const clickableImages = document.querySelectorAll('.clickableImage');
+
+    clickableImages.forEach(image => {
+        image.addEventListener('click', function() {
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
             modal.style.display = 'flex'; // モーダルを表示
             modalImage.src = this.src; // クリックした画像のsrcをモーダルに設定
         });
-    }
+    });
 
     // モーダルを閉じる処理
     closeModal.addEventListener('click', function() {

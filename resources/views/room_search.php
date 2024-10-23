@@ -53,6 +53,13 @@
         </div>
     </div>
 
+    <div id="game-in-progress-popup" class="popup">
+        <h3>ゲーム中のため参加できません。</h3>
+        <button id="close-game-popup">閉じる</button>
+    </div>
+    <div id="overlay-game-popup" class="overlay"></div>
+
+
     <div id="overlay" class="overlay"></div>
 
     <script>
@@ -78,8 +85,9 @@
                     const roomName = roomDiv.getAttribute('data-room-name');
 
                     if (roomStatus === 'in_game') {
-                        // ゲーム中の場合、アラートポップアップを表示
-                        alert('ゲーム中のため参加できません。');
+                        // ゲーム中の場合、アラートの代わりにポップアップを表示
+                        document.getElementById('game-in-progress-popup').style.display = 'block';
+                        document.getElementById('overlay-game-popup').style.display = 'block';
                     } else {
                         // ゲーム中でない場合、パスワードポップアップを表示
                         document.getElementById('password-popup').style.display = 'block';
@@ -114,6 +122,17 @@
                 document.getElementById('password-popup').style.display = 'none';
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('room-password').value = ''; // パスワードフィールドをクリア
+            };
+
+            // ゲーム中のポップアップを閉じるためのイベントリスナー
+            document.getElementById('close-game-popup').onclick = function() {
+                document.getElementById('game-in-progress-popup').style.display = 'none';
+                document.getElementById('overlay-game-popup').style.display = 'none';
+            };
+
+            document.getElementById('overlay-game-popup').onclick = function() {
+                document.getElementById('game-in-progress-popup').style.display = 'none';
+                document.getElementById('overlay-game-popup').style.display = 'none';
             };
         }
 
