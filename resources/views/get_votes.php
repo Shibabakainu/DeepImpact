@@ -24,6 +24,7 @@ $result = $stmt->get_result();
 
 $cards = [];
 while ($row = $result->fetch_assoc()) {
+    // Add card details and voters
     $cards[$row['room_card_id']]['details'] = [
         'Card_name' => $row['Card_name'],
         'Image_path' => $row['Image_path']
@@ -44,15 +45,15 @@ $conn->close();
 // Display the cards and the users who voted for them with profile images
 foreach ($cards as $room_card_id => $card) {
     echo '<div class="selected-card" data-card-id="' . $room_card_id . '">';
-    echo '<img src="../../images/' . $card['details']['Image_path'] . '" alt="' . htmlspecialchars($card['details']['Card_name'], ENT_QUOTES) . '">';
-    
+    echo '<img src="../../images/' . htmlspecialchars($card['details']['Image_path'], ENT_QUOTES) . '" alt="' . htmlspecialchars($card['details']['Card_name'], ENT_QUOTES) . '">';
+
     // Show icons for each voter
     if (!empty($card['voters'])) {
         echo '<div class="voters">';
         foreach ($card['voters'] as $voter) {
             // Display the profile image (or a default if not available)
             $profileImage = htmlspecialchars($voter['profile_image'], ENT_QUOTES);
-            echo '<img src="/DeepImpact/resources/views/login/profileicon/' . $profileImage . '" alt="' . htmlspecialchars($voter['username'], ENT_QUOTES) . '" title="' . htmlspecialchars($voter['username'], ENT_QUOTES) . '" class="voter-icon">';
+            echo '<img src="/DeepImpact/resources/views/login/profileicon/' . $profileImage . '" alt="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" title="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" class="voter-icon">';
         }
         echo '</div>';
     }

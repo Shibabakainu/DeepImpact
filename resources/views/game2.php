@@ -45,23 +45,24 @@ if (!$player_position) {
 
 // プレイヤーに配られた5枚のカードを取得
 $sql = "
-    SELECT c.Card_id, c.Card_name, c.Image_path, rc.selected
-    FROM room_cards rc
-    JOIN Card c ON rc.card_id = c.Card_id
-    WHERE rc.room_id = ? AND rc.status = ?
-";
+    SELECT rc.room_card_id, c.Card_id, c.Card_name, c.Image_path, rc.selected 
+    FROM room_cards rc 
+    JOIN Card c ON rc.card_id = c.Card_id 
+    JOIN room_players rp ON rc.room_id = rp.room_id 
+    WHERE rc.room_id = ? AND rp.user_id = ? AND rc.status = ?";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('ii', $room_id, $player_position);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$cards = [];
-while ($row = $result->fetch_assoc()) {
-    $cards[] = $row;
-}
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param('iii', $room_id, $user_id, $player_position); // Use user_id to filter cards for the current player
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $cards = [];
+    while ($row = $result->fetch_assoc()) {
+        $cards[] = $row;
+    }
+    $stmt->close();
+} else {
+    die("カードデータの取得に失敗しました: " . $conn->error);
 }
 
 // ターン数の初期化（初回のみ）
@@ -123,11 +124,42 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </audio>
     <script>
         window.onload = function() {
-            var bgm = document.getElementById('bgm');
+        // Automatically check if there are already drawn cards
+        updateDrawnCards(); // Call function to update drawn cards display
+        var bgm = document.getElementById('bgm');
 
-            // 音量調整
-            bgm.volume = 0.5; // 音量を50%に設定
-        };
+        // 音量調整
+        bgm.volume = 0.5; // 音量を50%に設定
+    };
+
+    // Function to update drawn cards on load
+    function updateDrawnCards() {
+        // Fetch drawn cards from the server
+        $.ajax({
+            url: 'get_drawn_cards.php', // Create this script to retrieve drawn cards for the current user
+            method: 'GET',
+            data: { room_id: roomId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    $('#drawed-card-area').empty(); // Clear existing cards
+                    response.cards.forEach(function(card) {
+                        $('#drawed-card-area').append(
+                            '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
+                            '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                            '</div>'
+                        );
+                    });
+                } else {
+                    console.error('Failed to retrieve drawn cards: ' + response.message);
+                }
+            },
+            error: function() {
+                alert("Error retrieving drawn cards.");
+            }
+        });
+    }
+
     </script>
     <!-- Show player's hand -->
     <div class="container">
@@ -138,7 +170,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 <?php foreach ($cards as $card): ?>
                     <?php if ($card['selected'] == 0): // Only show cards that are not selected 
                     ?>
-                        <div class="card" data-card-id="<?= $card['Card_id'] ?>" draggable="true">
+                        <div class="card" data-room-card-id="<?= $card['room_card_id'] ?>" draggable="true">
                             <img src="../../images/<?= $card['Image_path'] ?>" alt="<?= htmlspecialchars($card['Card_name'], ENT_QUOTES) ?>">
                         </div>
                     <?php endif; ?>
@@ -179,7 +211,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                         if (response.success) {
                             response.cards.forEach(function(card) {
                                 $('#drawed-card-area').append(
-                                    '<div class="card" data-card-id="' + card.Card_id + '">' +
+                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' + // Change here
                                     '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
                                     '</div>'
                                 );
@@ -196,29 +228,34 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
         // Click event for selecting cards
-        $(document).on('click', '.card', function() {
-            var cardElement = $(this);
-            var cardId = cardElement.data('card-id');  // correctly referring to the data-card-id
+        $(document).on("click", ".card", function() {
+            var roomCardId = $(this).data("room-card-id");
+
+            if (!roomCardId) {
+                alert("No Room Card ID found.");
+                return; // Stop execution if the card ID is not set
+            }
+
+            console.log("Room ID: " + roomId + ", Room Card ID: " + roomCardId);
 
             $.ajax({
-                url: 'select_card.php',
+                url: 'select_card.php', 
                 method: 'POST',
                 data: {
-                    card_id: cardId,
-                    room_id: roomId
+                    room_id: roomId,
+                    room_card_id: roomCardId
                 },
+                dataType: 'json',
                 success: function(response) {
-                    var result = JSON.parse(response);
-                    if (result.success) {
-                        alert('カードが選ばれました！');
-                        $('#drawed-card-area').find('.card[data-card-id="' + cardId + '"]').remove();
-                        updateVoteArea();
+                    if (response.success) {
+                        alert(response.message);
+                        $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
                     } else {
-                        alert('カードの選択に失敗しました: ' + result.message);
+                        alert(response.message);
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error("エラーが発生しました:", status, error);
+                error: function() {
+                    alert("Error selecting card.");
                 }
             });
         });
@@ -243,7 +280,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         // Voting logic
         $(document).on('click', '.selected-card', function() {
-            var cardId = $(this).data('card-id');
+            var roomCardId = $(this).data('room-card-id'); // Capture room_card_id instead of card_id
 
             if (!roomId) {
                 alert('Room ID is missing!');
@@ -254,12 +291,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 url: 'vote.php',
                 method: 'POST',
                 data: {
-                    card_id: cardId,
+                    room_card_id: roomCardId,  // Send room_card_id
                     room_id: roomId
                 },
-                dataType: 'json',  // Expect JSON response, so jQuery will handle parsing
+                dataType: 'json',  // Expect JSON response
                 success: function(response) {
-                    // No need for JSON.parse, as response will already be a JavaScript object
                     if (response.success) {
                         alert('投票が完了しました！');
                     } else {
