@@ -97,18 +97,16 @@ body {
     box-shadow: 0 0 6px black;
     border: 0.3rem white solid;
     border-radius: 0.5rem;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 /* カードが追加されたときの発光アニメーション */
-.vote-area .selected-card.show {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 0 30px 15px rgba(255, 255, 255, 1), 
-            0 0 40px 20px rgba(0, 128, 255, 0.8);
+
+.vote-area .selected-card:hover {
+    transform: translateY(-0.5rem) scale(1.1);
+    box-shadow: 0 0 30px 10px rgba(255, 255, 0, 0.8), 
+                0 0 40px 20px rgba(0, 128, 255, 0.8);
 }
-
-
-
 
 .vote-area .selected-card .img {
     width: 8rem;

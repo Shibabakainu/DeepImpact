@@ -102,6 +102,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <title>game</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         // Ensure it's hidden initially
         document.addEventListener("DOMContentLoaded", function() {
@@ -178,7 +179,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                         if (response.success) {
                             response.cards.forEach(function(card) {
                                 $('#drawed-card-area').append(
-                                    '<div class="card" data-value="' + card.Card_id + '">' +
+                                    '<div class="card" data-card-id="' + card.Card_id + '">' +
                                     '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
                                     '</div>'
                                 );
@@ -197,7 +198,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         // Click event for selecting cards
         $(document).on('click', '.card', function() {
             var cardElement = $(this);
-            var cardId = cardElement.data('card-id');
+            var cardId = cardElement.data('card-id');  // correctly referring to the data-card-id
 
             $.ajax({
                 url: 'select_card.php',
@@ -253,7 +254,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 url: 'vote.php',
                 method: 'POST',
                 data: {
-                    room_card_id: cardId,
+                    card_id: cardId,
                     room_id: roomId
                 },
                 dataType: 'json',  // Expect JSON response, so jQuery will handle parsing
