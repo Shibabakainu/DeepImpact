@@ -148,9 +148,11 @@ CREATE TABLE votes (
     room_id INT NOT NULL,
     player_id INT NOT NULL,
     card_id INT NOT NULL,
+    room_card_id INT NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (player_id) REFERENCES users(id),
-    FOREIGN KEY (card_id) REFERENCES room_cards(card_id)
+    FOREIGN KEY (card_id) REFERENCES room_cards(card_id),
+    FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)
 );
 
 -- Remove the trigger if it exists

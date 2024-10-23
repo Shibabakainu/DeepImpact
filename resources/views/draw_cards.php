@@ -52,12 +52,22 @@ $result = $stmt->get_result();
 
 $cards = [];
 while ($row = $result->fetch_assoc()) {
-    $cards[] = $row;
-    // Insert into room_cards with player-specific status
+    // Store the room_card_id of the newly inserted card
     $sql_insert = "INSERT INTO room_cards (room_id, card_id, status) VALUES (?, ?, ?)";
     $stmt_insert = $conn->prepare($sql_insert);
     $stmt_insert->bind_param("iii", $room_id, $row['Card_id'], $player_position);
     $stmt_insert->execute();
+    
+    // Get the last inserted ID (room_card_id)
+    $room_card_id = $conn->insert_id;
+
+    // Append room_card_id to the card details for the response
+    $cards[] = [
+        'room_card_id' => $room_card_id,  // Add this line
+        'Card_id' => $row['Card_id'],
+        'Card_name' => $row['Card_name'],
+        'Image_path' => $row['Image_path']
+    ];
 }
 
 // Return the cards as JSON response
