@@ -97,10 +97,6 @@ body {
     box-shadow: 0 0 6px black;
     border: 0.3rem white solid;
     border-radius: 0.5rem;
-    box-shadow: 0 0 0px rgba(255, 255, 255, 0.8); /* 初期状態では発光なし */
-    opacity: 0; /* 初期状態は透明 */
-    transform: scale(0.8); /* 初期状態で縮小 */
-    transition: transform 0.5s, box-shadow 0.5s, opacity 0.5s;
 }
 
 /* カードが追加されたときの発光アニメーション */
