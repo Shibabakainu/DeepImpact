@@ -46,6 +46,7 @@
         <li class="btn"><a href="/DeepImpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/subscription.php" class="common-btn">サブスクリプション</a></li>
     </ul>
 </div>
 
@@ -68,16 +69,17 @@
             if (xhr.readyState === 4 && xhr.status === 200) {
                 popupContentSidebar.innerHTML = xhr.responseText;
 
-                // tutorial.php内の画像クリック処理
-                const clickableImageSidebar = document.getElementById('clickableImage');
-                if (clickableImageSidebar) {
-                    clickableImageSidebar.addEventListener('click', function() {
+                // tutorial.php内の画像クリック処理を再定義
+                const clickableImageSidebar = document.querySelectorAll('.clickableImage');
+
+                clickableImageSidebar.forEach(image => {
+                    image.addEventListener('click', function() {
                         const modalSidebar = document.getElementById('imageModal');
                         const modalImageSidebar = document.getElementById('modalImage');
                         modalSidebar.style.display = 'flex'; // モーダルを表示
                         modalImageSidebar.src = this.src; // クリックした画像のsrcをモーダルに設定
                     });
-                }
+                });
 
                 // モーダルを閉じる処理
                 const closeModalsidebar = document.getElementById('closeModalSidebar');

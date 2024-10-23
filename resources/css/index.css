@@ -176,3 +176,66 @@ p {
     background: rgb(132, 132, 132);
     border-radius: 5px;
 }
+
+.bell {
+    cursor: pointer;
+}
+
+/* メッセージボックスのスタイル */
+.message-box {
+    display: none;
+    /* 初期は非表示 */
+    position: absolute;
+    /* 絶対位置で画像の近くに配置 */
+    z-index: 1000;
+    width: 250px;
+    /* 幅 */
+    height: 150px;
+    /* 高さ */
+    background-color: white;
+    border: 1px solid #888;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    text-align: center;
+    border-radius: 8px;
+}
+
+/* メッセージヘッダー */
+.message-header {
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: left;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* メッセージコンテンツ */
+.message-content p {
+    font-size: 12px;
+    /* メッセージテキストのサイズを小さく */
+    opacity: 0.7;
+    /* メッセージテキストの不透明度を下げる */
+    margin: 0;
+    padding: 20px;
+}
+
+/* 閉じるボタン */
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ドラッグ用のボタン */
+.drag-button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: move;
+    /* ボタンにドラッグカーソル */
+    border-radius: 4px;
+    font-size: 12px;
+}
