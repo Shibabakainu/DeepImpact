@@ -93,6 +93,36 @@ if ($turn > $max_turns) {
 
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
+// 投票が完了しているか確認するSQL
+$sql = "
+    SELECT COUNT(*) as total_players,
+           SUM(CASE WHEN voted = 1 THEN 1 ELSE 0 END) as voted_players
+    FROM room_players rp
+    JOIN users u ON rp.user_id = u.id
+    WHERE rp.room_id = ?
+";
+
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param('i', $room_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    $totalPlayers = $row['total_players'];
+    $votedPlayers = $row['voted_players'];
+
+    // 全員が投票していない場合の処理
+    if ($totalPlayers > $votedPlayers) {
+        echo "<script>alert('全員が投票を完了していません。');</script>";
+        $canProceedToNextTurn = false; // ターンを進めないようにフラグをセット
+    } else {
+        $canProceedToNextTurn = true; // 全員が投票しているのでターンを進める
+    }
+    $stmt->close();
+} else {
+    die("投票状況の確認に失敗しました: " . $conn->error);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -242,7 +272,74 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 }
             });
         });
+        // カードが選択されているか、全員が投票しているか確認する関数
+        function checkCardSelection() {
+            var selectedCard = document.querySelector('.drawed-card-area .card[data-selected="true"]');
+
+            // Ajaxリクエストで全員が投票しているか確認する
+            $.ajax({
+                url: 'check_votes.php', // 投票状況を確認するためのサーバーサイドスクリプト
+                method: 'GET',
+                data: {
+                    room_id: roomId // 現在のroom_idを送信
+                },
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    if (result.allVoted) {
+                        if (selectedCard) {
+                            showPopup(); // カードが選択されている場合のみターン確認のポップアップを表示
+                        } else {
+                            alert("カードを選択してください。");
+                        }
+                    } else {
+                        alert("全員が投票を完了していません。");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("エラーが発生しました:", status, error);
+                }
+            });
+        }
     </script>
+    <?php
+    include 'db_connect.php';
+
+    // URLからroom_idを取得
+    $room_id = isset($_GET['room_id']) ? $_GET['room_id'] : null;
+
+    if (!$room_id) {
+        echo json_encode(['success' => false, 'message' => 'ルームIDが指定されていません。']);
+        exit;
+    }
+
+    // 投票状況を確認するクエリ
+    $sql = "
+    SELECT COUNT(*) as total_players,
+           SUM(CASE WHEN voted = 1 THEN 1 ELSE 0 END) as voted_players
+    FROM room_players
+    WHERE room_id = ?
+";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('i', $room_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        $totalPlayers = $row['total_players'];
+        $votedPlayers = $row['voted_players'];
+
+        // 全員が投票しているかを判定
+        if ($totalPlayers == $votedPlayers) {
+            echo json_encode(['success' => true, 'allVoted' => true]);
+        } else {
+            echo json_encode(['success' => true, 'allVoted' => false]);
+        }
+        $stmt->close();
+    } else {
+        echo json_encode(['success' => false, 'message' => '投票状況の確認に失敗しました。']);
+    }
+    ?>
 
     <script type="text/javascript">
         $(document).ready(function() {
