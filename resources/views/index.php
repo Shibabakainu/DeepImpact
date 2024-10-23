@@ -46,6 +46,76 @@ $loggedIn = isset($_SESSION['user_id']);
 </head>
 
 <body>
+    <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: absolute; right: 250px; top: 100px;" class="bell">
+
+    <!-- メッセージボックスのポップアップ -->
+    <div id="messageBox" class="message-box">
+        <div class="message-header">
+            <span class="close-btn">&times;</span>
+            <button id="dragButton" class="drag-button">ドラッグで移動</button> <!-- ドラッグ用のボタン -->
+        </div>
+        <div class="message-content">
+            <p>メッセージはありません。</p>
+        </div>
+    </div>
+
+    <script>
+        // 画像とポップアップの要素を取得
+        const bellImage = document.querySelector('.bell');
+        const messageBox = document.getElementById('messageBox');
+        const closeBtn = document.querySelector('.close-btn');
+        const dragButton = document.getElementById('dragButton');
+
+        // 画像がクリックされたときにポップアップを画像の近くに表示
+        bellImage.addEventListener('click', function(event) {
+            const rect = bellImage.getBoundingClientRect();
+            messageBox.style.top = `${rect.bottom + window.scrollY + 10}px`; // 画像の下に少し余白を持たせて表示
+            messageBox.style.left = `${rect.left + window.scrollX}px`; // 画像の左端に合わせる
+            messageBox.style.display = 'block';
+        });
+
+        // 閉じるボタンがクリックされたときにポップアップを非表示に
+        closeBtn.addEventListener('click', function() {
+            messageBox.style.display = 'none';
+        });
+
+        // ポップアップ外をクリックしたときにポップアップを閉じる
+        window.addEventListener('click', function(event) {
+            if (event.target !== messageBox && !messageBox.contains(event.target) && event.target !== bellImage) {
+                messageBox.style.display = 'none';
+            }
+        });
+
+        // ドラッグ機能の実装
+        let offsetX = 0,
+            offsetY = 0,
+            isDragging = false;
+
+        // ドラッグ開始（ボタン限定）
+        dragButton.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            offsetX = e.clientX - messageBox.getBoundingClientRect().left;
+            offsetY = e.clientY - messageBox.getBoundingClientRect().top;
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        });
+
+        // ドラッグ中の動作
+        function drag(e) {
+            if (isDragging) {
+                messageBox.style.left = `${e.clientX - offsetX}px`;
+                messageBox.style.top = `${e.clientY - offsetY}px`;
+            }
+        }
+
+        // ドラッグ終了
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+    </script>
+
     <audio autoplay loop>
         <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
@@ -107,16 +177,17 @@ $loggedIn = isset($_SESSION['user_id']);
                         popupContent.innerHTML = xhr.responseText;
 
 
-                        // tutorial.php内の画像クリック処理
-                        const clickableImage = document.getElementById('clickableImage');
-                        if (clickableImage) {
-                            clickableImage.addEventListener('click', function() {
+                        // tutorial.php内の画像クリック処理を再定義
+                        const clickableImages = document.querySelectorAll('.clickableImage');
+
+                        clickableImages.forEach(image => {
+                            image.addEventListener('click', function() {
                                 const modal = document.getElementById('imageModal');
                                 const modalImage = document.getElementById('modalImage');
                                 modal.style.display = 'flex'; // モーダルを表示
                                 modalImage.src = this.src; // クリックした画像のsrcをモーダルに設定
                             });
-                        }
+                        });
 
                         // モーダルを閉じる処理
                         const closeModal = document.getElementById('closeModal');
