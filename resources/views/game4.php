@@ -102,7 +102,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <title>game</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         // Ensure it's hidden initially
         document.addEventListener("DOMContentLoaded", function() {
@@ -128,6 +127,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             // 音量調整
             bgm.volume = 0.5; // 音量を50%に設定
         };
+    </script>
+    <script>
+        // セッションの有効期限を2時間に設定
+        ini_set('session.gc_maxlifetime', 7200);
+
+        // セッション保存先を変更
+        ini_set('session.save_path', '/custom/path');
     </script>
     <!-- Show player's hand -->
     <div class="container">
@@ -164,41 +170,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         const roomId = getRoomIdFromUrl(); // URLからroom_idを取得
 
-        // Click event for drawing cards
-        $(document).ready(function() {
-            $("#draw-cards").click(function() {
-                $.ajax({
-                    url: 'draw_cards.php', // Server-side script to handle card drawing
-                    method: 'POST',
-                    dataType: 'json', // Expecting JSON response
-                    success: function(response) {
-                        // Clear the existing cards
-                        $('#drawed-card-area').empty();
-
-                        // Loop through the response and display the cards
-                        if (response.success) {
-                            response.cards.forEach(function(card) {
-                                $('#drawed-card-area').append(
-                                    '<div class="card" data-card-id="' + card.Card_id + '">' +
-                                    '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
-                                    '</div>'
-                                );
-                            });
-                        } else {
-                            alert("Failed to draw cards: " + response.message);
-                        }
-                    },
-                    error: function() {
-                        alert("Error drawing cards.");
-                    }
-                });
-            });
-        });
-
-        // Click event for selecting cards
         $(document).on('click', '.card', function() {
             var cardElement = $(this);
-            var cardId = cardElement.data('card-id');  // correctly referring to the data-card-id
+            var cardId = cardElement.data('card-id');
+
+            // カードを選択した状態にする
+            cardElement.attr('data-selected', 'true');
 
             $.ajax({
                 url: 'select_card.php',
@@ -223,6 +200,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             });
         });
 
+
         // Function to fetch and update the vote area
         function updateVoteArea() {
             $.ajax({
@@ -244,36 +222,59 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         // Voting logic
         $(document).on('click', '.selected-card', function() {
             var cardId = $(this).data('card-id');
-
-            if (!roomId) {
-                alert('Room ID is missing!');
-                return; // Ensure we have a valid roomId
-            }
-
             $.ajax({
                 url: 'vote.php',
                 method: 'POST',
                 data: {
-                    card_id: cardId,
+                    room_card_id: cardId,
                     room_id: roomId
                 },
-                dataType: 'json',  // Expect JSON response, so jQuery will handle parsing
                 success: function(response) {
-                    // No need for JSON.parse, as response will already be a JavaScript object
-                    if (response.success) {
+                    var result = JSON.parse(response);
+                    if (result.success) {
                         alert('投票が完了しました！');
                     } else {
-                        alert('投票に失敗しました: ' + response.message);
+                        alert('投票に失敗しました: ' + result.message);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error("Response received:", xhr.responseText);
                     console.error("エラーが発生しました:", status, error);
-                    alert('投票中にエラーが発生しました。再度お試しください。');
                 }
             });
         });
+    </script>
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Click event for drawing cards
+            $("#draw-cards").click(function() {
+                $.ajax({
+                    url: 'draw_cards.php', // Server-side script to handle card drawing
+                    method: 'POST',
+                    dataType: 'json', // Expecting JSON response
+                    success: function(response) {
+                        // Clear the existing cards
+                        $('#drawed-card-area').empty();
+
+                        // Loop through the response and display the cards
+                        if (response.success) {
+                            response.cards.forEach(function(card) {
+                                $('#drawed-card-area').append(
+                                    '<div class="card" data-value="' + card.Card_id + '">' +
+                                    '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                                    '</div>'
+                                );
+                            });
+                        } else {
+                            alert("Failed to draw cards: " + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("Error drawing cards.");
+                    }
+                });
+            });
+        });
     </script>
 
     <div id="textbox">
@@ -302,11 +303,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <?php if ($turn < 6): ?>
             <form id="nextTurnForm" method="POST">
                 <input type="hidden" name="next_turn" value="1">
-                <button class="nextturn" type="button" onclick="showPopup()">次のターンに進む</button>
+                <button class="nextturn" type="button" onclick="checkCardSelection()">次のターンに進む</button>
             </form>
         <?php else: ?>
             <p>ゲーム終了！全てのターンが終了しました。</p>
         <?php endif; ?>
+
 
         <form method="POST">
             <input type="hidden" name="reset_game" value="1">
@@ -435,6 +437,19 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         $("button").click(function() {
             $(this).toggleClass("toggle");
         });
+
+        // カードが選択されているかどうかを確認する関数
+        function checkCardSelection() {
+            var selectedCard = document.querySelector('.drawed-card-area .card[data-selected="true"]');
+
+            if (!selectedCard) {
+                // カードが選択されていない場合、警告メッセージを表示
+                alert("カードを選択してください。");
+            } else {
+                // カードが選択されている場合、次のターンへ進む
+                showPopup(); // ターン確認のポップアップを表示
+            }
+        }
     </script>
 
     <?php
@@ -481,7 +496,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="scoreboard">
         <p>スコアボード</p>
     </div>
-    
+
     <?php
     $conn->close();
     ?>
