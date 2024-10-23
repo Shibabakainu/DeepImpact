@@ -1,6 +1,12 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 include 'db_connect.php';
+
+// Send a proper JSON header to the client
+header('Content-Type: application/json');
 
 // Check if the user is logged in
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
@@ -19,10 +25,10 @@ if (!$room_id || !$room_card_id) {
     exit();
 }
 
-// Start a transaction
-$conn->begin_transaction();
-
 try {
+    // Start a transaction
+    $conn->begin_transaction();
+
     // Update the card's voted status to '1'
     $sql = "UPDATE room_cards SET voted = 1 WHERE room_id = ? AND room_card_id = ?";
     $stmt = $conn->prepare($sql);
@@ -35,22 +41,28 @@ try {
         $stmt_vote = $conn->prepare($sql_vote);
         $stmt_vote->bind_param("iii", $room_id, $user_id, $room_card_id);
         $stmt_vote->execute();
+        error_log("SQL Query: " . $sql_vote);
 
         // Commit transaction
         $conn->commit();
 
+        // Return a success message
         echo json_encode(['success' => true, 'message' => 'カードが投票されました。']);
     } else {
         echo json_encode(['success' => false, 'message' => '指定されたカードが見つかりませんでした。']);
     }
 
+    // Close prepared statements
     $stmt->close();
     $stmt_vote->close();
 
 } catch (Exception $e) {
-    // Rollback transaction on error
+    // Rollback transaction on error and return the error message
     $conn->rollback();
-    echo json_encode(['success' => false, 'message' => 'カードの投票に失敗しました。']);
+    // Log error to PHP error log
+    error_log("SQL Error: " . $conn->error);
+    echo json_encode(['success' => false, 'message' => 'SQL Error: ' . $conn->error]);
 }
 
+// Close the connection
 $conn->close();
