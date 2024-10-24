@@ -289,7 +289,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 },
                 dataType: 'html',
                 success: function(response) {
-                    $('#vote-area').html(response); // Update the vote area with new content
+                    $('#vote-area').empty(); // Clear previous content
+                    $('#vote-area').append(response); // Add the new content
                 },
                 error: function() {
                     alert('投票エリアの更新に失敗しました。');
@@ -299,7 +300,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         // Voting logic
         $(document).on('click', '.selected-card', function() {
-            var roomCardId = $(this).data('room-card-id'); // Capture room_card_id instead of card_id
+            var roomCardId = $(this).data('room-card-id'); // Capture room_card_id
+
+            if (!roomCardId) {
+                alert('Room Card ID is missing!');
+                return; // Ensure we have a valid roomCardId
+            }
 
             if (!roomId) {
                 alert('Room ID is missing!');
@@ -311,11 +317,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 method: 'POST',
                 data: {
                     room_card_id: roomCardId,  // Send room_card_id
-                    room_id: roomId
+                    room_id: roomId             // Send room_id
                 },
                 dataType: 'json',  // Expect JSON response
                 success: function(response) {
-                    if (response.success) {
+                    if (response.status === 'success') {
                         alert('投票が完了しました！');
                     } else {
                         alert('投票に失敗しました: ' + response.message);

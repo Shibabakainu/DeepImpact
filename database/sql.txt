@@ -65,7 +65,7 @@ CREATE TABLE room_players (
     host            BOOLEAN         NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    UNIQUE (player_position)
+    UNIQUE (room_id, player_position) -- Ensures player_position is unique only within the same room
 );
 
 -- Create the friends table
@@ -140,7 +140,7 @@ CREATE TABLE room_cards (
     voted TINYINT NOT NULL DEFAULT 0,    -- 0: Not voted, 1: Voted
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (card_id) REFERENCES Card(Card_id),
-    FOREIGN KEY (player_position) REFERENCES room_players(player_position)
+    FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)
 );
 
 -- New table to manage votes
@@ -149,12 +149,10 @@ CREATE TABLE votes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     room_id INT NOT NULL,
     player_id INT NOT NULL,
-    card_id INT NOT NULL,
-    room_card_id INT NOT NULL,
+    room_card_id INT NOT NULL,  -- Change this line to room_card_id
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (player_id) REFERENCES users(id),
-    FOREIGN KEY (card_id) REFERENCES room_cards(card_id),
-    FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)
+    FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)  -- Make sure this matches
 );
 
 -- Remove the trigger if it exists

@@ -74,7 +74,38 @@ if ($stmt->execute()) {
 
     if ($stmt_password->execute()) {
         // room_playersテーブルにホストプレイヤーを挿入
-        $host_position = 1;
+
+        // 1. Check for the next available player position in the room
+        $sql_position = "SELECT COALESCE(MAX(player_position), 0) as max_position FROM room_players WHERE room_id = ?";
+        $stmt_position = $conn->prepare($sql_position);
+        if (!$stmt_position) {
+            die("Error preparing position statement: " . $conn->error);
+        }
+        $stmt_position->bind_param("i", $room_id);
+        $stmt_position->execute();
+        $result_position = $stmt_position->get_result();
+        $row_position = $result_position->fetch_assoc();
+
+        $host_position = $row_position['max_position'] + 1; // Increment to the next available position
+
+        // Debugging to confirm the player position
+        echo "Next available player position: " . $host_position . "<br>";
+
+        $stmt_position->close();
+
+        // 2. Check if the same room_id and player_position already exists
+        $sql_check_duplicate = "SELECT COUNT(*) as count FROM room_players WHERE room_id = ? AND player_position = ?";
+        $stmt_check_duplicate = $conn->prepare($sql_check_duplicate);
+        $stmt_check_duplicate->bind_param("ii", $room_id, $host_position);
+        $stmt_check_duplicate->execute();
+        $result_duplicate = $stmt_check_duplicate->get_result();
+        $row_duplicate = $result_duplicate->fetch_assoc();
+
+        if ($row_duplicate['count'] > 0) {
+            die("Error: Duplicate entry for room_id $room_id and player_position $host_position.");
+        }
+
+        // 3. Insert host player with the next available position
         $sql_room_players = "INSERT INTO room_players (room_id, user_id, host, player_position) VALUES (?, ?, ?, ?)";
         $stmt_room_players = $conn->prepare($sql_room_players);
         if (!$stmt_room_players) {
