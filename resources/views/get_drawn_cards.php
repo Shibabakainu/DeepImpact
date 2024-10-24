@@ -2,6 +2,10 @@
 session_start();
 include 'db_connect.php';
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Ensure the user is logged in
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 if (!$user_id) {
@@ -16,29 +20,63 @@ if (!$room_id) {
     exit();
 }
 
-// SQL to retrieve drawn cards for the user
-$sql = "
+// Assuming player position is saved in the session
+$player_position = isset($_SESSION['player_position']) ? $_SESSION['player_position'] : null;
+if (!$player_position) {
+    echo json_encode(['success' => false, 'message' => 'プレイヤーの位置が指定されていません。']);
+    exit();
+}
+
+// SQL to retrieve unselected (on-hand) cards
+$sql_unselected = "
     SELECT rc.room_card_id, c.Card_id, c.Card_name, c.Image_path
     FROM room_cards rc
     JOIN Card c ON rc.card_id = c.Card_id
-    WHERE rc.room_id = ? AND rc.user_id = ? AND rc.status = 'drawn'  -- Check the status here
+    WHERE rc.room_id = ? AND rc.player_position = ? AND rc.selected = 0
 ";
 
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param('ii', $room_id, $user_id); // Bind parameters
+// SQL to retrieve selected cards for the vote area
+$sql_selected = "
+    SELECT rc.room_card_id, c.Card_id, c.Card_name, c.Image_path
+    FROM room_cards rc
+    JOIN Card c ON rc.card_id = c.Card_id
+    WHERE rc.room_id = ? AND rc.selected = 1
+";
+
+$cards_unselected = [];
+$cards_selected = [];
+
+if ($stmt = $conn->prepare($sql_unselected)) {
+    // Bind room_id and player_position to the query for unselected cards
+    $stmt->bind_param('ii', $room_id, $player_position);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $cards = [];
     while ($row = $result->fetch_assoc()) {
-        $cards[] = $row;
+        $cards_unselected[] = $row;
     }
     $stmt->close();
-
-    echo json_encode(['success' => true, 'cards' => $cards]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'カードデータの取得に失敗しました: ' . $conn->error]);
 }
+
+if ($stmt = $conn->prepare($sql_selected)) {
+    // Bind room_id to the query for selected cards
+    $stmt->bind_param('i', $room_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        $cards_selected[] = $row;
+    }
+    $stmt->close();
+}
+
+// Send JSON response with both unselected (on-hand) and selected cards
+header('Content-Type: application/json');
+echo json_encode([
+    'success' => true,
+    'cards_unselected' => $cards_unselected,
+    'cards_selected' => $cards_selected
+]);
 
 $conn->close();
 ?>

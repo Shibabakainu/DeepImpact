@@ -64,7 +64,8 @@ CREATE TABLE room_players (
     joined_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     host            BOOLEAN         NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE (player_position)
 );
 
 -- Create the friends table
@@ -134,11 +135,12 @@ CREATE TABLE room_cards (
     room_card_id INT PRIMARY KEY AUTO_INCREMENT,
     room_id INT NOT NULL,
     card_id INT NOT NULL,
-    status TINYINT NOT NULL DEFAULT 0,  -- 0: Default, 1-6: Player hands 
+    player_position INT NOT NULL,
     selected TINYINT NOT NULL DEFAULT 0,  -- 0: Not selected, 1: Selected
     voted TINYINT NOT NULL DEFAULT 0,    -- 0: Not voted, 1: Voted
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
-    FOREIGN KEY (card_id) REFERENCES Card(Card_id)
+    FOREIGN KEY (card_id) REFERENCES Card(Card_id),
+    FOREIGN KEY (player_position) REFERENCES room_players(player_position)
 );
 
 -- New table to manage votes

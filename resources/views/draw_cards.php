@@ -24,7 +24,7 @@ if (!$player_position) {
 }
 
 // Check if the player has already drawn cards (to prevent redrawing)
-$sql_check = "SELECT COUNT(*) as card_count FROM room_cards WHERE room_id = ? AND status = ?";
+$sql_check = "SELECT COUNT(*) as card_count FROM room_cards WHERE room_id = ? AND player_position = ?";
 $stmt = $conn->prepare($sql_check);
 $stmt->bind_param("ii", $room_id, $player_position);
 $stmt->execute();
@@ -40,7 +40,7 @@ $sql = "
     SELECT c.Card_id, c.Card_name, c.Image_path 
     FROM Card c
     LEFT JOIN room_cards rc ON c.Card_id = rc.card_id AND rc.room_id = ?
-    WHERE rc.room_id IS NULL OR rc.status = 0
+    WHERE rc.room_id IS NULL
     ORDER BY RAND()
     LIMIT 5
 ";
@@ -53,7 +53,7 @@ $result = $stmt->get_result();
 $cards = [];
 while ($row = $result->fetch_assoc()) {
     // Store the room_card_id of the newly inserted card
-    $sql_insert = "INSERT INTO room_cards (room_id, card_id, status) VALUES (?, ?, ?)";
+    $sql_insert = "INSERT INTO room_cards (room_id, card_id, player_position) VALUES (?, ?, ?)";
     $stmt_insert = $conn->prepare($sql_insert);
     $stmt_insert->bind_param("iii", $room_id, $row['Card_id'], $player_position);
     $stmt_insert->execute();

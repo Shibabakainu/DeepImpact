@@ -49,7 +49,7 @@ $sql = "
     FROM room_cards rc 
     JOIN Card c ON rc.card_id = c.Card_id 
     JOIN room_players rp ON rc.room_id = rp.room_id 
-    WHERE rc.room_id = ? AND rp.user_id = ? AND rc.status = ?";
+    WHERE rc.room_id = ? AND rp.user_id = ? AND rc.player_position = ?";
 
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param('iii', $room_id, $user_id, $player_position); // Use user_id to filter cards for the current player
@@ -132,7 +132,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         bgm.volume = 0.5; // 音量を50%に設定
     };
 
-    // Function to update drawn cards on load
+    // Function to update drawn cards (on-hand) and vote area on load
     function updateDrawnCards() {
         // Fetch drawn cards from the server
         $.ajax({
@@ -142,10 +142,21 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
+                    // Update on-hand (unselected) cards
                     $('#drawed-card-area').empty(); // Clear existing cards
-                    response.cards.forEach(function(card) {
+                    response.cards_unselected.forEach(function(card) {
                         $('#drawed-card-area').append(
                             '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
+                            '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                            '</div>'
+                        );
+                    });
+
+                    // Update vote area with selected cards
+                    $('#vote-area').empty(); // Clear existing cards
+                    response.cards_selected.forEach(function(card) {
+                        $('#vote-area').append(
+                            '<div class="selected-card" data-room-card-id="' + card.room_card_id + '">' +
                             '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
                             '</div>'
                         );
@@ -154,8 +165,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     console.error('Failed to retrieve drawn cards: ' + response.message);
                 }
             },
-            error: function() {
-                alert("Error retrieving drawn cards.");
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error retrieving drawn cards: ' + textStatus + ' ' + errorThrown);
             }
         });
     }
@@ -248,9 +259,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
-                    } else {
+                    alert(response.message);
+                    
+                    // Add class to indicate selection
+                    $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
+
+                    // Remove the selected card from the on-hand area
+                    $(".card[data-room-card-id='" + roomCardId + "']").remove();
+                    
+                    // Update the vote area
+                    updateVoteArea();
+                } else {
                         alert(response.message);
                     }
                 },
