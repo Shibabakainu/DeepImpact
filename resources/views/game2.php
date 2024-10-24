@@ -121,7 +121,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
     <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
     無理よ～-->  
-    <audio id="clicksound" src="/DeepImpact/bgm/65._回顧録_Op.65.mp3"></audio>
+    <audio id="clicksound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
     <script>
     const card = document.querySelector('#draw-cards'); // カード要素を取得 '.card' と指定すると、CSSクラス名が「card」の最初の要素を取得する。
     const clickSound = document.getElementById('clickSound'); // 音声要素を取得
