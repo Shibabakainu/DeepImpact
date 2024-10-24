@@ -119,10 +119,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 <body>
 
-    <!--こうかおん-->
+    <!--こうかおん  てか無理かも～できへん助けて-->  
     <audio id="clicksound" src="/DeepImpact/bgm/65._回顧録_Op.65.mp3"></audio>
     <script>
-    const card = document.querySelector('div.card'); // カード要素を取得
+    const card = document.querySelector('#draw-cards'); // カード要素を取得 '.card' と指定すると、CSSクラス名が「card」の最初の要素を取得する。
     const clickSound = document.getElementById('clickSound'); // 音声要素を取得
 
     card.addEventListener('click', () => {
@@ -135,14 +135,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 
 
-    <!-- ボタンを設置し、クリックでBGMを再生/停止します -->
+    <!-- ボタンを設置、クリックでBGMを再生/停止 -->
     <button id="bgm-toggle-btn" class="bgm-btn">
         <span id="bgm-icon">🔊</span>
-        <!-- 初期状態は音量オン（スピーカーアイコン） -->
     </button>
 
     <audio id="bgm" loop>
-        <!-- オーディオ要素：BGMを再生し、ループ設定を有効化 -->
+        <!-- オーディオ要素：BGMを再生、ループ設定を有効化 -->
         <source src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
         
     </audio>
