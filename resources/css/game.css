@@ -574,3 +574,21 @@ p {
 .voter-name {
     font-size: 14px; /* Adjust font size as needed */
 }
+
+/* ボタンのデザインを定義します */
+.bgm-btn {
+position: absolute;        /* 絶対位置を指定 */
+top: 100px;                /* 上からの距離を設定 */
+right: 30px;              /* 右からの距離を設定 */
+background-color: #4CAF50; /* ボタンの背景色（緑色） */
+color: white;              /* 文字色（白） */
+border: none;              /* ボタンの枠線なし */
+border-radius: 50%;        /* ボタンを円形にする */
+width: 50px;               /* ボタンの幅を50pxに設定 */
+height: 50px;              /* ボタンの高さを50pxに設定 */
+font-size: 24px;           /* ボタン内のアイコンの文字サイズ */
+cursor: pointer;           /* ホバー時にポインタを指に変える */
+display: flex;             /* フレックスボックスで配置 */
+align-items: center;       /* ボタン内のアイコンを垂直方向に中央揃え */
+justify-content: center;   /* ボタン内のアイコンを水平方向に中央揃え */
+}

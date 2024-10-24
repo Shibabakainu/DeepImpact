@@ -118,10 +118,61 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
-    <audio autoplay loop>
+    <!-- ボタンを設置し、クリックでBGMを再生/停止します -->
+    <button id="bgm-toggle-btn" class="bgm-btn">
+        <span id="bgm-icon">🔊</span>
+        <!-- 初期状態は音量オン（スピーカーアイコン） -->
+    </button>
+
+    <audio id="bgm" loop>
+        <!-- オーディオ要素：BGMを再生し、ループ設定を有効化 -->
         <source src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
-        Your browser does not support the audio tag.
+        
     </audio>
+
+    <script>
+        const context = new AudioContext();
+
+        // Setup an audio graph with AudioNodes and schedule playback.
+
+        // Resume AudioContext playback when user clicks a button on the page.
+        document.querySelector('button').addEventListener('click', function() {
+        context.resume().then(() => {
+            console.log('AudioContext playback resumed successfully');});
+        });
+
+        // DOMの読み込みが完了したときに実行される処理
+        document.addEventListener('DOMContentLoaded', function () {
+            const bgm = document.getElementById('bgm'); 
+            const bgmToggleBtn = document.getElementById('bgm-toggle-btn'); 
+            const bgmIcon = document.getElementById('bgm-icon'); 
+            let isPlaying = false; 
+
+            // ボタンがクリックされたときのイベントハンドラを定義
+            bgmToggleBtn.addEventListener('click', function () {
+                if (isPlaying) { 
+                    // 再生中ならBGMを一時停止
+                    bgm.pause(); 
+                    bgmIcon.textContent = '🔇'; // アイコンをミュートのものに変更
+                } else {
+                    // 停止中ならBGMを再生
+                    bgm.play(); 
+                    bgmIcon.textContent = '🔊'; // アイコンをスピーカーのものに変更
+                }
+                isPlaying = !isPlaying; // フラグを反転（再生⇔停止を切り替え）
+            });
+
+            // ユーザーがページを離れる前に音楽を停止する処理
+            window.addEventListener('beforeunload', () => {
+                bgm.pause(); // ページが閉じられる前にBGMを停止
+            });
+
+            // 1秒後にボタンを自動的にクリック
+            setTimeout(function() {
+                bgmToggleBtn.click(); // ここでボタンがクリックされる
+            }, 2000); // 1000ミリ秒 = 1秒
+        });
+    </script>
     <script>
         window.onload = function() {
         // Automatically check if there are already drawn cards
