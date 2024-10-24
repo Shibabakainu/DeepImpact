@@ -118,6 +118,22 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
+
+    <!--こうかおん-->
+    <audio id="hoverSound" src="/DeepImpact/bgm/02_ちゅーん2.mp3" preload="auto"></audio>
+    <script>
+        // カードの要素と効果音の要素を取得
+        const card = document.getElementById('container .card');
+        const hoverSound = document.getElementById('hoverSound')
+        // カーソルがカードに触れたとき効果音を再生するイベント
+        card.addEventListener('mouseenter', () => {
+            hoverSound.currentTime = 0; // 音をリセット
+            hoverSound.play();          // 効果音を再生
+        });
+    </script>
+
+
+
     <!-- ボタンを設置し、クリックでBGMを再生/停止します -->
     <button id="bgm-toggle-btn" class="bgm-btn">
         <span id="bgm-icon">🔊</span>
