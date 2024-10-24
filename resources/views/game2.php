@@ -120,16 +120,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <body>
 
     <!--こうかおん-->
-    <audio id="hoverSound" src="/DeepImpact/bgm/02_ちゅーん2.mp3" preload="auto"></audio>
+    <audio id="clicksound" src="/DeepImpact/bgm/65._回顧録_Op.65.mp3"></audio>
     <script>
-        // カードの要素と効果音の要素を取得
-        const card = document.getElementById('container .card');
-        const hoverSound = document.getElementById('hoverSound')
-        // カーソルがカードに触れたとき効果音を再生するイベント
-        card.addEventListener('mouseenter', () => {
-            hoverSound.currentTime = 0; // 音をリセット
-            hoverSound.play();          // 効果音を再生
+    const card = document.querySelector('div.card'); // カード要素を取得
+    const clickSound = document.getElementById('clickSound'); // 音声要素を取得
+
+    card.addEventListener('click', () => {
+        clickSound.currentTime = 0; // 音をリセット
+        clickSound.play().catch(error => {
+            console.error('音声再生エラー:', error); // エラーが発生した場合の処理
         });
+    });
     </script>
 
 
