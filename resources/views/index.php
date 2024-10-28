@@ -55,7 +55,7 @@ $loggedIn = isset($_SESSION['user_id']);
             <button id="dragButton" class="drag-button">ドラッグで移動</button> <!-- ドラッグ用のボタン -->
         </div>
         <div class="message-content">
-            <p>メッセージはありません。</p>
+            <p>この機能は撤廃しました。</p>
         </div>
     </div>
 

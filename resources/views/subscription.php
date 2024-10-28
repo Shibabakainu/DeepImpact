@@ -11,37 +11,66 @@ include 'db_connect.php'; // Include the database connection
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>サブスクリプション登録</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/subscription.css">
+    <style>
+        /* ポップアップスタイル */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background-color: white;
+            border: 2px solid #000;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        /* OKボタンスタイル */
+        .popup button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 画面全体のオーバーレイ */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
-        <?php
-        // Ensure the user is logged in
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: ../login.php");
-            exit;
-        }
+        <!-- ポップアップのオーバーレイ -->
+        <div class="overlay"></div>
 
-        // Get the user ID from the session
-        $user_id = $_SESSION['user_id'];
+        <!-- ポップアップ本体 -->
+        <div class="popup">
+            <p>この機能は撤廃しました。</p><br>
+            <p>今後とも我々DeepImpactをよろしくお願いします。</p>
+            <button id="popup-ok-btn">OK</button>
+        </div>
 
-        // Fetch the user's information
-        $sql = "SELECT name FROM users WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-        $stmt->close();
-        ?>
-
+        <!-- サブスクリプション登録フォーム（ポップアップ表示後は使用不可になるため、実際には見えない） -->
         <div class="subscription-box">
             <h2>サブスクリプション登録</h2>
-            <form action="/DeepImpact/resources/views/index.php" method="post">
+            <form action="process_subscription.php" method="post">
                 <div class="input-group">
                     <label for="user_id">ユーザーID</label>
-                    <!-- ユーザーIDは表示のみで編集不可 -->
-                    <input type="text" id="user_id" name="user_id" value="<?php echo htmlspecialchars($user['name']); ?>" readonly>
+                    <input type="text" id="user_id" name="user_id" value="ユーザーID" readonly>
                 </div>
                 <div class="input-group">
                     <label for="amount">金額</label>
@@ -60,22 +89,15 @@ include 'db_connect.php'; // Include the database connection
     </div>
 
     <script>
-        const minusBtn = document.getElementById('minus-btn');
-        const plusBtn = document.getElementById('plus-btn');
-        const amountInput = document.getElementById('amount');
+        // ページがロードされたときにポップアップを表示
+        window.onload = function() {
+            document.querySelector('.popup').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
+        }
 
-        minusBtn.addEventListener('click', function() {
-            let currentAmount = parseInt(amountInput.value);
-            if (currentAmount >= 10000) {
-                amountInput.value = currentAmount - 10000;
-            } else {
-                amountInput.value = 0;
-            }
-        });
-
-        plusBtn.addEventListener('click', function() {
-            let currentAmount = parseInt(amountInput.value);
-            amountInput.value = currentAmount + 10000;
+        // OKボタンがクリックされたときにindex.phpへ遷移
+        document.getElementById('popup-ok-btn').addEventListener('click', function() {
+            window.location.href = '/DeepImpact/resources/views/index.php';
         });
     </script>
 </body>

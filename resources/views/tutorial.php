@@ -94,7 +94,7 @@
     <details class="details">
         <summary class="summary">質問</summary>
         <div class="answer">
-            <div class="answerInner">回答</div>
+            <div class="answerInner">切手を舐めると２キロカロリーを摂取できる。</div>
         </div>
     </details>
 </div>

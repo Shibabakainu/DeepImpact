@@ -46,7 +46,7 @@
         <li class="btn"><a href="/DeepImpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
-        <li class="btn"><a href="/DeepImpact/resources/views/subscription.php" class="common-btn">サブスクリプション</a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/subscription.php" class="common-btn"><s>サブスクリプション</s></a></li>
     </ul>
 </div>
 

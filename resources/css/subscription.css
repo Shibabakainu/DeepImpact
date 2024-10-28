@@ -5,11 +5,21 @@
 }
 
 body {
-    background-color: #f4f4f4;
+    /* サイトの外枠の余白を無効化 */
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
+    overflow: hidden;
+    padding-top: 60px;
+    background-image: url(../../images/art1.jpg);
+    background-size: cover;
+    background-position: center;
 }
 
 .container {
