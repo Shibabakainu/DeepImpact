@@ -235,6 +235,11 @@ form {
     border-radius: 5px;
 }
 
+#close-game-popup:hover {
+    background-color: rgba(150, 1, 31, 0.944);
+}
+
+
 #overlay-game-popup {
     display: none;
     position: fixed;
