@@ -245,8 +245,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <!-- Show player's hand -->
     <div class="container">
         <div class="onhand">
-            <div class="draw" id="draw"><button id="draw-cards">Draw Cards</button></div>
-
+            <div class="draw" id="draw">
+                <button id="draw-cards">カードを選ぶ</button>
+            </div>
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
                     <?php if ($card['selected'] == 0): // Only show cards that are not selected 
@@ -265,7 +266,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <!-- Cards with selected 1 will be loaded here -->
     </div>
     <div class="title">
-        最高のカードに投票してください
+        カードを投票してください
     </div>
 
     <script type="text/javascript">
