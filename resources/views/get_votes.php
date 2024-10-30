@@ -51,8 +51,7 @@ $conn->close();
 // Display the cards and the users who voted for them with profile images
 foreach ($cards as $room_card_id => $card) {
     echo '<div class="selected-card" data-room-card-id="' . $room_card_id . '">';
-    echo '<img src="../../images/' . htmlspecialchars($card['details']['Image_path'], ENT_QUOTES) . '" alt="' . htmlspecialchars($card['details']['Card_name'], ENT_QUOTES) . '">';
-    echo '<div class="card-name">' . htmlspecialchars($card['details']['Card_name'], ENT_QUOTES) . '</div>'; // Display card name
+    echo '<img src="../../images/'  . htmlspecialchars($card['details']['Image_path'], ENT_QUOTES) . '" alt="' . htmlspecialchars($card['details']['Card_name'], ENT_QUOTES) . '">';
 
     // Show icons for each voter
     if (!empty($card['voters'])) {
@@ -62,8 +61,8 @@ foreach ($cards as $room_card_id => $card) {
         foreach ($card['voters'] as $voter) {
             $profileImage = htmlspecialchars($voter['profile_image'], ENT_QUOTES);
             echo '<div class="voter-info">';
-            echo '<img src="/DeepImpact/resources/views/login/profileicon/' . $profileImage . '" alt="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" title="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" class="voter-icon">';
-            echo '<span class="voter-name">' . htmlspecialchars($voter['name'], ENT_QUOTES) . '</span>'; // Display voter name
+            echo '<img src="/DeepImpact/resources/views/login/profileicon/' . $profileImage . '" style="width:50px;height:auto;"  alt="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" title="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" class="voter-icon">';
+            echo '<div class="voter-name">' . htmlspecialchars($voter['name'], ENT_QUOTES) . '</div>'; // Display voter name
             echo '</div>'; // Close voter-info
         }
         

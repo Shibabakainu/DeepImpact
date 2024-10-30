@@ -252,7 +252,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="container">
         <div class="onhand">
             <div class="draw" id="draw">
-                <button id="draw-cards">カードを選ぶ</button>
+                <button id="draw-cards">カードをドロー</button>
             </div>
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
@@ -272,7 +272,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <!-- Cards with selected 1 will be loaded here -->
     </div>
     <div class="title">
-        カードを投票してください
+        投票
     </div>
 
     <script type="text/javascript">
