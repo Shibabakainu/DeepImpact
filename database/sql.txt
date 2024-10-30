@@ -63,6 +63,7 @@ CREATE TABLE room_players (
     player_position INT             NOT NULL,
     joined_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     host            BOOLEAN         NOT NULL,
+    score           INT             DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE (room_id, player_position) -- Ensures player_position is unique only within the same room
