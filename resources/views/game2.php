@@ -55,7 +55,7 @@ if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param('iii', $room_id, $user_id, $player_position); // Use user_id to filter cards for the current player
     $stmt->execute();
     $result = $stmt->get_result();
-
+    
     $cards = [];
     while ($row = $result->fetch_assoc()) {
         $cards[] = $row;
@@ -120,18 +120,18 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <body>
 
     <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
-    無理よ～-->
-    <audio id="clicksound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
+    無理よ～-->  
+    <audio id="clickSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
     <script>
-        const card = document.querySelector('#draw-cards'); // カード要素を取得 '.card' と指定すると、CSSクラス名が「card」の最初の要素を取得する。
-        const clickSound = document.getElementById('clickSound'); // 音声要素を取得
+    const card = document.querySelector('#draw-cards'); // カード要素を取得 '.card' と指定すると、CSSクラス名が「card」の最初の要素を取得する。
+    const clickSound = document.getElementById('clickSound'); // 音声要素を取得
 
-        card.addEventListener('click', () => {
-            clickSound.currentTime = 0; // 音をリセット
-            clickSound.play().catch(error => {
-                console.error('音声再生エラー:', error); // エラーが発生した場合の処理
-            });
+    card.addEventListener('click', () => {
+        clickSound.currentTime = 0; // 音をリセット
+        clickSound.play().catch(error => {
+            console.error('音声再生エラー:', error); // エラーが発生した場合の処理
         });
+    });
     </script>
 
 
@@ -141,40 +141,47 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         <span id="bgm-icon">🔊</span>
     </button>
 
-    <audio id="bgm" loop>
+    <audio id="bgm" src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" preload="auto" loop autoplay>
         <!-- オーディオ要素：BGMを再生、ループ設定を有効化 -->
         <source src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
-
     </audio>
+    <script>
+        // 最初のクリックでミュート解除 (Chrome制限対応)
+        document.body.addEventListener('click', () => {
+        bgm.muted = false;
+        bgm.play().catch(console.error);
+        }, { once: true });  // このイベントは一度だけ実行
+    </script>
 
     <script>
+
+
         const context = new AudioContext();
 
         // Setup an audio graph with AudioNodes and schedule playback.
 
         // Resume AudioContext playback when user clicks a button on the page.
         document.querySelector('button').addEventListener('click', function() {
-            context.resume().then(() => {
-                console.log('AudioContext playback resumed successfully');
-            });
+        context.resume().then(() => {
+            console.log('AudioContext playback resumed successfully');});
         });
 
         // DOMの読み込みが完了したときに実行される処理
-        document.addEventListener('DOMContentLoaded', function() {
-            const bgm = document.getElementById('bgm');
-            const bgmToggleBtn = document.getElementById('bgm-toggle-btn');
-            const bgmIcon = document.getElementById('bgm-icon');
-            let isPlaying = false;
+        document.addEventListener('DOMContentLoaded', function () {
+            const bgm = document.getElementById('bgm'); 
+            const bgmToggleBtn = document.getElementById('bgm-toggle-btn'); 
+            const bgmIcon = document.getElementById('bgm-icon'); 
+            let isPlaying = false; 
 
             // ボタンがクリックされたときのイベントハンドラを定義
-            bgmToggleBtn.addEventListener('click', function() {
-                if (isPlaying) {
+            bgmToggleBtn.addEventListener('click', function () {
+                if (isPlaying) { 
                     // 再生中ならBGMを一時停止
-                    bgm.pause();
+                    bgm.pause(); 
                     bgmIcon.textContent = '🔇'; // アイコンをミュートのものに変更
                 } else {
                     // 停止中ならBGMを再生
-                    bgm.play();
+                    bgm.play(); 
                     bgmIcon.textContent = '🔊'; // アイコンをスピーカーのものに変更
                 }
                 isPlaying = !isPlaying; // フラグを反転（再生⇔停止を切り替え）
@@ -193,54 +200,53 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </script>
     <script>
         window.onload = function() {
-            // Automatically check if there are already drawn cards
-            updateDrawnCards(); // Call function to update drawn cards display
-            var bgm = document.getElementById('bgm');
+        // Automatically check if there are already drawn cards
+        updateDrawnCards(); // Call function to update drawn cards display
+        var bgm = document.getElementById('bgm');
 
-            // 音量調整
-            bgm.volume = 0.5; // 音量を50%に設定
-        };
+        // 音量調整
+        bgm.volume = 0.5; // 音量を50%に設定
+    };
 
-        // Function to update drawn cards (on-hand) and vote area on load
-        function updateDrawnCards() {
-            // Fetch drawn cards from the server
-            $.ajax({
-                url: 'get_drawn_cards.php', // Create this script to retrieve drawn cards for the current user
-                method: 'GET',
-                data: {
-                    room_id: roomId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        // Update on-hand (unselected) cards
-                        $('#drawed-card-area').empty(); // Clear existing cards
-                        response.cards_unselected.forEach(function(card) {
-                            $('#drawed-card-area').append(
-                                '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
-                                '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
-                                '</div>'
-                            );
-                        });
+    // Function to update drawn cards (on-hand) and vote area on load
+    function updateDrawnCards() {
+        // Fetch drawn cards from the server
+        $.ajax({
+            url: 'get_drawn_cards.php', // Create this script to retrieve drawn cards for the current user
+            method: 'GET',
+            data: { room_id: roomId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Update on-hand (unselected) cards
+                    $('#drawed-card-area').empty(); // Clear existing cards
+                    response.cards_unselected.forEach(function(card) {
+                        $('#drawed-card-area').append(
+                            '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
+                            '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                            '</div>'
+                        );
+                    });
 
-                        // Update vote area with selected cards
-                        $('#vote-area').empty(); // Clear existing cards
-                        response.cards_selected.forEach(function(card) {
-                            $('#vote-area').append(
-                                '<div class="selected-card" data-room-card-id="' + card.room_card_id + '">' +
-                                '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
-                                '</div>'
-                            );
-                        });
-                    } else {
-                        console.error('Failed to retrieve drawn cards: ' + response.message);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert('Error retrieving drawn cards: ' + textStatus + ' ' + errorThrown);
+                    // Update vote area with selected cards
+                    $('#vote-area').empty(); // Clear existing cards
+                    response.cards_selected.forEach(function(card) {
+                        $('#vote-area').append(
+                            '<div class="selected-card" data-room-card-id="' + card.room_card_id + '">' +
+                            '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                            '</div>'
+                        );
+                    });
+                } else {
+                    console.error('Failed to retrieve drawn cards: ' + response.message);
                 }
-            });
-        }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error retrieving drawn cards: ' + textStatus + ' ' + errorThrown);
+            }
+        });
+    }
+
     </script>
     <!-- Show player's hand -->
     <div class="container">
@@ -320,7 +326,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             console.log("Room ID: " + roomId + ", Room Card ID: " + roomCardId);
 
             $.ajax({
-                url: 'select_card.php',
+                url: 'select_card.php', 
                 method: 'POST',
                 data: {
                     room_id: roomId,
@@ -329,17 +335,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message);
+                    alert(response.message);
+                    
+                    // Add class to indicate selection
+                    $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
 
-                        // Add class to indicate selection
-                        $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
-
-                        // Remove the selected card from the on-hand area
-                        $(".card[data-room-card-id='" + roomCardId + "']").remove();
-
-                        // Update the vote area
-                        updateVoteArea();
-                    } else {
+                    // Remove the selected card from the on-hand area
+                    $(".card[data-room-card-id='" + roomCardId + "']").remove();
+                    
+                    // Update the vote area
+                    updateVoteArea();
+                } else {
                         alert(response.message);
                     }
                 },
@@ -386,10 +392,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 url: 'vote.php',
                 method: 'POST',
                 data: {
-                    room_card_id: roomCardId, // Send room_card_id
-                    room_id: roomId // Send room_id
+                    room_card_id: roomCardId,  // Send room_card_id
+                    room_id: roomId             // Send room_id
                 },
-                dataType: 'json', // Expect JSON response
+                dataType: 'json',  // Expect JSON response
                 success: function(response) {
                     if (response.status === 'success') {
                         alert('投票が完了しました！');
@@ -404,6 +410,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 }
             });
         });
+
     </script>
 
     <div id="textbox">
@@ -559,25 +566,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
         document.getElementById('exit-btn').addEventListener('click', function() {
-            fetch('leave_room.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `room_id=${encodeURIComponent(roomId)}`
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if (data.includes('success')) {
-                        window.location.href = 'room_search.php'; // Redirect to another page after leaving
-                    } else {
-                        alert('エラー: ' + data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
+            window.location.href = '/DeepImpact/resources/views/index.php';
         });
 
         $("button").click(function() {
@@ -629,7 +618,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="scoreboard">
         <p>スコアボード</p>
     </div>
-
+    
     <?php
     $conn->close();
     ?>
