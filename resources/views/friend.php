@@ -88,7 +88,7 @@ include 'db_connect.php'; // Include the database connection
 
                     if ($friend['id'] == $user_id) {
                         // If the user is the logged-in user, display "ログイン中"
-                        echo "<p>ログイン中</p>";
+                        echo "<p>　あなた　　</p>";
                     } else {
                         // Display the friend request button for other users
                         echo "<form class='friend-request-form'>";
