@@ -43,6 +43,7 @@ CREATE TABLE rooms (
     max_players     INT             DEFAULT 6,
     status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
     current_players INT             DEFAULT 1,
+    turn_number     INT             DEFAULT 1,
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -57,13 +58,14 @@ CREATE TABLE room_passwords (
 -- room_playersテーブルを作成
 DROP TABLE IF EXISTS room_players;
 CREATE TABLE room_players (
-    id              INT             AUTO_INCREMENT PRIMARY KEY,
-    room_id         INT             NOT NULL,
-    user_id         INT             NOT NULL,
-    player_position INT             NOT NULL,
-    joined_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
-    host            BOOLEAN         NOT NULL,
-    score           INT             DEFAULT 0,
+    id                  INT             AUTO_INCREMENT PRIMARY KEY,
+    room_id             INT             NOT NULL,
+    user_id             INT             NOT NULL,
+    player_position     INT             NOT NULL,
+    joined_at           TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    host                BOOLEAN         NOT NULL,
+    score               INT             DEFAULT 0,
+    last_scored_turn    INT             DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE (room_id, player_position) -- Ensures player_position is unique only within the same room

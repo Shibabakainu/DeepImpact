@@ -46,16 +46,6 @@ body {
                 0 0 40px 20px rgba(16, 131, 245, 0.8);
 }
 
-
-.container .card {
-    /* カードの見た目 */
-    width: 8rem;
-    background-color: white;
-    box-shadow: 0 0 6px black;
-    border: 0.3rem white solid;
-    border-radius: 0.5rem;
-}
-
 .container .card img {
     width: 8rem;
 }
@@ -573,7 +563,9 @@ p {
 }
 
 .voter-name {
-    font-size: 14px; /* Adjust font size as needed */
+    font-size: 20px; /* Adjust font size as needed */
+    font-weight: bold;
+    color: white;
 }
 
 /* ボタンのデザインを定義します */
