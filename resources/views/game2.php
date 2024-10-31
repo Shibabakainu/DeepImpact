@@ -65,6 +65,118 @@ if ($stmt = $conn->prepare($sql)) {
     die("カードデータの取得に失敗しました: " . $conn->error);
 }
 
+//投票が完了かどうかを確認
+function isVotingComplete($room_id) {
+    global $conn;
+
+    // Count distinct player_ids to see if every player has voted in the room
+    $query = "SELECT COUNT(DISTINCT player_id) FROM votes WHERE room_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $stmt->bind_result($distinctVoters);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Query to get the total number of players in the room
+    $playerQuery = "SELECT COUNT(*) FROM room_players WHERE room_id = ?";
+    $playerStmt = $conn->prepare($playerQuery);
+    $playerStmt->bind_param("i", $room_id);
+    $playerStmt->execute();
+    $playerStmt->bind_result($totalPlayers);
+    $playerStmt->fetch();
+    $playerStmt->close();
+
+    // Check if voting is complete
+    return $distinctVoters == $totalPlayers;
+}
+
+function updateScore($room_id) {
+    global $conn;
+
+    // Get the current turn number
+    $turnQuery = "SELECT turn_number FROM rooms WHERE room_id = ?";
+    $turnStmt = $conn->prepare($turnQuery);
+    $turnStmt->bind_param("i", $room_id);
+    $turnStmt->execute();
+    $turnResult = $turnStmt->get_result();
+    $turnRow = $turnResult->fetch_assoc();
+    $currentTurn = $turnRow['turn_number'];
+    $turnStmt->close();
+
+    // Identify the player with the most voted card
+    $query = "
+        SELECT rc.player_position, COUNT(v.room_card_id) AS vote_count
+        FROM room_cards rc
+        INNER JOIN votes v ON rc.room_card_id = v.room_card_id
+        WHERE rc.room_id = ? AND rc.selected = 1
+        GROUP BY rc.player_position
+        ORDER BY vote_count DESC
+        LIMIT 1";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row) {
+        $player_position = $row['player_position'];
+
+        // Update score only if this turn hasn't been scored yet for this player
+        $scoreQuery = "
+            UPDATE room_players 
+            SET score = score + 1, last_scored_turn = ?
+            WHERE room_id = ? AND player_position = ? AND last_scored_turn < ?";
+        $scoreStmt = $conn->prepare($scoreQuery);
+        $scoreStmt->bind_param("iiii", $currentTurn, $room_id, $player_position, $currentTurn);
+        $scoreStmt->execute();
+        $scoreStmt->close();
+    }
+
+    $stmt->close();
+}
+
+// Function to fetch and display the scoreboard
+function getScoreboard($room_id) {
+    global $conn;
+
+    // Get player names and their scores for the room, sorted by score in descending order
+    $query = "
+        SELECT u.name AS player_name, rp.score 
+        FROM room_players rp
+        INNER JOIN users u ON rp.user_id = u.id
+        WHERE rp.room_id = ? 
+        ORDER BY rp.score DESC";
+        
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Display the scoreboard
+    echo '<div class="scoreboard">';
+    echo '<p>スコアボード</p>';
+    while ($row = $result->fetch_assoc()) {
+        $player_name = htmlspecialchars($row['player_name']);
+        $score = $row['score'];
+        echo "<p> $player_name - $score</p>";
+    }
+    echo '</div>';
+
+    $stmt->close();
+}
+
+//ターンを増加する
+function incrementTurn($room_id) {
+    global $conn;
+    
+    $query = "UPDATE rooms SET turn_number = turn_number + 1 WHERE room_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $stmt->close();
+}
+
 // ターン数の初期化（初回のみ）
 if (!isset($_SESSION['turn'])) {
     $_SESSION['turn'] = 1; // 初期ターンは1
@@ -118,7 +230,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
-
     <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
     無理よ～-->  
     <audio id="clickSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
@@ -133,8 +244,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
     });
     </script>
-
-
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
     <button id="bgm-toggle-btn" class="bgm-btn">
@@ -151,10 +260,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         bgm.muted = false;
         bgm.play().catch(console.error);
         }, { once: true });  // このイベントは一度だけ実行
-    </script>
-
-    <script>
-
 
         const context = new AudioContext();
 
@@ -203,9 +308,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         // Automatically check if there are already drawn cards
         updateDrawnCards(); // Call function to update drawn cards display
         var bgm = document.getElementById('bgm');
-
-        // 音量調整
-        bgm.volume = 0.5; // 音量を50%に設定
     };
 
     // Function to update drawn cards (on-hand) and vote area on load
@@ -413,6 +515,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
     </script>
+
+    <?php
+        //ターン終了時の処理
+        if (isVotingComplete($room_id)) {
+            updateScore($room_id);
+            getScoreboard($room_id);
+            incrementTurn($room_id);
+            //endTurn($room_id);
+            //startNextTurn($room_id);
+        }     
+    ?>
 
     <div id="textbox">
         <div id="chatbox"></div>
