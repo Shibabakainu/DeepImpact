@@ -143,6 +143,21 @@ CREATE TABLE room_cards (
     FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)
 );
 
+DROP TABLE IF EXISTS ExtraCard;
+
+CREATE TABLE ExtraCard (
+    ExtraCard_id INT PRIMARY KEY AUTO_INCREMENT,
+    Card_name VARCHAR(100) NOT NULL,
+    Image_path VARCHAR(255) NOT NULL,
+    Card_description TEXT
+)
+AS SELECT NULL AS ExtraCard_id, Card_name, Image_path, NULL AS Card_description
+FROM Card;
+
+-- Card_descriptionが必要であれば以下の行を使用
+UPDATE ExtraCard
+SET Card_description = CONCAT('This is a description for ', Card_name);
+
 -- New table to manage votes
 DROP TABLE IF EXISTS votes;
 CREATE TABLE votes (
