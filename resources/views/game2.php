@@ -238,15 +238,22 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     無理よ～-->
     <audio id="clickSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
     <script>
-        const card = document.querySelector('#draw-cards'); // カード要素を取得 '.card' と指定すると、CSSクラス名が「card」の最初の要素を取得する。
-        const clickSound = document.getElementById('clickSound'); // 音声要素を取得
-
+        document.addEventListener("DOMContentLoaded", function() {
+    const card = document.querySelector('#draw-cards');
+    const clickSound = document.getElementById('clickSound');
+    
+    if (card && clickSound) {
         card.addEventListener('click', () => {
-            clickSound.currentTime = 0; // 音をリセット
+            clickSound.currentTime = 0;
             clickSound.play().catch(error => {
-                console.error('音声再生エラー:', error); // エラーが発生した場合の処理
+                console.error('音声再生エラー:', error);
             });
         });
+    } else {
+        console.error("カード要素またはオーディオ要素が見つかりません");
+    }
+});
+
     </script>
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
