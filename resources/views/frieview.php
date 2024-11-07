@@ -12,7 +12,7 @@
     include 'header.php';
 
     if (!isset($_SESSION['user_id'])) {
-        header("Location: login.php"); // セッションにユーザーIDがない場合はログインページにリダイレクト
+        header("Location: login.php");
         exit;
     }
 
@@ -68,8 +68,10 @@
         <div class="friend-list">
             <?php if (!empty($friends)): ?>
                 <?php foreach ($friends as $friend): ?>
-                    <div class="friend-item" onclick="location.href='/deepimpact/resources/views/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
+                    <div class="friend-item">
                         <?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>
+                        <button onclick="location.href='/deepimpact/resources/views/send_message.php?friend_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">メッセージを送る</button>
+                        <button onclick="location.href='/deepimpact/resources/views/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">プロフィールを見る</button>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
