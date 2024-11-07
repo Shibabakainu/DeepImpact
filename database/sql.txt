@@ -5,7 +5,6 @@ CREATE DATABASE storyteller CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE storyteller;
 
-
 -- Create the users table
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
@@ -15,6 +14,18 @@ CREATE TABLE users (
     profile_image   VARCHAR(255),
     name            VARCHAR(100)    NOT NULL UNIQUE,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create the messages table
+DROP TABLE IF EXISTS messages;
+CREATE TABLE messages (
+    message_id      INT             AUTO_INCREMENT PRIMARY KEY,
+    room_id         INT             NOT NULL,
+    user_id         INT             NOT NULL,
+    content         TEXT            NOT NULL,
+    sent_at         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- storyテーブルを作成
@@ -31,7 +42,6 @@ VALUES (
     '正義感の強い若い戦士',
     1
 );
-
 
 -- roomsテーブルを作成
 DROP TABLE IF EXISTS rooms;
@@ -92,7 +102,7 @@ CREATE TABLE Card (
     Image_path VARCHAR(255) NOT NULL
 );
 
--- Insert demo cards (same as your original)
+-- Insert demo cards
 INSERT INTO Card (Card_id, Card_name, Image_path)
 VALUES
 (1, 'One', 'card1.jpg'),
@@ -139,8 +149,8 @@ CREATE TABLE room_cards (
     room_id INT NOT NULL,
     card_id INT NOT NULL,
     player_position INT NOT NULL,
-    selected TINYINT NOT NULL DEFAULT 0,  -- 0: Not selected, 1: Selected
-    voted TINYINT NOT NULL DEFAULT 0,    -- 0: Not voted, 1: Voted
+    selected TINYINT NOT NULL DEFAULT 0,
+    voted TINYINT NOT NULL DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (card_id) REFERENCES Card(Card_id),
     FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)
@@ -157,7 +167,6 @@ CREATE TABLE ExtraCard (
 AS SELECT NULL AS ExtraCard_id, Card_name, Image_path, NULL AS Card_description
 FROM Card;
 
--- Card_descriptionが必要であれば以下の行を使用
 UPDATE ExtraCard
 SET Card_description = CONCAT('This is a description for ', Card_name);
 
@@ -167,10 +176,10 @@ CREATE TABLE votes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     room_id INT NOT NULL,
     player_id INT NOT NULL,
-    room_card_id INT NOT NULL,  -- Change this line to room_card_id
+    room_card_id INT NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (player_id) REFERENCES users(id),
-    FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)  -- Make sure this matches
+    FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)
 );
 
 -- Remove the trigger if it exists
@@ -200,10 +209,8 @@ BEGIN
 
         -- Check if reciprocal relationship exists
         IF NOT EXISTS (SELECT 1 FROM friends WHERE user_name = current_friend_name AND friend_name = current_user_name) THEN
-            -- Insert the reciprocal relationship
             INSERT INTO friends (user_name, friend_name, status) VALUES (current_friend_name, current_user_name, 'accepted');
         ELSE
-            -- Update the reciprocal relationship if it exists
             UPDATE friends SET status = 'accepted' WHERE user_name = current_friend_name AND friend_name = current_user_name;
         END IF;
     END LOOP;
