@@ -80,7 +80,7 @@
         <summary class="summary">ゲーム進行</summary>
         <div class="answer">
             <div class="answerInner">
-                画像クリックで拡大表示できます。<br>
+                ※画像クリックで拡大表示できます※<br>
                 <img src="/DeepImpact/images/tutorial_1.jpg" alt="説明画像" style="max-width: 40%; height: auto;" class="clickableImage"><br>
                 上の画像がゲーム開始時の画面です。<br>
                 <u>Draw Cards</u>ボタンでカードを引くことができます。<br>
@@ -97,6 +97,25 @@
             <div class="answerInner">切手を舐めると２キロカロリーを摂取できる。</div>
         </div>
     </details>
+    <br />
+    <details class="details">
+        <summary class="summary">プライバシーポリシー</summary>
+        <div class="answer">
+            <br>
+            <div class="answerInner">StoryTellerは運営はサービス利用者の個人情報を以下のとおりに取り扱います。</div>
+            <br>
+            <div class="answerInner"><b>利用目的</b></div>
+            <br>
+            <div class="answerInner">利用者の個人情報はサービスの提供及びお問い合わせ対応のために利用されます。</div>
+            <br>
+            <div class="answerInner"><b>開示</b></div>
+            <br>
+            <div class="answerInner">利用者の同意があるか法令に基づき開示が必要な場合を除き、個人情報は第三者に提供されません。</div>
+            <br>
+
+        </div>
+    </details>
+
 </div>
 
 <!-- モーダル -->
