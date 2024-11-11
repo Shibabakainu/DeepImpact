@@ -11,6 +11,21 @@ $loggedIn = isset($_SESSION['user_id']);
     <title>Story Teller</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/index.css">
     <style>
+        /* メッセージボタンのスタイル */
+        .message-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            right: 130px; /* 「ベルアイコン」の左側に配置 */
+            top: 20px;
+            z-index: 1000; /* 他の要素より前面に表示 */
+        }
+
         /* ポップアップのスタイル */
         #login-popup-wrapper {
             display: none;
@@ -46,13 +61,16 @@ $loggedIn = isset($_SESSION['user_id']);
 </head>
 
 <body>
-    <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: absolute; right: 250px; top: 100px;" class="bell">
+    <!-- メッセージボタン -->
+    <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
+
+    <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: fixed; right: 200px; top: 100px;" class="bell">
 
     <!-- メッセージボックスのポップアップ -->
     <div id="messageBox" class="message-box">
         <div class="message-header">
             <span class="close-btn">&times;</span>
-            <button id="dragButton" class="drag-button">ドラッグで移動</button> <!-- ドラッグ用のボタン -->
+            <button id="dragButton" class="drag-button">ドラッグで移動</button>
         </div>
         <div class="message-content">
             <p>この機能は撤廃しました。</p>
@@ -60,38 +78,30 @@ $loggedIn = isset($_SESSION['user_id']);
     </div>
 
     <script>
-        // 画像とポップアップの要素を取得
         const bellImage = document.querySelector('.bell');
         const messageBox = document.getElementById('messageBox');
         const closeBtn = document.querySelector('.close-btn');
         const dragButton = document.getElementById('dragButton');
 
-        // 画像がクリックされたときにポップアップを画像の近くに表示
         bellImage.addEventListener('click', function(event) {
             const rect = bellImage.getBoundingClientRect();
-            messageBox.style.top = `${rect.bottom + window.scrollY + 10}px`; // 画像の下に少し余白を持たせて表示
-            messageBox.style.left = `${rect.left + window.scrollX}px`; // 画像の左端に合わせる
+            messageBox.style.top = `${rect.bottom + window.scrollY + 10}px`;
+            messageBox.style.left = `${rect.left + window.scrollX}px`;
             messageBox.style.display = 'block';
         });
 
-        // 閉じるボタンがクリックされたときにポップアップを非表示に
         closeBtn.addEventListener('click', function() {
             messageBox.style.display = 'none';
         });
 
-        // ポップアップ外をクリックしたときにポップアップを閉じる
         window.addEventListener('click', function(event) {
             if (event.target !== messageBox && !messageBox.contains(event.target) && event.target !== bellImage) {
                 messageBox.style.display = 'none';
             }
         });
 
-        // ドラッグ機能の実装
-        let offsetX = 0,
-            offsetY = 0,
-            isDragging = false;
+        let offsetX = 0, offsetY = 0, isDragging = false;
 
-        // ドラッグ開始（ボタン限定）
         dragButton.addEventListener('mousedown', function(e) {
             isDragging = true;
             offsetX = e.clientX - messageBox.getBoundingClientRect().left;
@@ -100,7 +110,6 @@ $loggedIn = isset($_SESSION['user_id']);
             document.addEventListener('mouseup', stopDrag);
         });
 
-        // ドラッグ中の動作
         function drag(e) {
             if (isDragging) {
                 messageBox.style.left = `${e.clientX - offsetX}px`;
@@ -108,7 +117,6 @@ $loggedIn = isset($_SESSION['user_id']);
             }
         }
 
-        // ドラッグ終了
         function stopDrag() {
             isDragging = false;
             document.removeEventListener('mousemove', drag);
@@ -120,14 +128,16 @@ $loggedIn = isset($_SESSION['user_id']);
         <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
     </audio>
-    <script>
-        window.onload = function() {
-            var bgm = document.getElementById('bgm');
 
-            // 前回の再生位置があれば取得して、そこから再生する
-            var savedTime = localStorage.getItem('bgmTime');
-        };
-    </script>
+    <?php if (!$loggedIn) : ?>
+        <div id="login-popup-wrapper" style="display: flex;">
+            <div id="login-popup-inside">
+                <div class="text">ログインしてください</div>
+                <button onclick="window.location.href='/DeepImpact/resources/views/login/login.php'">ログインページへ</button>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <?php include 'header.php'; ?>
     <div class="main-container">
         <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="header-image">
@@ -139,28 +149,16 @@ $loggedIn = isset($_SESSION['user_id']);
             <div id="index-popup-wrapper">
                 <div id="index-popup-inside">
                     <div id="index-close">X</div>
-                    <div id="popup-content">
-                        <!-- ここにチュートリアルコンテンツが読み込まれます -->
-                    </div>
+                    <div id="popup-content"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 画像を拡大表示するためのモーダル -->
     <div id="imageModal" class="modal" style="display: none;">
         <span id="closeModal" class="close">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>
-
-    <?php if (!$loggedIn) : ?>
-        <div id="login-popup-wrapper" style="display: flex;">
-            <div id="login-popup-inside">
-                <div class="text">ログインしてください</div>
-                <button onclick="window.location.href='/DeepImpact/resources/views/login/login.php'">ログインページへ</button>
-            </div>
-        </div>
-    <?php endif; ?>
 
     <script>
         const indexClickBtn = document.getElementById('index-click-btn');
@@ -176,33 +174,28 @@ $loggedIn = isset($_SESSION['user_id']);
                     if (xhr.status === 200) {
                         popupContent.innerHTML = xhr.responseText;
 
-
-                        // tutorial.php内の画像クリック処理を再定義
                         const clickableImages = document.querySelectorAll('.clickableImage');
 
                         clickableImages.forEach(image => {
                             image.addEventListener('click', function() {
                                 const modal = document.getElementById('imageModal');
                                 const modalImage = document.getElementById('modalImage');
-                                modal.style.display = 'flex'; // モーダルを表示
-                                modalImage.src = this.src; // クリックした画像のsrcをモーダルに設定
+                                modal.style.display = 'flex';
+                                modalImage.src = this.src;
                             });
                         });
 
-                        // モーダルを閉じる処理
                         const closeModal = document.getElementById('closeModal');
                         const modal = document.getElementById('imageModal');
                         closeModal.addEventListener('click', function() {
-                            modal.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
+                            modal.style.display = 'none';
                         });
 
-                        // モーダルの外側をクリックして閉じる
                         modal.addEventListener('click', function(e) {
                             if (e.target === modal) {
-                                modal.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
+                                modal.style.display = 'none';
                             }
                         });
-
 
                     } else {
                         console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
@@ -215,13 +208,11 @@ $loggedIn = isset($_SESSION['user_id']);
             xhr.send();
         }
 
-        // ルールボタンをクリックしたときにポップアップを表示し、チュートリアルを読み込む
         indexClickBtn.addEventListener('click', () => {
             indexPopupWrapper.style.display = "block";
-            loadTutorial(); // コンテンツを動的に読み込む
+            loadTutorial();
         });
 
-        // ポップアップ外や「X」ボタンをクリックしたらポップアップを閉じる
         indexPopupWrapper.addEventListener('click', e => {
             if (e.target.id === indexPopupWrapper.id || e.target.id === indexClose.id) {
                 indexPopupWrapper.style.display = 'none';
