@@ -85,8 +85,8 @@ $loggedIn = isset($_SESSION['user_id']);
 
         bellImage.addEventListener('click', function(event) {
             const rect = bellImage.getBoundingClientRect();
-            messageBox.style.top = ${rect.bottom + window.scrollY + 10}px;
-            messageBox.style.left = ${rect.left + window.scrollX}px;
+            messageBox.style.top = (rect.bottom + window.scrollY + 10) + 'px'; // 修正: 数値を文字列に変換
+            messageBox.style.left = (rect.left + window.scrollX) + 'px'; // 修正: 数値を文字列に変換
             messageBox.style.display = 'block';
         });
 
@@ -112,8 +112,8 @@ $loggedIn = isset($_SESSION['user_id']);
 
         function drag(e) {
             if (isDragging) {
-                messageBox.style.left = ${e.clientX - offsetX}px;
-                messageBox.style.top = ${e.clientY - offsetY}px;
+                messageBox.style.left = (e.clientX - offsetX) + 'px'; // 修正: 数値を文字列に変換
+                messageBox.style.top = (e.clientY - offsetY) + 'px'; // 修正: 数値を文字列に変換
             }
         }
 
