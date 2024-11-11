@@ -12,27 +12,66 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// 画像アップロード処理
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_card'])) {
-    $cardName = $_POST['card_name'];
-    $imagePath = $_FILES['image_path']['name']; // 画像ファイル名を取得
-    $targetDir = "../../images/"; // 画像保存先ディレクトリ
-    $targetFile = $targetDir . basename($imagePath);
+// 画像アップロードおよびカード追加処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 新規カード追加
+    if (isset($_POST['add_card'])) {
+        $cardName = $_POST['card_name'];
+        $imagePath = $_FILES['image_path']['name'];
+        $targetDir = "../../images/";
+        $targetFile = $targetDir . basename($imagePath);
 
-    // 画像を指定したディレクトリに移動
-    if (move_uploaded_file($_FILES['image_path']['tmp_name'], $targetFile)) {
-        // データベースにカードを追加
-        $sql = "INSERT INTO ExtraCard (Card_name, Image_path) VALUES (:card_name, :image_path)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['card_name' => $cardName, 'image_path' => $imagePath]);
-        echo "<p>新しいカードが追加されました。</p>";
-    } else {
-        echo "<p>画像のアップロードに失敗しました。</p>";
+        // 重複チェック
+        $checkQuery = "SELECT COUNT(*) FROM ExtraCard WHERE Card_name = :card_name";
+        $checkStmt = $pdo->prepare($checkQuery);
+        $checkStmt->execute(['card_name' => $cardName]);
+        $exists = $checkStmt->fetchColumn();
+
+        if ($exists > 0) {
+            echo "<p>このカードはすでに追加されています。</p>";
+        } else {
+            // 画像アップロードとDB登録
+            if (move_uploaded_file($_FILES['image_path']['tmp_name'], $targetFile)) {
+                $sql = "INSERT INTO ExtraCard (Card_name, Image_path) VALUES (:card_name, :image_path)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['card_name' => $cardName, 'image_path' => $imagePath]);
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit;
+            } else {
+                echo "<p>画像のアップロードに失敗しました。</p>";
+            }
+        }
+    }
+
+    // カード情報の更新
+    if (isset($_POST['update_card'])) {
+        $cardId = $_POST['card_id'];
+        $newCardName = $_POST['new_card_name'];
+        $newImagePath = $_FILES['new_image_path']['name'];
+
+        // 画像がアップロードされた場合のみ処理
+        if (!empty($newImagePath)) {
+            $targetFile = "../../images/" . basename($newImagePath);
+            move_uploaded_file($_FILES['new_image_path']['tmp_name'], $targetFile);
+        } else {
+            $sql = "SELECT Image_path FROM ExtraCard WHERE ExtraCard_id = :card_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['card_id' => $cardId]);
+            $newImagePath = $stmt->fetchColumn();
+        }
+
+        // データベースを更新
+        $updateSql = "UPDATE ExtraCard SET Card_name = :new_card_name, Image_path = :new_image_path WHERE ExtraCard_id = :card_id";
+        $updateStmt = $pdo->prepare($updateSql);
+        $updateStmt->execute(['new_card_name' => $newCardName, 'new_image_path' => $newImagePath, 'card_id' => $cardId]);
+
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     }
 }
 
+// Fetch the cards from the ExtraCard table
 try {
-    // Fetch the cards from the ExtraCard table
     $sql = "SELECT ExtraCard_id, Card_name, Image_path FROM ExtraCard";
     $stmt = $pdo->query($sql);
     $cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -43,13 +82,13 @@ try {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カードリスト</title>
-    <link rel="stylesheet" href="../css/cardlist.css"> <!-- Verify this path -->
+    <link rel="stylesheet" href="../css/cardlist.css">
 </head>
 
 <body>
@@ -59,6 +98,17 @@ try {
                 <div class="card">
                     <img src="../../images/<?php echo htmlspecialchars($card['Image_path']); ?>" alt="<?php echo htmlspecialchars($card['Card_name']); ?>" width="150" height="200">
                     <h3><?php echo htmlspecialchars($card['Card_name']); ?></h3>
+                    <!-- 更新ボタン -->
+                    <button onclick="document.getElementById('updateForm-<?php echo $card['ExtraCard_id']; ?>').style.display='block'">更新</button>
+
+                    <!-- 更新フォーム -->
+                    <div id="updateForm-<?php echo $card['ExtraCard_id']; ?>" style="display:none;">
+                        <form method="post" action="" enctype="multipart/form-data">
+                            <input type="hidden" name="card_id" value="<?php echo $card['ExtraCard_id']; ?>">
+                            <label>新しいカード名:</label>
+                            <input type="text" name="new_card_name" value="<?php echo htmlspecialchars($card['Card_name']); ?>" required><br>
+                        </form>
+                    </div>
                 </div>
             <?php endforeach; ?>
         <?php else : ?>
@@ -66,10 +116,10 @@ try {
         <?php endif; ?>
     </div>
 
-    <!-- 画像の下に追加カードフォームを配置 -->
+    <!-- 追加カードフォーム -->
     <div class="add-card-form">
         <h2>新しいカードを追加</h2>
-        <form method="post" action="" enctype="multipart/form-data"> <!-- enctypeを追加 -->
+        <form method="post" action="" enctype="multipart/form-data">
             <label for="card_name">カード名:</label>
             <input type="text" id="card_name" name="card_name" required><br><br>
 
@@ -80,31 +130,29 @@ try {
         </form>
     </div>
 
-    <!-- スタイル調整 -->
+    <!-- CSSスタイル -->
     <style>
         .card-container {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            /* 画像間のスペース */
             justify-content: center;
-            /* 中央揃え */
             margin-bottom: 30px;
-            /* フォームとの余白 */
         }
 
         .card {
             width: 150px;
-            /* カードの幅 */
             text-align: center;
-            /* テキスト中央揃え */
         }
 
         .add-card-form {
             text-align: center;
-            /* フォーム中央揃え */
             margin-top: 20px;
-            /* フォームの上に余白 */
+        }
+
+        .update-form {
+            display: none;
+            margin-top: 10px;
         }
     </style>
 </body>
