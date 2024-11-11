@@ -5,10 +5,30 @@
     <meta charset="UTF-8">
     <title>ルーム検索</title>
     <link rel="stylesheet" href="/deepimpact/resources/css/room_search.css">
+    <style>
+        /* メッセージボタンのスタイル */
+        .message-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            right: 130px; /* ベルアイコンの左側に配置 */
+            top: 20px;
+            z-index: 1000; /* 他の要素より前面に表示 */
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'header.php'; ?>
+
+    <!-- メッセージボタン -->
+    <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
+
     <main>
         <div class="container">
             <label class="search_label" for="search">ルーム名で検索</label>
@@ -58,7 +78,6 @@
         <button id="close-game-popup">閉じる</button>
     </div>
     <div id="overlay-game-popup" class="overlay"></div>
-
 
     <div id="overlay" class="overlay"></div>
 

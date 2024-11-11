@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>フレンド一覧画面</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/frieview.css">
+    <style>
+        /* メッセージボタンのスタイル */
+        .message-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            right: 130px; /* 「ベルアイコン」の左側に配置 */
+            top: 20px;
+            z-index: 1000; /* 他の要素より前面に表示 */
+        }
+
+        /* ベルアイコンのスタイル */
+        .bell {
+            max-width: 5%;
+            height: auto;
+            position: fixed;
+            right: 200px;
+            top: 100px;
+        }
+
+        /* 追加のスタイル */
+        .container {
+            margin-top: 80px;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -63,6 +93,13 @@
     $stmt->close();
     $conn->close();
     ?>
+    
+    <!-- メッセージボタン -->
+    <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
+
+    <!-- ベルアイコン -->
+    <img src="/DeepImpact/images/bell.jpg" class="bell" alt="ベルアイコン">
+
     <div class="container">
         <div class="title">フレンド一覧</div>
         <div class="friend-list">
