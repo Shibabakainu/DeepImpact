@@ -234,19 +234,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
-    <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
-    無理よ～-->
-    <audio id="clickSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
-    <script>
-        const card = document.querySelector('#draw-cards'); // カード要素を取得 '.card' と指定すると、CSSクラス名が「card」の最初の要素を取得する。
-        const clickSound = document.getElementById('clickSound'); // 音声要素を取得
 
-        card.addEventListener('click', () => {
-            clickSound.currentTime = 0; // 音をリセット
-            clickSound.play().catch(error => {
-                console.error('音声再生エラー:', error); // エラーが発生した場合の処理
-            });
-        });
+    <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
+    無理よ～一回だけ鳴るようになったよ-->
+    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
+    <script type="text/javascript">
+        const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3')
+        hoverSound.preload = 'auto';
+        $(document).on('mouseenter', '.card', function() {
+        hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
+        hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
+    });
     </script>
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->

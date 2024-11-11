@@ -16,17 +16,6 @@ CREATE TABLE users (
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create the messages table
-DROP TABLE IF EXISTS messages;
-CREATE TABLE messages (
-    message_id      INT             AUTO_INCREMENT PRIMARY KEY,
-    room_id         INT             NOT NULL,
-    user_id         INT             NOT NULL,
-    content         TEXT            NOT NULL,
-    sent_at         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
 
 -- storyテーブルを作成
 DROP TABLE IF EXISTS story;
@@ -92,6 +81,18 @@ CREATE TABLE friends (
     FOREIGN KEY (user_name) REFERENCES users(name) ON DELETE CASCADE,
     FOREIGN KEY (friend_name) REFERENCES users(name) ON DELETE CASCADE,
     UNIQUE(user_name, friend_name)
+);
+
+-- Create the messages table
+DROP TABLE IF EXISTS messages;
+CREATE TABLE messages (
+    message_id      INT             AUTO_INCREMENT PRIMARY KEY,
+    room_id         INT             NOT NULL,
+    user_id         INT             NOT NULL,
+    content         TEXT            NOT NULL,
+    sent_at         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Drop the existing Card table if exists
