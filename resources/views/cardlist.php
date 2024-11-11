@@ -92,6 +92,9 @@ try {
 </head>
 
 <body>
+
+    <?php include 'header.php'; ?>
+
     <div class="card-container">
         <?php if (!empty($cards)) : ?>
             <?php foreach ($cards as $card): ?>
@@ -99,7 +102,7 @@ try {
                     <img src="../../images/<?php echo htmlspecialchars($card['Image_path']); ?>" alt="<?php echo htmlspecialchars($card['Card_name']); ?>" width="150" height="200">
                     <h3><?php echo htmlspecialchars($card['Card_name']); ?></h3>
                     <!-- 更新ボタン -->
-                    <button onclick="document.getElementById('updateForm-<?php echo $card['ExtraCard_id']; ?>').style.display='block'">更新</button>
+                    <button id="update-button" onclick="document.getElementById('updateForm-<?php echo $card['ExtraCard_id']; ?>').style.display='block'">更新</button>
 
                     <!-- 更新フォーム -->
                     <div id="updateForm-<?php echo $card['ExtraCard_id']; ?>" style="display:none;">
