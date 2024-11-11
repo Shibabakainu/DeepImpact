@@ -180,21 +180,21 @@ function incrementTurn($room_id)
     $stmt->execute();
     $stmt->close();
 }
+//現在のターンを取得する
+function getCurrentTurn($room_id) {
+    global $conn;
 
-// ターン数の初期化（初回のみ）
-if (!isset($_SESSION['turn'])) {
-    $_SESSION['turn'] = 1; // 初期ターンは1
+    $query = "SELECT turn_number FROM rooms WHERE room_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $stmt->bind_result($turn_number);
+    $stmt->fetch();
+    $stmt->close();
+
+    return $turn_number;
 }
 
-// ユーザーがポップアップでOKを押した場合、ターンを進める
-if (isset($_POST['next_turn'])) {
-    $_SESSION['turn']++;
-}
-
-// 新しく始めるボタンが押されたらセッションをリセット
-if (isset($_POST['reset_game'])) {
-    $_SESSION['turn'] = 1;
-}
 
 // 最大ターン数
 $max_turns = 6;
@@ -519,6 +519,31 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 }
             });
         });
+
+        //アップデートしたターンを表示する
+        // JavaScript function to display and update the current turn
+        function displayTurn() {
+            // Send AJAX request to get the current turn from the server
+            fetch(`get_turn.php?room_id=${roomId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("turnDisplay").innerText = "現在のターン： " + data.turn_number;
+                    } else {
+                        console.error("Failed to fetch turn information.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        // Call displayTurn initially to show the current turn
+        displayTurn();
+
+        // Function to be called at the end of each turn to update the turn display
+        function updateTurn() {
+            displayTurn();  // Refresh the turn display
+        }
+
     </script>
 
     <?php
@@ -527,8 +552,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         updateScore($room_id);
         getScoreboard($room_id);
         incrementTurn($room_id);
-        //endTurn($room_id);
-        //startNextTurn($room_id);
+        // Output JavaScript to call updateTurn() on the client side
+        echo "<script>updateTurn();</script>";
     }
     ?>
 
@@ -553,16 +578,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 }
             }
         </script>
-        <h1>現在のターン: <?php echo $turn; ?> / 6</h1>
 
-        <?php if ($turn < 6): ?>
-            <form id="nextTurnForm" method="POST">
-                <input type="hidden" name="next_turn" value="1">
-                <button class="nextturn" type="button" onclick="showPopup()">次のターンに進む</button>
-            </form>
-        <?php else: ?>
-            <p>ゲーム終了！全てのターンが終了しました。</p>
-        <?php endif; ?>
+        <div id="turnDisplay">現在のターン： 1</div>
 
         <form method="POST">
             <input type="hidden" name="reset_game" value="1">
