@@ -55,19 +55,18 @@ include 'db_connect.php'; // Include the database connection
 <body>
     <div class="container">
         <!-- ポップアップのオーバーレイ -->
-        <div class="overlay"></div>
+        <!--<div class="overlay"></div>
 
-        <!-- ポップアップ本体 -->
+        ポップアップ本体
         <div class="popup">
             <p>この機能は撤廃しました。</p><br>
             <p>今後とも我々DeepImpactをよろしくお願いします。</p>
             <button id="popup-ok-btn">OK</button>
-        </div>
+        </div>-->
 
-        <!-- サブスクリプション登録フォーム（ポップアップ表示後は使用不可になるため、実際には見えない） -->
         <div class="subscription-box">
             <h2>サブスクリプション登録</h2>
-            <form action="process_subscription.php" method="post">
+            <form action="index.php" method="post">
                 <div class="input-group">
                     <label for="user_id">ユーザーID</label>
                     <input type="text" id="user_id" name="user_id" value="ユーザーID" readonly>
