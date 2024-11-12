@@ -42,6 +42,7 @@ CREATE TABLE rooms (
     status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
     current_players INT             DEFAULT 1,
     turn_number     INT             DEFAULT 1,
+    turn_updated    TINYINT(1)      DEFAULT 0,
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
