@@ -109,16 +109,36 @@ function getScoreboard($room_id)
 }
 
 //ターンを増加する
-function incrementTurn($room_id)
-{
+function incrementTurn($room_id) {
     global $conn;
 
-    $query = "UPDATE rooms SET turn_number = turn_number + 1 WHERE room_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
-    $stmt->execute();
-    $stmt->close();
+    // Check the current turn number
+    $turnQuery = "SELECT turn_number FROM rooms WHERE room_id = ?";
+    $turnStmt = $conn->prepare($turnQuery);
+    $turnStmt->bind_param("i", $room_id);
+    $turnStmt->execute();
+    $turnResult = $turnStmt->get_result();
+    $turnRow = $turnResult->fetch_assoc();
+    $currentTurn = $turnRow['turn_number'];
+    $turnStmt->close();
+
+    // If the current turn is less than 7, increment the turn
+    if ($currentTurn < 7) {
+        $query = "UPDATE rooms SET turn_number = turn_number + 1, turn_updated = 0 WHERE room_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $room_id);
+        $stmt->execute();
+        $stmt->close();
+    } else {
+        // If the current turn is 7, set the game status to "finished"
+        $query = "UPDATE rooms SET status = 'finished' WHERE room_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $room_id);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
+
 //現在のターンを取得する
 function getCurrentTurn($room_id) {
     global $conn;

@@ -430,15 +430,18 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     },
                     dataType: 'json',
                     success: function(response) {
-                        // Update the turn display
-                        updateTurn();
+                        if (response.game_over) {
+                            alert(response.message);
+                            // Additional logic for game over, like redirecting or disabling actions
+                            // Disable voting and other game actions if needed
+                        } else {
+                            // Update the turn display and score as usual
+                            updateTurn();
 
-                        if (response.votingComplete) {
-                            // If voting is complete, update the scoreboard
-                            $('.scoreboard').html(response.scoreboard);
-
-                            // Stop polling if the voting is complete to avoid repeated updates
-                            clearInterval(this);
+                            if (response.votingComplete) {
+                                // If voting is complete, update the scoreboard
+                                $('.scoreboard').html(response.scoreboard);
+                            }
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
