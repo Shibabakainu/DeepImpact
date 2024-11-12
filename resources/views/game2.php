@@ -220,6 +220,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <div class="draw" id="draw">
                 <button id="draw-cards">カードをドロー</button>
             </div>
+            <!-- Popup message element -->
+            <div id="popup-message"></div>
+
             <script>
                 document.getElementById("draw-cards").addEventListener("click", function() {
                     this.style.display = "none"; // ボタンを非表示にする
@@ -260,72 +263,78 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         $(document).ready(function() {
             $("#draw-cards").click(function() {
                 $.ajax({
-                    url: 'draw_cards.php', // Server-side script to handle card drawing
+                    url: 'draw_cards.php',
                     method: 'POST',
-                    dataType: 'json', // Expecting JSON response
+                    dataType: 'json',
                     success: function(response) {
-                        // Clear the existing cards
-                        $('#drawed-card-area').empty();
+                        $('#drawed-card-area').empty(); // 既存のカードをクリア
 
-                        // Loop through the response and display the cards
                         if (response.success) {
                             response.cards.forEach(function(card) {
                                 $('#drawed-card-area').append(
-                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' + // Change here
+                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
                                     '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
                                     '</div>'
                                 );
                             });
                         } else {
-                            alert("Failed to draw cards: " + response.message);
+                            // エラーメッセージのポップアップを表示
+                            showPopup(response.message);
                         }
                     },
                     error: function() {
-                        alert("Error drawing cards.");
+                        showPopup("カードを引く際にエラーが発生しました。");
                     }
                 });
             });
-        });
 
-        // Click event for selecting cards
-        $(document).on("click", ".card", function() {
-            var roomCardId = $(this).data("room-card-id");
+            // カード選択時のクリックイベント
+            $(document).on("click", ".card", function() {
+                var roomCardId = $(this).data("room-card-id");
 
-            if (!roomCardId) {
-                alert("No Room Card ID found.");
-                return; // Stop execution if the card ID is not set
-            }
-
-            console.log("Room ID: " + roomId + ", Room Card ID: " + roomCardId);
-
-            $.ajax({
-                url: 'select_card.php',
-                method: 'POST',
-                data: {
-                    room_id: roomId,
-                    room_card_id: roomCardId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-
-                        // Add class to indicate selection
-                        $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
-
-                        // Remove the selected card from the on-hand area
-                        $(".card[data-room-card-id='" + roomCardId + "']").remove();
-
-                        // Update the vote area
-                        updateVoteArea();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function() {
-                    alert("Error selecting card.");
+                if (!roomCardId) {
+                    showPopup("カードIDが見つかりません。");
+                    return;
                 }
+
+                // Click event for selecting cards
+                $.ajax({
+                    url: 'select_card.php',
+                    method: 'POST',
+                    data: {
+                        room_id: roomId,
+                        room_card_id: roomCardId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            showPopup(response.message);
+
+                            // 選択済みクラスを追加
+                            $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
+
+                            // 手札エリアから選択済みカードを削除
+                            $(".card[data-room-card-id='" + roomCardId + "']").remove();
+
+                            // 投票エリアを更新
+                            updateVoteArea();
+                        } else {
+                            showPopup(response.message);
+                        }
+                    },
+                    error: function() {
+                        showPopup("カードの選択時にエラーが発生しました。");
+                    }
+                });
             });
+
+            // Function to show popup and hide it after 2 seconds
+            function showPopup(message) {
+                $('#popup-message').text(message).fadeIn();
+                setTimeout(function() {
+                    $('#popup-message').fadeOut();
+                }, 2000); // Hide after 2 seconds
+            }
         });
 
         // Function to fetch and update the vote area
@@ -416,7 +425,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 $.ajax({
                     url: 'checkVotingStatus.php',
                     method: 'GET',
-                    data: { room_id: roomId },
+                    data: {
+                        room_id: roomId
+                    },
                     dataType: 'json',
                     success: function(response) {
                         // Update the turn display
@@ -440,7 +451,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         // Call pollVotingStatus on page load to start polling
         pollVotingStatus();
-
     </script>
 
     <div id="textbox">
