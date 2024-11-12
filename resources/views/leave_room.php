@@ -2,7 +2,7 @@
 session_start();
 include 'db_connect.php';
 
-//room_idとuser_idを取得
+// room_idとuser_idを取得
 $room_id = isset($_POST['room_id']) ? (int)$_POST['room_id'] : null;
 $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 
@@ -12,7 +12,19 @@ if ($room_id && $user_id) {
     $conn->begin_transaction();
 
     try {
-        // Remove the player from the room_players table
+        // room_cardsテーブルの関連データを削除
+        $sql_delete_room_cards_for_user = "DELETE FROM room_cards WHERE room_id = ? AND player_position = ?";
+        $stmt_delete_room_cards_for_user = $conn->prepare($sql_delete_room_cards_for_user);
+        if (!$stmt_delete_room_cards_for_user) {
+            throw new Exception($conn->error);
+        }
+        $stmt_delete_room_cards_for_user->bind_param("ii", $room_id, $user_id);
+        if (!$stmt_delete_room_cards_for_user->execute()) {
+            throw new Exception($stmt_delete_room_cards_for_user->error);
+        }
+        $stmt_delete_room_cards_for_user->close();
+
+        // room_playersテーブルからプレイヤーを削除
         $sql_remove_player = "DELETE FROM room_players WHERE room_id = ? AND user_id = ?";
         $stmt_remove_player = $conn->prepare($sql_remove_player);
         if (!$stmt_remove_player) {
@@ -24,7 +36,7 @@ if ($room_id && $user_id) {
         }
         $stmt_remove_player->close();
 
-        // Decrement the current_players count in the rooms table
+        // roomsテーブルのcurrent_playersカウントを減少
         $sql_decrement_players = "UPDATE rooms SET current_players = current_players - 1 WHERE room_id = ?";
         $stmt_decrement_players = $conn->prepare($sql_decrement_players);
         if (!$stmt_decrement_players) {
@@ -36,7 +48,7 @@ if ($room_id && $user_id) {
         }
         $stmt_decrement_players->close();
 
-        // Check if the current_players is now 0, and if so, delete the room
+        // 残りプレイヤー数を確認し、0ならばルームと関連データを削除
         $sql_check_players = "SELECT current_players FROM rooms WHERE room_id = ?";
         $stmt_check_players = $conn->prepare($sql_check_players);
         if (!$stmt_check_players) {
@@ -49,7 +61,7 @@ if ($room_id && $user_id) {
         $stmt_check_players->close();
 
         if ($current_players === 0) {
-            // First, delete related room_cards records
+            // room_cardsテーブルからroom_idに関連するデータを削除
             $sql_delete_room_cards = "DELETE FROM room_cards WHERE room_id = ?";
             $stmt_delete_room_cards = $conn->prepare($sql_delete_room_cards);
             if (!$stmt_delete_room_cards) {
@@ -61,7 +73,7 @@ if ($room_id && $user_id) {
             }
             $stmt_delete_room_cards->close();
 
-            // Then, delete the room if no players are left
+            // roomsテーブルからルームを削除
             $sql_delete_room = "DELETE FROM rooms WHERE room_id = ?";
             $stmt_delete_room = $conn->prepare($sql_delete_room);
             if (!$stmt_delete_room) {
@@ -74,11 +86,11 @@ if ($room_id && $user_id) {
             $stmt_delete_room->close();
         }
 
-        // Commit the transaction
+        // トランザクションをコミット
         $conn->commit();
         echo "success";
     } catch (Exception $e) {
-        // Rollback the transaction if any error occurs
+        // エラーが発生した場合はロールバック
         $conn->rollback();
         echo "エラー: " . $e->getMessage();
     }

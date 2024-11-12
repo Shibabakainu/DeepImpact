@@ -100,9 +100,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3')
         hoverSound.preload = 'auto';
         $(document).on('mouseenter', '.card', function() {
-        hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
-        hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
-    });
+            hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
+            hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
+        });
     </script>
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
@@ -220,6 +220,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <div class="draw" id="draw">
                 <button id="draw-cards">カードをドロー</button>
             </div>
+            <script>
+                document.getElementById("draw-cards").addEventListener("click", function() {
+                    this.style.display = "none"; // ボタンを非表示にする
+                });
+            </script>
+
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
                     <?php if ($card['selected'] == 0): // Only show cards that are not selected 
@@ -399,7 +405,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         // Function to be called at the end of each turn to update the turn display
         function updateTurn() {
-            displayTurn();  // Refresh the turn display
+            displayTurn(); // Refresh the turn display
         }
 
         //投票が終わった後の処理

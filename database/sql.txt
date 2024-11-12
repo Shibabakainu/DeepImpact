@@ -1,11 +1,11 @@
--- Create the database
+-- データベースの作成
 SET NAMES utf8;
 DROP DATABASE IF EXISTS storyteller;
 CREATE DATABASE storyteller CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE storyteller;
 
--- Create the users table
+-- users テーブルの作成
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
@@ -16,8 +16,7 @@ CREATE TABLE users (
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
-
--- storyテーブルを作成
+-- story テーブルの作成
 DROP TABLE IF EXISTS story;
 CREATE TABLE story (
     story_text  TEXT            NOT NULL,
@@ -32,7 +31,7 @@ VALUES (
     1
 );
 
--- roomsテーブルを作成
+-- rooms テーブルの作成
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
     room_id         INT             AUTO_INCREMENT PRIMARY KEY,
@@ -46,7 +45,7 @@ CREATE TABLE rooms (
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- room_passwordsテーブルを作成
+-- room_passwords テーブルの作成
 DROP TABLE IF EXISTS room_passwords;
 CREATE TABLE room_passwords (
     room_id         INT             PRIMARY KEY,
@@ -54,7 +53,7 @@ CREATE TABLE room_passwords (
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
 );
 
--- room_playersテーブルを作成
+-- room_players テーブルの作成
 DROP TABLE IF EXISTS room_players;
 CREATE TABLE room_players (
     id                  INT             AUTO_INCREMENT PRIMARY KEY,
@@ -67,10 +66,10 @@ CREATE TABLE room_players (
     last_scored_turn    INT             DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    UNIQUE (room_id, player_position) -- Ensures player_position is unique only within the same room
+    UNIQUE (room_id, player_position) -- 同じ部屋内での player_position の一意性を保証
 );
 
--- Create the friends table
+-- friends テーブルの作成
 DROP TABLE IF EXISTS friends;
 CREATE TABLE friends (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
@@ -83,19 +82,21 @@ CREATE TABLE friends (
     UNIQUE(user_name, friend_name)
 );
 
--- Create the messages table
+-- messages テーブルの作成 (recipient_id を追加)
 DROP TABLE IF EXISTS messages;
 CREATE TABLE messages (
     message_id      INT             AUTO_INCREMENT PRIMARY KEY,
     room_id         INT             NOT NULL,
     user_id         INT             NOT NULL,
+    recipient_id    INT             NOT NULL,  -- 受信者の ID を追加
     content         TEXT            NOT NULL,
     sent_at         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE  -- 受信者を users テーブルに関連付け
 );
 
--- Drop the existing Card table if exists
+-- Card テーブルの作成
 DROP TABLE IF EXISTS Card;
 CREATE TABLE Card (
     Card_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -103,7 +104,7 @@ CREATE TABLE Card (
     Image_path VARCHAR(255) NOT NULL
 );
 
--- Insert demo cards
+-- デモ用のカードデータを挿入
 INSERT INTO Card (Card_id, Card_name, Image_path)
 VALUES
 (1, 'One', 'card1.jpg'),
@@ -143,7 +144,7 @@ VALUES
 (35, 'ThirtyFive', 'card35.jpg'),
 (36, 'ThirtySix', 'card36.jpg');
 
--- New table to manage cards within a room and their status
+-- room_cards テーブルの作成
 DROP TABLE IF EXISTS room_cards;
 CREATE TABLE room_cards (
     room_card_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -157,8 +158,8 @@ CREATE TABLE room_cards (
     FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)
 );
 
+-- ExtraCard テーブルの作成
 DROP TABLE IF EXISTS ExtraCard;
-
 CREATE TABLE ExtraCard (
     ExtraCard_id INT PRIMARY KEY AUTO_INCREMENT,
     Card_name VARCHAR(100) NOT NULL,
@@ -171,7 +172,7 @@ FROM Card;
 UPDATE ExtraCard
 SET Card_description = CONCAT('This is a description for ', Card_name);
 
--- New table to manage votes
+-- votes テーブルの作成
 DROP TABLE IF EXISTS votes;
 CREATE TABLE votes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -183,10 +184,10 @@ CREATE TABLE votes (
     FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)
 );
 
--- Remove the trigger if it exists
+-- 既存のトリガーがあれば削除
 DROP TRIGGER IF EXISTS after_accept_friend;
 
--- Create the event to update reciprocal friend relationships
+-- 相互フレンドシップを更新するイベントの作成
 DELIMITER //
 
 CREATE EVENT update_reciprocal_friends
@@ -208,7 +209,7 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        -- Check if reciprocal relationship exists
+        -- 相互関係が存在しない場合
         IF NOT EXISTS (SELECT 1 FROM friends WHERE user_name = current_friend_name AND friend_name = current_user_name) THEN
             INSERT INTO friends (user_name, friend_name, status) VALUES (current_friend_name, current_user_name, 'accepted');
         ELSE
@@ -220,6 +221,6 @@ END //
 
 DELIMITER ;
 
--- Grant privileges
+-- 権限の付与
 GRANT ALL PRIVILEGES ON storyteller.* TO 'username'@'localhost' IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
