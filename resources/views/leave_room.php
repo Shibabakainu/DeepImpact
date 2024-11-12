@@ -12,6 +12,18 @@ if ($room_id && $user_id) {
     $conn->begin_transaction();
 
     try {
+        // votesテーブルの関連データを削除
+        $sql_delete_votes_for_user = "DELETE FROM votes WHERE room_card_id IN (SELECT room_card_id FROM room_cards WHERE room_id = ? AND player_position = ?)";
+        $stmt_delete_votes_for_user = $conn->prepare($sql_delete_votes_for_user);
+        if (!$stmt_delete_votes_for_user) {
+            throw new Exception($conn->error);
+        }
+        $stmt_delete_votes_for_user->bind_param("ii", $room_id, $user_id);
+        if (!$stmt_delete_votes_for_user->execute()) {
+            throw new Exception($stmt_delete_votes_for_user->error);
+        }
+        $stmt_delete_votes_for_user->close();
+
         // room_cardsテーブルの関連データを削除
         $sql_delete_room_cards_for_user = "DELETE FROM room_cards WHERE room_id = ? AND player_position = ?";
         $stmt_delete_room_cards_for_user = $conn->prepare($sql_delete_room_cards_for_user);
@@ -61,6 +73,18 @@ if ($room_id && $user_id) {
         $stmt_check_players->close();
 
         if ($current_players === 0) {
+            // votesテーブルからroom_idに関連するデータを削除
+            $sql_delete_all_votes = "DELETE FROM votes WHERE room_card_id IN (SELECT room_card_id FROM room_cards WHERE room_id = ?)";
+            $stmt_delete_all_votes = $conn->prepare($sql_delete_all_votes);
+            if (!$stmt_delete_all_votes) {
+                throw new Exception($conn->error);
+            }
+            $stmt_delete_all_votes->bind_param("i", $room_id);
+            if (!$stmt_delete_all_votes->execute()) {
+                throw new Exception($stmt_delete_all_votes->error);
+            }
+            $stmt_delete_all_votes->close();
+
             // room_cardsテーブルからroom_idに関連するデータを削除
             $sql_delete_room_cards = "DELETE FROM room_cards WHERE room_id = ?";
             $stmt_delete_room_cards = $conn->prepare($sql_delete_room_cards);
