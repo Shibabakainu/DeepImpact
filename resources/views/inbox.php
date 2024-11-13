@@ -26,8 +26,11 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>受信メッセージ</title>
+    <link rel="stylesheet" href="/DeepImpact/resources/css/inbox.css">
 </head>
 <body>
+    <div class="message-container">
+    <a href="index.php" class="back-button">戻る</a> <!-- 戻るボタン -->
     <h1>受信メッセージ</h1>
     <?php while ($message = $result->fetch_assoc()): ?>
         <div class="message">
@@ -35,6 +38,7 @@ $result = $stmt->get_result();
             <p><strong>メッセージ:</strong> <?php echo nl2br(htmlspecialchars($message['content'], ENT_QUOTES, 'UTF-8')); ?></p>
             <p><small><?php echo htmlspecialchars($message['sent_at'], ENT_QUOTES, 'UTF-8'); ?></small></p>
         </div>
+    </div>
         <hr>
     <?php endwhile; ?>
 </body>
