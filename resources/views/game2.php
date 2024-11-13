@@ -454,6 +454,32 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         // Call pollVotingStatus on page load to start polling
         pollVotingStatus();
+
+        $(document).ready(function() {
+            // Fetch and display the scoreboard on page load
+            function loadScoreboard() {
+                $.ajax({
+                    url: 'getScoreboard.php',
+                    method: 'GET',
+                    data: { room_id: roomId },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('.scoreboard').html(response.scoreboard);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error loading scoreboard: ", textStatus, errorThrown);
+                        console.log("Response text:", jqXHR.responseText); // Log the full response
+                    }
+                });
+            }
+
+            // Initial load on page refresh
+            loadScoreboard();
+
+            // Optional: reload the scoreboard every few seconds if you want it to auto-refresh
+            setInterval(loadScoreboard, 5000);
+        });
+
     </script>
 
     <div id="textbox">

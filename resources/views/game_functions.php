@@ -78,7 +78,7 @@ function updateScore($room_id)
 }
 
 // Function to fetch and display the scoreboard
-function getScoreboard($room_id)
+function getScoreboardHtml($room_id)
 {
     global $conn;
 
@@ -95,17 +95,18 @@ function getScoreboard($room_id)
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Display the scoreboard
-    echo '<div class="scoreboard">';
-    echo '<p>スコアボード</p>';
+    // Generate scoreboard HTML
+    $scoreboardHtml = '<div class="scoreboard">';
+    $scoreboardHtml .= '<p>スコアボード</p>';
     while ($row = $result->fetch_assoc()) {
         $player_name = htmlspecialchars($row['player_name']);
         $score = $row['score'];
-        echo "<p> $player_name : $score</p>";
+        $scoreboardHtml .= "<p> $player_name : $score</p>";
     }
-    echo '</div>';
+    $scoreboardHtml .= '</div>';
 
     $stmt->close();
+    return $scoreboardHtml;
 }
 
 //ターンを増加する
