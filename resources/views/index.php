@@ -21,9 +21,11 @@ $loggedIn = isset($_SESSION['user_id']);
             border: none;
             border-radius: 5px;
             position: fixed;
-            right: 130px; /* 「ベルアイコン」の左側に配置 */
+            right: 130px;
+            /* 「ベルアイコン」の左側に配置 */
             top: 20px;
-            z-index: 1000; /* 他の要素より前面に表示 */
+            z-index: 1000;
+            /* 他の要素より前面に表示 */
         }
 
         /* ポップアップのスタイル */
@@ -64,7 +66,7 @@ $loggedIn = isset($_SESSION['user_id']);
     <!-- メッセージボタン -->
     <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
 
-    <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: fixed; right: 200px; top: 100px;" class="bell">
+    <!-- <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: fixed; right: 200px; top: 100px;" class="bell"> -->
 
     <!-- メッセージボックスのポップアップ -->
     <div id="messageBox" class="message-box">
@@ -100,7 +102,9 @@ $loggedIn = isset($_SESSION['user_id']);
             }
         });
 
-        let offsetX = 0, offsetY = 0, isDragging = false;
+        let offsetX = 0,
+            offsetY = 0,
+            isDragging = false;
 
         dragButton.addEventListener('mousedown', function(e) {
             isDragging = true;

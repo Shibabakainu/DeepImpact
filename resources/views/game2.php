@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+include 'game_functions.php';
 
 // セッションからユーザーIDを取得
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
@@ -65,149 +66,6 @@ if ($stmt = $conn->prepare($sql)) {
     die("カードデータの取得に失敗しました: " . $conn->error);
 }
 
-//投票が完了かどうかを確認
-function isVotingComplete($room_id)
-{
-    global $conn;
-
-    // Count distinct player_ids to see if every player has voted in the room
-    $query = "SELECT COUNT(DISTINCT player_id) FROM votes WHERE room_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
-    $stmt->execute();
-    $stmt->bind_result($distinctVoters);
-    $stmt->fetch();
-    $stmt->close();
-
-    // Query to get the total number of players in the room
-    $playerQuery = "SELECT COUNT(*) FROM room_players WHERE room_id = ?";
-    $playerStmt = $conn->prepare($playerQuery);
-    $playerStmt->bind_param("i", $room_id);
-    $playerStmt->execute();
-    $playerStmt->bind_result($totalPlayers);
-    $playerStmt->fetch();
-    $playerStmt->close();
-
-    // Check if voting is complete
-    return $distinctVoters == $totalPlayers;
-}
-
-function updateScore($room_id)
-{
-    global $conn;
-
-    // Get the current turn number
-    $turnQuery = "SELECT turn_number FROM rooms WHERE room_id = ?";
-    $turnStmt = $conn->prepare($turnQuery);
-    $turnStmt->bind_param("i", $room_id);
-    $turnStmt->execute();
-    $turnResult = $turnStmt->get_result();
-    $turnRow = $turnResult->fetch_assoc();
-    $currentTurn = $turnRow['turn_number'];
-    $turnStmt->close();
-
-    // Identify the player with the most voted card
-    $query = "
-        SELECT rc.player_position, COUNT(v.room_card_id) AS vote_count
-        FROM room_cards rc
-        INNER JOIN votes v ON rc.room_card_id = v.room_card_id
-        WHERE rc.room_id = ? AND rc.selected = 1
-        GROUP BY rc.player_position
-        ORDER BY vote_count DESC
-        LIMIT 1";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-
-    if ($row) {
-        $player_position = $row['player_position'];
-
-        // Update score only if this turn hasn't been scored yet for this player
-        $scoreQuery = "
-            UPDATE room_players 
-            SET score = score + 1, last_scored_turn = ?
-            WHERE room_id = ? AND player_position = ? AND last_scored_turn < ?";
-        $scoreStmt = $conn->prepare($scoreQuery);
-        $scoreStmt->bind_param("iiii", $currentTurn, $room_id, $player_position, $currentTurn);
-        $scoreStmt->execute();
-        $scoreStmt->close();
-    }
-
-    $stmt->close();
-}
-
-// Function to fetch and display the scoreboard
-function getScoreboard($room_id)
-{
-    global $conn;
-
-    // Get player names and their scores for the room, sorted by score in descending order
-    $query = "
-        SELECT u.name AS player_name, rp.score 
-        FROM room_players rp
-        INNER JOIN users u ON rp.user_id = u.id
-        WHERE rp.room_id = ? 
-        ORDER BY rp.score DESC";
-
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Display the scoreboard
-    echo '<div class="scoreboard">';
-    echo '<p>スコアボード</p>';
-    while ($row = $result->fetch_assoc()) {
-        $player_name = htmlspecialchars($row['player_name']);
-        $score = $row['score'];
-        echo "<p> $player_name - $score</p>";
-    }
-    echo '</div>';
-
-    $stmt->close();
-}
-
-//ターンを増加する
-function incrementTurn($room_id)
-{
-    global $conn;
-
-    $query = "UPDATE rooms SET turn_number = turn_number + 1 WHERE room_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
-    $stmt->execute();
-    $stmt->close();
-}
-//現在のターンを取得する
-function getCurrentTurn($room_id) {
-    global $conn;
-
-    $query = "SELECT turn_number FROM rooms WHERE room_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
-    $stmt->execute();
-    $stmt->bind_result($turn_number);
-    $stmt->fetch();
-    $stmt->close();
-
-    return $turn_number;
-}
-
-
-// 最大ターン数
-$max_turns = 6;
-
-// 現在のターン数を取得
-$turn = $_SESSION['turn'];
-
-// ターンが最大に達したらセッションをリセット（任意の条件で）
-if ($turn > $max_turns) {
-    $_SESSION['turn'] = $max_turns;
-    $message = "ゲーム終了！全てのターンが終了しました。";
-}
-
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
 ?>
@@ -242,9 +100,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3')
         hoverSound.preload = 'auto';
         $(document).on('mouseenter', '.card', function() {
-        hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
-        hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
-    });
+            hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
+            hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
+        });
     </script>
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
@@ -362,6 +220,15 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <div class="draw" id="draw">
                 <button id="draw-cards">カードをドロー</button>
             </div>
+            <!-- Popup message element -->
+            <div id="popup-message"></div>
+
+            <script>
+                document.getElementById("draw-cards").addEventListener("click", function() {
+                    this.style.display = "none"; // ボタンを非表示にする
+                });
+            </script>
+
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
                     <?php if ($card['selected'] == 0): // Only show cards that are not selected 
@@ -396,72 +263,78 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         $(document).ready(function() {
             $("#draw-cards").click(function() {
                 $.ajax({
-                    url: 'draw_cards.php', // Server-side script to handle card drawing
+                    url: 'draw_cards.php',
                     method: 'POST',
-                    dataType: 'json', // Expecting JSON response
+                    dataType: 'json',
                     success: function(response) {
-                        // Clear the existing cards
-                        $('#drawed-card-area').empty();
+                        $('#drawed-card-area').empty(); // 既存のカードをクリア
 
-                        // Loop through the response and display the cards
                         if (response.success) {
                             response.cards.forEach(function(card) {
                                 $('#drawed-card-area').append(
-                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' + // Change here
+                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
                                     '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
                                     '</div>'
                                 );
                             });
                         } else {
-                            alert("Failed to draw cards: " + response.message);
+                            // エラーメッセージのポップアップを表示
+                            showPopup(response.message);
                         }
                     },
                     error: function() {
-                        alert("Error drawing cards.");
+                        showPopup("カードを引く際にエラーが発生しました。");
                     }
                 });
             });
-        });
 
-        // Click event for selecting cards
-        $(document).on("click", ".card", function() {
-            var roomCardId = $(this).data("room-card-id");
+            // カード選択時のクリックイベント
+            $(document).on("click", ".card", function() {
+                var roomCardId = $(this).data("room-card-id");
 
-            if (!roomCardId) {
-                alert("No Room Card ID found.");
-                return; // Stop execution if the card ID is not set
-            }
-
-            console.log("Room ID: " + roomId + ", Room Card ID: " + roomCardId);
-
-            $.ajax({
-                url: 'select_card.php',
-                method: 'POST',
-                data: {
-                    room_id: roomId,
-                    room_card_id: roomCardId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-
-                        // Add class to indicate selection
-                        $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
-
-                        // Remove the selected card from the on-hand area
-                        $(".card[data-room-card-id='" + roomCardId + "']").remove();
-
-                        // Update the vote area
-                        updateVoteArea();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function() {
-                    alert("Error selecting card.");
+                if (!roomCardId) {
+                    showPopup("カードIDが見つかりません。");
+                    return;
                 }
+
+                // Click event for selecting cards
+                $.ajax({
+                    url: 'select_card.php',
+                    method: 'POST',
+                    data: {
+                        room_id: roomId,
+                        room_card_id: roomCardId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            showPopup(response.message);
+
+                            // 選択済みクラスを追加
+                            $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
+
+                            // 手札エリアから選択済みカードを削除
+                            $(".card[data-room-card-id='" + roomCardId + "']").remove();
+
+                            // 投票エリアを更新
+                            updateVoteArea();
+                        } else {
+                            showPopup(response.message);
+                        }
+                    },
+                    error: function() {
+                        showPopup("カードの選択時にエラーが発生しました。");
+                    }
+                });
             });
+
+            // Function to show popup and hide it after 2 seconds
+            function showPopup(message) {
+                $('#popup-message').text(message).fadeIn();
+                setTimeout(function() {
+                    $('#popup-message').fadeOut();
+                }, 2000); // Hide after 2 seconds
+            }
         });
 
         // Function to fetch and update the vote area
@@ -541,21 +414,47 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         // Function to be called at the end of each turn to update the turn display
         function updateTurn() {
-            displayTurn();  // Refresh the turn display
+            displayTurn(); // Refresh the turn display
         }
 
-    </script>
+        //投票が終わった後の処理
+        function pollVotingStatus() {
+            const roomId = getRoomIdFromUrl();
 
-    <?php
-    //ターン終了時の処理
-    if (isVotingComplete($room_id)) {
-        updateScore($room_id);
-        getScoreboard($room_id);
-        incrementTurn($room_id);
-        // Output JavaScript to call updateTurn() on the client side
-        echo "<script>updateTurn();</script>";
-    }
-    ?>
+            setInterval(() => {
+                $.ajax({
+                    url: 'checkVotingStatus.php',
+                    method: 'GET',
+                    data: {
+                        room_id: roomId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.game_over) {
+                            alert(response.message);
+                            // Additional logic for game over, like redirecting or disabling actions
+                            // Disable voting and other game actions if needed
+                        } else {
+                            // Update the turn display and score as usual
+                            updateTurn();
+
+                            if (response.votingComplete) {
+                                // If voting is complete, update the scoreboard
+                                $('.scoreboard').html(response.scoreboard);
+                            }
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error checking voting status: ", textStatus, errorThrown);
+                        console.log("Response text: ", jqXHR.responseText); // Log detailed error response
+                    }
+                });
+            }, 3000); // Poll every 3 seconds
+        }
+
+        // Call pollVotingStatus on page load to start polling
+        pollVotingStatus();
+    </script>
 
     <div id="textbox">
         <div id="chatbox"></div>
@@ -570,14 +469,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 <li><?php echo htmlspecialchars($player, ENT_QUOTES, 'UTF-8'); ?></li>
             <?php endforeach; ?>
         </ul>
-        <script>
-            // ポップアップで確認する関数
-            function showPopup() {
-                if (confirm("次のターンに進みますか？")) {
-                    document.getElementById("nextTurnForm").submit(); // ユーザーが承認したらフォーム送信
-                }
-            }
-        </script>
 
         <div id="turnDisplay">現在のターン： 1</div>
 
@@ -746,7 +637,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     $storyText = ""; // Variable to hold the current turn's story
 
     // Switch case to display the story based on the turn
-    switch ($turn) {
+    switch (getCurrentTurn($room_id)) {
         case 1:
             $storyText = $text1;
             break;

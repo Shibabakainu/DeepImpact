@@ -19,14 +19,14 @@ body {
     position: fixed;
     bottom: 10px;
     width: 50%;
-    padding: 10px;
+    padding: 25px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.3);
     text-align: center;
     max-height: 1000px;
     overflow-y: auto;
-    
+
 }
 
 .container .card {
@@ -42,8 +42,8 @@ body {
 /* ホバー時のカードの発光 */
 .container .card:hover {
     transform: translateY(-0.5rem) scale(1.1);
-    box-shadow: 0 0 30px 10px rgba(232, 243, 26, 0.8), 
-                0 0 40px 20px rgba(16, 131, 245, 0.8);
+    box-shadow: 0 0 30px 10px rgba(232, 243, 26, 0.8),
+        0 0 40px 20px rgba(16, 131, 245, 0.8);
 }
 
 .container .card img {
@@ -96,8 +96,8 @@ body {
 
 .vote-area .selected-card:hover {
     transform: translateY(-0.5rem) scale(1.1);
-    box-shadow: 0 0 30px 10px rgba(255, 255, 0, 0.8), 
-                0 0 40px 20px rgba(0, 128, 255, 0.8);
+    box-shadow: 0 0 30px 10px rgba(255, 255, 0, 0.8),
+        0 0 40px 20px rgba(0, 128, 255, 0.8);
 }
 
 .vote-area .selected-card .img {
@@ -551,37 +551,76 @@ p {
 .voter-info {
     display: flex;
     align-items: center;
-    margin-top: 5px; /* Space between card and voters */
+    margin-top: 5px;
+    /* Space between card and voters */
     flex-direction: column;
 }
 
 .voter-icon {
-    width: 30px; /* Adjust size as needed */
-    height: 30px; /* Adjust size as needed */
-    border-radius: 50%; /* Make it circular */
-    margin-right: 5px; /* Space between icon and name */
+    width: 30px;
+    /* Adjust size as needed */
+    height: 30px;
+    /* Adjust size as needed */
+    border-radius: 50%;
+    /* Make it circular */
+    margin-right: 5px;
+    /* Space between icon and name */
 }
 
 .voter-name {
-    font-size: 20px; /* Adjust font size as needed */
+    font-size: 20px;
+    /* Adjust font size as needed */
     font-weight: bold;
     color: white;
 }
 
 /* ボタンのデザインを定義します */
 .bgm-btn {
-position: absolute;        /* 絶対位置を指定 */
-top: 100px;                /* 上からの距離を設定 */
-right: 30px;              /* 右からの距離を設定 */
-background-color: #4CAF50; /* ボタンの背景色（緑色） */
-color: white;              /* 文字色（白） */
-border: none;              /* ボタンの枠線なし */
-border-radius: 50%;        /* ボタンを円形にする */
-width: 50px;               /* ボタンの幅を50pxに設定 */
-height: 50px;              /* ボタンの高さを50pxに設定 */
-font-size: 24px;           /* ボタン内のアイコンの文字サイズ */
-cursor: pointer;           /* ホバー時にポインタを指に変える */
-display: flex;             /* フレックスボックスで配置 */
-align-items: center;       /* ボタン内のアイコンを垂直方向に中央揃え */
-justify-content: center;   /* ボタン内のアイコンを水平方向に中央揃え */
+    position: absolute;
+    /* 絶対位置を指定 */
+    top: 100px;
+    /* 上からの距離を設定 */
+    right: 30px;
+    /* 右からの距離を設定 */
+    background-color: #4CAF50;
+    /* ボタンの背景色（緑色） */
+    color: white;
+    /* 文字色（白） */
+    border: none;
+    /* ボタンの枠線なし */
+    border-radius: 50%;
+    /* ボタンを円形にする */
+    width: 50px;
+    /* ボタンの幅を50pxに設定 */
+    height: 50px;
+    /* ボタンの高さを50pxに設定 */
+    font-size: 24px;
+    /* ボタン内のアイコンの文字サイズ */
+    cursor: pointer;
+    /* ホバー時にポインタを指に変える */
+    display: flex;
+    /* フレックスボックスで配置 */
+    align-items: center;
+    /* ボタン内のアイコンを垂直方向に中央揃え */
+    justify-content: center;
+    /* ボタン内のアイコンを水平方向に中央揃え */
+}
+
+/*メッセージポップアップ*/
+/* Style for the popup message */
+#popup-message {
+    display: none;
+    /* Initially hidden */
+    position: fixed;
+    width: 200px;
+    top: 50%;
+    left: 90%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    z-index: 1000;
 }
