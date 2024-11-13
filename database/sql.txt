@@ -117,6 +117,32 @@ VALUES
 (8, 'Eight', 'card8.jpg'),
 (9, 'Nine', 'card9.jpg'),
 (10, 'Ten', 'card10.jpg');
+(11, 'Eleven', 'card11.jpg'),
+(12, 'Twelve', 'card12.jpg'),
+(13, 'Thirteen', 'card13.jpg'),
+(14, 'Fourteen', 'card14.jpg'),
+(15, 'Fifteen', 'card15.jpg'),
+(16, 'Sixteen', 'card16.jpg'),
+(17, 'Seventeen', 'card17.jpg'),
+(18, 'Eighteen', 'card18.jpg'),
+(19, 'Nineteen', 'card19.jpg'),
+(20, 'Twenty', 'card20.jpg'),
+(21, 'Twenty-One', 'card21.jpg'),
+(22, 'Twenty-Two', 'card22.jpg'),
+(23, 'Twenty-Three', 'card23.jpg'),
+(24, 'Twenty-Four', 'card24.jpg'),
+(25, 'Twenty-Five', 'card25.jpg'),
+(26, 'Twenty-Six', 'card26.jpg'),
+(27, 'Twenty-Seven', 'card27.jpg'),
+(28, 'Twenty-Eight', 'card28.jpg'),
+(29, 'Twenty-Nine', 'card29.jpg'),
+(30, 'Thirty', 'card30.jpg'),
+(31, 'Thirty-One', 'card31.jpg'),
+(32, 'Thirty-Two', 'card32.jpg'),
+(33, 'Thirty-Three', 'card33.jpg'),
+(34, 'Thirty-Four', 'card34.jpg'),
+(35, 'Thirty-Five', 'card35.jpg'),
+(36, 'Thirty-Six', 'card36.jpg');
 
 -- room_cards テーブルの作成
 DROP TABLE IF EXISTS room_cards;
