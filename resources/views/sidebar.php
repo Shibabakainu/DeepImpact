@@ -47,6 +47,7 @@
         <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn"><s>カード一覧</s></a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/card_edit.php" class="common-btn"><s>デッキ編集</s></a></li>
     </ul>
 </div>
 
