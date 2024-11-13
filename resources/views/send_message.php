@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include 'db_connect.php';
@@ -28,7 +29,8 @@ $stmt->close();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $content = $_POST['message'];
 
-    $stmt = $conn->prepare("INSERT INTO messages (sender_id, recipient_id, content) VALUES (?, ?, ?)");
+    // カラム名を sender_id から user_id に変更
+    $stmt = $conn->prepare("INSERT INTO messages (user_id, recipient_id, content) VALUES (?, ?, ?)");
     $stmt->bind_param("iis", $user_id, $friend_id, $content);
     if ($stmt->execute()) {
         echo "メッセージを送信しました。";

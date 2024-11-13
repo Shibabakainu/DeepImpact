@@ -66,7 +66,7 @@ CREATE TABLE room_players (
     last_scored_turn    INT             DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    UNIQUE (room_id, player_position) -- 同じ部屋内での player_position の一意性を保証
+    UNIQUE (room_id, player_position)
 );
 
 -- friends テーブルの作成
@@ -82,18 +82,18 @@ CREATE TABLE friends (
     UNIQUE(user_name, friend_name)
 );
 
--- messages テーブルの作成 (recipient_id を追加)
+-- messages テーブルの作成 (room_id を NULL 許可に変更)
 DROP TABLE IF EXISTS messages;
 CREATE TABLE messages (
     message_id      INT             AUTO_INCREMENT PRIMARY KEY,
-    room_id         INT             NOT NULL,
+    room_id         INT             NULL,                  -- NULL 許可に変更
     user_id         INT             NOT NULL,
-    recipient_id    INT             NOT NULL,  -- 受信者の ID を追加
+    recipient_id    INT             NOT NULL,
     content         TEXT            NOT NULL,
     sent_at         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE  -- 受信者を users テーブルに関連付け
+    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Card テーブルの作成
@@ -116,33 +116,7 @@ VALUES
 (7, 'Seven', 'card7.jpg'),
 (8, 'Eight', 'card8.jpg'),
 (9, 'Nine', 'card9.jpg'),
-(10, 'Ten', 'card10.jpg'),
-(11, 'Eleven', 'card11.jpg'),
-(12, 'Twelve', 'card12.jpg'),
-(13, 'Thirteen', 'card13.jpg'),
-(14, 'Forteen', 'card14.jpg'),
-(15, 'Fifteen', 'card15.jpg'),
-(16, 'Sixteen', 'card16.jpg'),
-(17, 'Seventeen', 'card17.jpg'),
-(18, 'Eighteen', 'card18.jpg'),
-(19, 'Nineteen', 'card19.jpg'),
-(20, 'Twenty', 'card20.jpg'),
-(21, 'TwentyOne', 'card21.jpg'),
-(22, 'TwentyTwo', 'card22.jpg'),
-(23, 'TwentyThree', 'card23.jpg'),
-(24, 'TwentyFour', 'card24.jpg'),
-(25, 'TwentyFive', 'card25.jpg'),
-(26, 'TwentySix', 'card26.jpg'),
-(27, 'TwentySeven', 'card27.jpg'),
-(28, 'TwentyEight', 'card28.jpg'),
-(29, 'TwentyNine', 'card29.jpg'),
-(30, 'Thirty', 'card30.jpg'),
-(31, 'ThirtyOne', 'card31.jpg'),
-(32, 'ThirtyTwo', 'card32.jpg'),
-(33, 'ThirtyThree', 'card33.jpg'),
-(34, 'ThirtyFour', 'card34.jpg'),
-(35, 'ThirtyFive', 'card35.jpg'),
-(36, 'ThirtySix', 'card36.jpg');
+(10, 'Ten', 'card10.jpg');
 
 -- room_cards テーブルの作成
 DROP TABLE IF EXISTS room_cards;
@@ -209,7 +183,6 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        -- 相互関係が存在しない場合
         IF NOT EXISTS (SELECT 1 FROM friends WHERE user_name = current_friend_name AND friend_name = current_user_name) THEN
             INSERT INTO friends (user_name, friend_name, status) VALUES (current_friend_name, current_user_name, 'accepted');
         ELSE
