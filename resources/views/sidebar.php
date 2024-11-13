@@ -46,7 +46,12 @@
         <li class="btn"><a href="/DeepImpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
+<<<<<<< HEAD
+        <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn"><s>カード一覧</s></a></li>
+        <li class="btn"><a href="/DeepImpact/resources/views/card_edit.php" class="common-btn"><s>デッキ編集</s></a></li>
+=======
         <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn">カード一覧</a></li>
+>>>>>>> b7f1a4d8001f370e7fef52941e66edaa93e39380
     </ul>
 </div>
 
