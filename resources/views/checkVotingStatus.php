@@ -53,8 +53,13 @@ if ($room_id) {
     
             // Capture scoreboard output
             ob_start();
-            getScoreboard($room_id);
+            getScoreboardHtml($room_id);
             $response['scoreboard'] = ob_get_clean();
+            
+            //draw new card for a new turn
+            foreach ($players as $player) {
+                drawNewCard($room_id, $player['player_position']);
+            }
         } else {
             // Just return the current turn number if already updated
             $response['turn'] = getCurrentTurn($room_id);

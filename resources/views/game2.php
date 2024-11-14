@@ -246,9 +246,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="vote-area" id="vote-area">
         <!-- Cards with selected 1 will be loaded here -->
     </div>
+
     <div class="title">
         投票
     </div>
+
+    <div class="turnPopup" id="turnPopup"></div>
 
     <script type="text/javascript">
         // URLからroom_idを取得する関数
@@ -259,6 +262,21 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         const roomId = getRoomIdFromUrl(); // URLからroom_idを取得
 
+        // Function to show popup and hide it after 2 seconds
+        function showPopup(message) {
+            $('#popup-message').text(message).fadeIn();
+            setTimeout(function() {
+                $('#popup-message').fadeOut();
+            }, 2000); // Hide after 2 seconds
+        }
+
+        function showTurnPopup(message) {
+            $('#turnPopup').text(message).fadeIn();
+            setTimeout(function() {
+                $('#turnPopup').fadeOut();
+            }, 5000); // Hide after 5 seconds
+        }
+        
         // Click event for drawing cards
         $(document).ready(function() {
             $("#draw-cards").click(function() {
@@ -327,14 +345,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     }
                 });
             });
-
-            // Function to show popup and hide it after 2 seconds
-            function showPopup(message) {
-                $('#popup-message').text(message).fadeIn();
-                setTimeout(function() {
-                    $('#popup-message').fadeOut();
-                }, 2000); // Hide after 2 seconds
-            }
         });
 
         // Function to fetch and update the vote area
@@ -417,10 +427,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             displayTurn(); // Refresh the turn display
         }
 
+        //投票エリアをクリアする
+        function clearVoteArea() {
+            $('#vote-area').empty();
+        }
+
         //投票が終わった後の処理
         function pollVotingStatus() {
-            const roomId = getRoomIdFromUrl();
-
             setInterval(() => {
                 $.ajax({
                     url: 'checkVotingStatus.php',
@@ -437,10 +450,12 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                         } else {
                             // Update the turn display and score as usual
                             updateTurn();
+                            showTurnPopup("ターン２");
 
                             if (response.votingComplete) {
                                 // If voting is complete, update the scoreboard
                                 $('.scoreboard').html(response.scoreboard);
+                                clearVoteArea();    
                             }
                         }
                     },
@@ -455,6 +470,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         // Call pollVotingStatus on page load to start polling
         pollVotingStatus();
 
+        //リロードしてもスコアボード表示する
         $(document).ready(function() {
             // Fetch and display the scoreboard on page load
             function loadScoreboard() {
@@ -480,6 +496,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             setInterval(loadScoreboard, 5000);
         });
 
+        
     </script>
 
     <div id="textbox">
@@ -489,7 +506,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     </div>
 
     <div class="player-list">
-        <p>現在のプレイヤー:</p>
+        <p>プレイヤーリスト:</p>
         <ul>
             <?php foreach ($players as $player): ?>
                 <li><?php echo htmlspecialchars($player, ENT_QUOTES, 'UTF-8'); ?></li>

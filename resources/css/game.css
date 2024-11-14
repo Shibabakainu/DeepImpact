@@ -624,3 +624,9 @@ p {
     text-align: center;
     z-index: 1000;
 }
+
+#turnDisplay {
+    color: #e77a34;
+    font-size: 1.75rem;
+    font-weight: bolder;
+}
