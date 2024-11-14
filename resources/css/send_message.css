@@ -70,3 +70,21 @@ a.back-button {
         button:hover {
             background-color: #0056b3;
         }
+
+
+        .message-status {
+            position: fixed;          /* 固定表示にして位置を調整 */
+            top: 10px;                /* 画面の上から10pxに配置 */
+            left: 50%;                /* 横中央に配置 */
+            transform: translateX(-50%);
+            padding: 10px;
+            background-color: #e6ffe6;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            display: none;            /* 初期状態では非表示 */
+            z-index: 1000;            /* 他の要素より前に表示 */
+        }
+        
