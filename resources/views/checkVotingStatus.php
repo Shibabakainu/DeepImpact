@@ -5,6 +5,19 @@ include 'game_functions.php';
 
 $room_id = isset($_GET['room_id']) ? intval($_GET['room_id']) : 0;
 
+// Fetch all players in the room
+$playersQuery = "SELECT player_position FROM room_players WHERE room_id = ?";
+$stmt = $conn->prepare($playersQuery);
+$stmt->bind_param("i", $room_id);
+$stmt->execute();
+$playersResult = $stmt->get_result();
+
+$players = [];
+while ($row = $playersResult->fetch_assoc()) {
+    $players[] = $row;
+}
+$stmt->close();
+
 // Check if the game is finished
 $statusQuery = "SELECT status FROM rooms WHERE room_id = ?";
 $statusStmt = $conn->prepare($statusQuery);

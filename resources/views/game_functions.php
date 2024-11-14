@@ -160,7 +160,7 @@ function drawNewCard($room_id, $player_position) {
     global $conn;
     
     // Query to select a random card that hasn't been selected by this player in this room
-    $query = "SELECT card_id FROM cards 
+    $query = "SELECT card_id FROM card
               WHERE card_id NOT IN (
                   SELECT card_id FROM room_cards 
                   WHERE room_id = ? AND player_position = ?

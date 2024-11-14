@@ -455,7 +455,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                             if (response.votingComplete) {
                                 // If voting is complete, update the scoreboard
                                 $('.scoreboard').html(response.scoreboard);
-                                clearVoteArea();    
+                                clearVoteArea(); 
+                                alert("次のターンに進みましょう");
                             }
                         }
                     },
