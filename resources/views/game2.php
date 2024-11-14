@@ -450,7 +450,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                         } else {
                             // Update the turn display and score as usual
                             updateTurn();
-                            showTurnPopup("ターン２");
+                            showTurnPopup("");
 
                             if (response.votingComplete) {
                                 // If voting is complete, update the scoreboard
