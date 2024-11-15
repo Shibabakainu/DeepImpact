@@ -27,7 +27,7 @@
     <?php include 'header.php'; ?>
 
     <!-- メッセージボタン -->
-    <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
+    <!--<button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>-->
 
     <main>
         <div class="container">
