@@ -68,6 +68,9 @@ if ($room_id) {
             ob_start();
             getScoreboardHtml($room_id);
             $response['scoreboard'] = ob_get_clean();
+
+            // Hide the voted cards for this turn
+            hideVotedCards($room_id);
             
             //draw new card for a new turn
             foreach ($players as $player) {

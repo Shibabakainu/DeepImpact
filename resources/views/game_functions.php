@@ -185,5 +185,20 @@ function drawNewCard($room_id, $player_position) {
     $stmt->close();
 }
 
+// Function to hide cards that were voted on in the last turn
+function hideVotedCards($room_id) {
+    global $conn;
+
+    // Update the hide status of all cards that were selected and voted on
+    $query = "
+        UPDATE room_cards 
+        SET hide = 1 
+        WHERE room_id = ? AND selected = 1 AND voted = 1";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $stmt->close();
+}
 
 ?>
