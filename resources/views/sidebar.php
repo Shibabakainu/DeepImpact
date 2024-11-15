@@ -48,7 +48,8 @@
         <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn">カード一覧</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/card_edit.php" class="common-btn">デッキ編集</a></li>
-    </ul>
+        <li class="btn"><a href="/DeepImpact/resources/views/inbox.php" class="common-btn">メッセージ</a></li>
+    </ul>       
 </div>
 
 <!-- 画像を拡大表示するためのモーダル -->

@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 10px;
+            padding: 20px;
             background-color: #e6ffe6;
             color: #4CAF50;
             border: 1px solid #4CAF50;
