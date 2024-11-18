@@ -76,13 +76,40 @@ a.back-button {
             z-index: 1000;            /* 他の要素より前に表示 */
         }
 
-        .message-container textarea {
-            width: 100%; /* 親要素の幅いっぱいに広げる */
-            padding: 10px; /* 内側の余白を均等に設定 */
+        .message-container {
+            position: relative;
+            width: 60%; /* メッセージコンテナの幅を60%に設定（短くする） */
+            max-width: 500px; /* 最大幅を指定して広がり過ぎを防止 */
+            padding: 20px; /* 余白を作成 */
             box-sizing: border-box; /* パディングを幅に含める */
-            margin: 0 auto; /* 上下は0、左右を自動で中央揃え */
-            border: 1px solid #ccc; /* 枠線を明示的に指定 */
-            border-radius: 5px; /* 角を丸める */
-            resize: vertical; /* 縦方向のみリサイズ可能にする */
+            display: flex; /* 子要素の配置を調整 */
+            flex-direction: column; /* テキストエリアとボタンが縦に並ぶように設定 */
+            align-items: center; /* 中央揃え */
+            margin: 0 auto; /* コンテナ全体を中央揃え */
+        }
+        
+        .message-container textarea {
+            width: 100%; /* 親要素に合わせて幅を100%に設定 */
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px; /* ボタンとの余白を調整 */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        
+        .message-container button {
+            width: 100%; /* ボタンもテキストエリアと同じ幅に設定 */
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .message-container button:hover {
+            background-color: #0056b3;
         }
         
