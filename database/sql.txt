@@ -153,6 +153,7 @@ CREATE TABLE room_cards (
     player_position INT NOT NULL,
     selected TINYINT NOT NULL DEFAULT 0,
     voted TINYINT NOT NULL DEFAULT 0,
+    hide TINYINT NOT NULL DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (card_id) REFERENCES Card(Card_id),
     FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)

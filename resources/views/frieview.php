@@ -95,7 +95,7 @@
     ?>
     
     <!-- メッセージボタン -->
-    <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
+    <!--<button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>-->
 
     <!-- ベルアイコン -->
     <img src="/DeepImpact/images/bell.jpg" class="bell" alt="ベルアイコン">

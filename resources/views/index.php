@@ -64,7 +64,7 @@ $loggedIn = isset($_SESSION['user_id']);
 
 <body>
     <!-- メッセージボタン -->
-    <button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>
+    <!--<button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>-->
 
     <!-- <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: fixed; right: 200px; top: 100px;" class="bell"> -->
 

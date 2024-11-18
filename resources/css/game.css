@@ -189,6 +189,12 @@ body {
     cursor: pointer;
 }
 
+
+
+.volume-btn:hover {
+    background: rgb(63, 175, 245);
+}
+
 .nextturn {
     border-radius: 5px;
     flex-direction: column;
@@ -234,7 +240,8 @@ body {
 }
 
 .button_1 .popup-btn,
-.button_1 .back-btn {
+.button_1 .back-btn,
+.button_1 .volume-btn{
     padding: 15px 30px;
     font-size: 1.5em;
     border-radius: 10px;
@@ -409,6 +416,40 @@ button.hamburger-close.toggle span:after {
 }
 
 #rule-close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+}
+
+#volume-textarea-wrapper {
+    background-color: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 996;
+    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+#volume-textarea-inside {
+    text-align: center;
+    width: 150%;
+    max-width: 50%;
+    height: 45%;
+    background-image: url(../../images/yun.png);
+    margin: 10% auto;
+    padding: 20px;
+    position: relative;
+    z-index: 997;
+    overflow: scroll;
+    border-radius: 5px;
+}
+
+#volume-textarea-close {
     position: absolute;
     top: 0;
     right: 5px;
@@ -623,4 +664,10 @@ p {
     font-size: 16px;
     text-align: center;
     z-index: 1000;
+}
+
+#turnDisplay {
+    color: #e77a34;
+    font-size: 1.75rem;
+    font-weight: bolder;
 }

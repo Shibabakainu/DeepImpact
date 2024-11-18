@@ -527,7 +527,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <div class="button_1">
                 <button class="back-btn">退出する</button>
                 <button class="popup-btn" id="rule-click-btn">ルール</button>
-                <button class="volume-btn" id="volume-btn">ボリューム</button>
                 <div id="rule-popup-wrapper" style="display: none;">
                     <div id="rule-popup-inside">
                         <div class="text">
@@ -581,27 +580,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <button class="other-btn" id="exit-btn">退出</button>
         </div>
     </div>
-    <!-- ボリューム買えるようにするよ -->
-    <div id="volume-textarea-wrapper" style="display: none;">
-                <div id="volume-textarea-inside">
-                    <div class="text">
-                        <div id="volume-textarea-close">X</div>
-                        <p>ゲーム中の設定やメモを入力</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-<script>
-    document.getElementById("volume-btn").addEventListener("click", function() {
-    document.getElementById("volume-textarea-wrapper").style.display = "block";
-    });
-
-    document.getElementById("volume-textarea-close").addEventListener("click", function() {
-    document.getElementById("volume-textarea-wrapper").style.display = "none";
-    });
-</script>
-
 
     <script>
         document.querySelector('.other-btn').addEventListener('click', function() {

@@ -155,4 +155,50 @@ function getCurrentTurn($room_id) {
     return $turn_number;
 }
 
+//新しいターンにカードを1枚ドローする
+function drawNewCard($room_id, $player_position) {
+    global $conn;
+    
+    // Query to select a random card that hasn't been selected by this player in this room
+    $query = "SELECT card_id FROM card
+              WHERE card_id NOT IN (
+                  SELECT card_id FROM room_cards 
+                  WHERE room_id = ? AND player_position = ?
+              ) 
+              ORDER BY RAND() LIMIT 1";
+              
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $room_id, $player_position);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $card_id = $row['card_id'];
+        
+        // Insert this card into room_cards table for the player
+        $insertQuery = "INSERT INTO room_cards (room_id, card_id, player_position, selected) VALUES (?, ?, ?, 0)";
+        $insertStmt = $conn->prepare($insertQuery);
+        $insertStmt->bind_param("iii", $room_id, $card_id, $player_position);
+        $insertStmt->execute();
+        $insertStmt->close();
+    }
+    $stmt->close();
+}
+
+// Function to hide cards that were voted on in the last turn
+function hideVotedCards($room_id) {
+    global $conn;
+
+    // Update the hide status of all cards that were selected and voted on
+    $query = "
+        UPDATE room_cards 
+        SET hide = 1 
+        WHERE room_id = ? AND selected = 1 AND voted = 1";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $stmt->close();
+}
+
 ?>
