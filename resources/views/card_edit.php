@@ -23,10 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_card'])) {
     $extraCard = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($extraCard) {
-        // Cardテーブルに挿入
-        $sql = "INSERT INTO Card (Card_name, Image_path) VALUES (:card_name, :image_path)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['card_name' => $extraCard['Card_name'], 'image_path' => $extraCard['Image_path']]);
+        // 重複確認
+        $checkSql = "SELECT COUNT(*) FROM Card WHERE Card_name = :card_name";
+        $checkStmt = $pdo->prepare($checkSql);
+        $checkStmt->execute(['card_name' => $extraCard['Card_name']]);
+        $exists = $checkStmt->fetchColumn();
+
+        if ($exists) {
+            echo "<p>同じ名前のカードが既に存在します。</p>";
+        } else {
+            // Cardテーブルに挿入
+            $sql = "INSERT INTO Card (Card_name, Image_path) VALUES (:card_name, :image_path)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['card_name' => $extraCard['Card_name'], 'image_path' => $extraCard['Image_path']]);
+            echo "<p>カードがCardテーブルに追加されました。</p>";
+        }
     }
 }
 
