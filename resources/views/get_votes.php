@@ -14,7 +14,7 @@ $sql = "
     JOIN Card c ON rc.card_id = c.Card_id
     LEFT JOIN votes v ON rc.room_card_id = v.room_card_id
     LEFT JOIN users u ON v.player_id = u.id
-    WHERE rc.room_id = ? AND rc.selected = 1
+    WHERE rc.room_id = ? AND rc.selected = 1 AND rc.hide = 0
 ";
 
 $stmt = $conn->prepare($sql);

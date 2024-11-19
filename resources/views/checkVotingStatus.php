@@ -38,8 +38,12 @@ $response = [
     'scoreboard' => '',
 ];
 
+// Get the current turn for the room
+$current_turn = getCurrentTurn($room_id);
+
 if ($room_id) {
-    if (isVotingComplete($room_id)) {
+    if (isVotingComplete($room_id, $current_turn)) {
+        $response['debug'] = 'Voting complete';
         // Check if the turn has already been updated
         $checkTurnQuery = "SELECT turn_updated FROM rooms WHERE room_id = ?";
         $checkTurnStmt = $conn->prepare($checkTurnQuery);
@@ -48,6 +52,7 @@ if ($room_id) {
         $checkTurnStmt->bind_result($turnUpdated);
         $checkTurnStmt->fetch();
         $checkTurnStmt->close();
+        $response['turnUpdated'] = $turnUpdated;
     
         if ($turnUpdated == 0) {
             // Update the score and turn only once
@@ -71,17 +76,34 @@ if ($room_id) {
 
             // Hide the voted cards for this turn
             hideVotedCards($room_id);
+
+            // Fetch players for drawing new cards
+            $playersQuery = "SELECT player_position FROM room_players WHERE room_id = ?";
+            $playersStmt = $conn->prepare($playersQuery);
+            $playersStmt->bind_param("i", $room_id);
+            $playersStmt->execute();
+            $result = $playersStmt->get_result();
+            $players = $result->fetch_all(MYSQLI_ASSOC);
+            $playersStmt->close();
             
             //draw new card for a new turn
             foreach ($players as $player) {
                 drawNewCard($room_id, $player['player_position']);
             }
+
+            // Set turn_updated to 0
+            $updateTurnQuery = "UPDATE rooms SET turn_updated = 0 WHERE room_id = ?";
+            $updateTurnStmt = $conn->prepare($updateTurnQuery);
+            $updateTurnStmt->bind_param("i", $room_id);
+            $updateTurnStmt->execute();
+            $updateTurnStmt->close();
         } else {
             // Just return the current turn number if already updated
             $response['turn'] = getCurrentTurn($room_id);
         }
     } else {
         $response['turn'] = getCurrentTurn($room_id);
+        $response['debug'] = 'Voting not complete';
     }
 }
 
