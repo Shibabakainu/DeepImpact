@@ -348,7 +348,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             // 投票エリアを取得して更新する関数
             function updateVoteArea() {
                 $.ajax({
-                    url: 'get_votes.php',
+                    url: 'get_votes2.php',
                     method: 'GET',
                     data: {
                         room_id: roomId
