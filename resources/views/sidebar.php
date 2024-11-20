@@ -45,17 +45,15 @@
         </li>
         <li class="btn"><a href="/DeepImpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド</a></li>
-        <li class="btn"><a href="/DeepImpact/resources/views/logout.php" class="common-btn">ログアウト</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn">カード一覧</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/card_edit.php" class="common-btn">デッキ編集</a></li>
         <li class="btn"><a href="/DeepImpact/resources/views/inbox.php" class="common-btn">メッセージ</a></li>
-    </ul>       
-</div>
+    </ul>
+    <!-- フッターセクション -->
+    <div>
+        <a href="/DeepImpact/resources/views/logout.php" class="logout-btn">ログアウト</a>
+    </div>
 
-<!-- 画像を拡大表示するためのモーダル -->
-<div id="imageModalSidebar" class="modalSidebar" style="display: none;">
-    <span id="closeModalSidebar" class="close">&times;</span>
-    <img class="modal-content-Sidebar" id="modalImageSidebar">
 </div>
 
 <script>
@@ -84,9 +82,9 @@
                 });
 
                 // モーダルを閉じる処理
-                const closeModalsidebar = document.getElementById('closeModalSidebar');
+                const closeModalSidebar = document.getElementById('closeModalSidebar');
                 const modalSidebar = document.getElementById('imageModal');
-                closeModalsidebar.addEventListener('click', function() {
+                closeModalSidebar.addEventListener('click', function() {
                     modalSidebar.style.display = 'none'; // バツマークをクリックしてモーダルを閉じる
                 });
 
@@ -96,7 +94,6 @@
                         modalSidebar.style.display = 'none'; // 外側をクリックしてモーダルを閉じる
                     }
                 });
-
             } else {
                 console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
             }
@@ -106,7 +103,6 @@
         };
         xhr.send();
     }
-
 
     // ルールボタンをクリックしたときにポップアップを表示し、チュートリアルを読み込む
     sidebarClickBtn.addEventListener('click', () => {
