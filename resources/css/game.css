@@ -422,39 +422,7 @@ button.hamburger-close.toggle span:after {
     cursor: pointer;
 }
 
-#volume-textarea-wrapper {
-    background-color: rgba(0, 0, 0, .5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    z-index: 996;
-    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
-}
 
-#volume-textarea-inside {
-    text-align: center;
-    width: 150%;
-    max-width: 50%;
-    height: 45%;
-    margin: 10% auto;
-    background-color:azure;
-    padding: 20px;
-    position: relative;
-    z-index: 997;
-    overflow: scroll;
-    border-radius: 5px;
-}
-
-#volume-textarea-close {
-    position: absolute;
-    top: 0;
-    right: 5px;
-    cursor: pointer;
-}
 
 /*ルール*/
 ul {
@@ -670,4 +638,104 @@ p {
     color: #e77a34;
     font-size: 1.75rem;
     font-weight: bolder;
+}
+
+#volume-textarea-wrapper {
+    background-color: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 996;
+    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    
+}
+
+
+
+#volume-textarea-close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+}
+
+
+#volume-textarea-inside {
+    background-color: #ffffff;
+    background-size: cover; /* 画像をコンテナ全体にフィットさせる */
+    background-position: center; /* 背景画像を中央に配置 */
+    text-align: center;
+    width: 150%;
+    max-width: 50%;
+    height: 45%;
+    margin: 10% auto;
+    background-color:azure;
+    padding: 20px;
+    position: relative;
+    z-index: 997;
+    overflow: scroll;
+    border-radius: 5px;
+    font-family: 'Arial', sans-serif; /* モダンなフォント */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ソフトな影を追加 */
+}
+
+
+
+
+/* ラベルのスタイル */
+label {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #090404;
+}
+
+/* スライダーのスタイル */
+input[type="range"] {
+    -webkit-appearance: none; /* デフォルトのスタイルをリセット */
+    width: 85%; /* 幅を全体に広げる */
+    height: 10px;
+    background: linear-gradient(to right, #4caf50, #8bc34a); /* グラデーション背景 */
+    border-radius: 5px; /* 角を丸くする */
+    outline: none;
+    transition: background 0.3s; /* 背景色の変更をスムーズに */
+}
+
+/* スライダーのつまみ（thumb）のスタイル */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #4caf50; /* つまみの色 */
+    border-radius: 50%; /* 丸い形状 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 軽い影 */
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s; /* 色とサイズの変更をスムーズに */
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #45a049; /* ホバー時に濃い緑色に */
+    transform: scale(1.1); /* 少し大きくする */
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #4caf50;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* スライダーの上の値表示 */
+#bgm-volume-value,
+#sfx-volume-value {
+    font-size: 12px;
+    color: #777;
+    margin-left: 10px;
 }
