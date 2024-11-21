@@ -12,32 +12,48 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// ExtraCardのカードをCardに追加する処理
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_card'])) {
-    $extraCardId = $_POST['extra_card_id'];
+// CardテーブルのカードをExtraCardに移動する処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['move_to_extracard'])) {
+    $cardId = $_POST['card_id'];
 
-    // ExtraCardの情報を取得
-    $sql = "SELECT Card_name, Image_path FROM ExtraCard WHERE ExtraCard_id = :extra_card_id";
+    $sql = "SELECT Card_name, Image_path FROM Card WHERE Card_id = :card_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['extra_card_id' => $extraCardId]);
-    $extraCard = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute(['card_id' => $cardId]);
+    $card = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($extraCard) {
-        // 重複確認
-        $checkSql = "SELECT COUNT(*) FROM Card WHERE Card_name = :card_name";
+    if ($card) {
+        $checkSql = "SELECT COUNT(*) FROM ExtraCard WHERE Card_name = :card_name";
         $checkStmt = $pdo->prepare($checkSql);
-        $checkStmt->execute(['card_name' => $extraCard['Card_name']]);
+        $checkStmt->execute(['card_name' => $card['Card_name']]);
         $exists = $checkStmt->fetchColumn();
 
         if ($exists) {
-            echo "<p>同じ名前のカードが既に存在します。</p>";
+            echo "<p>同じ名前のカードがExtraCardテーブルに既に存在します。</p>";
         } else {
-            // Cardテーブルに挿入
-            $sql = "INSERT INTO Card (Card_name, Image_path) VALUES (:card_name, :image_path)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(['card_name' => $extraCard['Card_name'], 'image_path' => $extraCard['Image_path']]);
-            echo "<p>カードがCardテーブルに追加されました。</p>";
+            $insertSql = "INSERT INTO ExtraCard (Card_name, Image_path) VALUES (:card_name, :image_path)";
+            $insertStmt = $pdo->prepare($insertSql);
+            $insertStmt->execute(['card_name' => $card['Card_name'], 'image_path' => $card['Image_path']]);
+
+            if ($insertStmt->rowCount() > 0) {
+                $deleteSql = "DELETE FROM Card WHERE Card_id = :card_id";
+                $deleteStmt = $pdo->prepare($deleteSql);
+                $deleteStmt->execute(['card_id' => $cardId]);
+                echo "<p>カードがExtraCardテーブルに移動され、Cardテーブルから削除されました。</p>";
+            }
         }
+    }
+}
+
+// ExtraCardテーブルのカードを削除する処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_from_extracard'])) {
+    $extraCardId = $_POST['extracard_id'];
+
+    $deleteSql = "DELETE FROM ExtraCard WHERE ExtraCard_id = :extracard_id";
+    $deleteStmt = $pdo->prepare($deleteSql);
+    $deleteStmt->execute(['extracard_id' => $extraCardId]);
+
+    if ($deleteStmt->rowCount() > 0) {
+        echo "<p>ExtraCardテーブルからカードが削除されました。</p>";
     }
 }
 
@@ -62,7 +78,44 @@ try {
 }
 
 ?>
+<?php
 
+// ExtraCardテーブルからCardテーブルに移動する処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['move_to_card'])) {
+    $extraCardId = $_POST['extracard_id'];
+
+    $sql = "SELECT Card_name, Image_path FROM ExtraCard WHERE ExtraCard_id = :extracard_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['extracard_id' => $extraCardId]);
+    $card = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($card) {
+
+
+        // 重複確認
+        $checkSql = "SELECT COUNT(*) FROM Card WHERE Card_name = :card_name";
+        $checkStmt = $pdo->prepare($checkSql);
+        $checkStmt->execute(['card_name' => $card['Card_name']]);
+        $exists = $checkStmt->fetchColumn();
+
+        if ($exists) {
+            echo "<p>同じ名前のカードがCardテーブルに既に存在します。</p>";
+        } else {
+            $insertSql = "INSERT INTO Card (Card_name, Image_path) VALUES (:card_name, :image_path)";
+            $insertStmt = $pdo->prepare($insertSql);
+            $insertStmt->execute(['card_name' => $card['Card_name'], 'image_path' => $card['Image_path']]);
+
+            if ($insertStmt->rowCount() > 0) {
+                $deleteSql = "DELETE FROM ExtraCard WHERE ExtraCard_id = :extracard_id";
+                $deleteStmt = $pdo->prepare($deleteSql);
+                $deleteStmt->execute(['extracard_id' => $extraCardId]);
+                echo "<p>カードがCardテーブルに移動され、ExtraCardテーブルから削除されました。</p>";
+            }
+        }
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -70,10 +123,14 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カードリスト</title>
-    <link rel="stylesheet">
 </head>
 
 <body>
+    <!-- Indexページに戻るボタン -->
+    <div class="top-bar">
+        <a href="index.php" class="back-button">Indexページに戻る</a>
+    </div>
+
     <div class="container">
         <h2>カードリスト</h2>
 
@@ -84,6 +141,11 @@ try {
                     <div class="card">
                         <h4><?php echo htmlspecialchars($card['Card_name']); ?></h4>
                         <img src="../../images/<?php echo htmlspecialchars($card['Image_path']); ?>" alt="<?php echo htmlspecialchars($card['Card_name']); ?>" width="100" height="130">
+                        <!-- ExtraCardテーブルに移動するフォーム -->
+                        <form method="post" action="">
+                            <input type="hidden" name="card_id" value="<?php echo $card['Card_id']; ?>">
+                            <input type="submit" name="move_to_extracard" value="ExtraCardに移動">
+                        </form>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -94,10 +156,11 @@ try {
                     <div class="card">
                         <h4><?php echo htmlspecialchars($extraCard['Card_name']); ?></h4>
                         <img src="../../images/<?php echo htmlspecialchars($extraCard['Image_path']); ?>" alt="<?php echo htmlspecialchars($extraCard['Card_name']); ?>" width="100" height="130">
-                        <!-- Cardテーブルに挿入するフォーム -->
+                        <!-- ExtraCardテーブルのカードを削除するフォーム -->
                         <form method="post" action="">
-                            <input type="hidden" name="extra_card_id" value="<?php echo $extraCard['ExtraCard_id']; ?>">
-                            <input type="submit" name="add_to_card" value="Cardに追加">
+                            <input type="hidden" name="extracard_id" value="<?php echo $extraCard['ExtraCard_id']; ?>">
+                            <input type="submit" name="move_to_card" value="Cardテーブルに移動">
+                            <input type="submit" name="delete_from_extracard" value="削除">
                         </form>
                     </div>
                 <?php endforeach; ?>
@@ -107,13 +170,27 @@ try {
 
     <!-- スタイル -->
     <style>
+        .top-bar {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
         .container {
             width: 90%;
             margin: auto;
             text-align: center;
         }
 
-        /* CardとExtraCardを左右に配置 */
         .card-layout {
             display: flex;
             justify-content: space-between;
