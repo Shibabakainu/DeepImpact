@@ -95,15 +95,26 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
     <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
     無理よ～一回だけ鳴るようになったよ-->
-    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
-    <script type="text/javascript">
-        const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3')
-        hoverSound.preload = 'auto';
-        $(document).on('mouseenter', '.card', function() {
-            hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
-            hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
-        });
-    </script>
+    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3" preload="auto"></audio>
+<script type="text/javascript">
+    // 効果音用のAudio要素を取得
+    const hoverSound = document.getElementById('hoverSound');
+    hoverSound.preload = 'auto';
+
+    // カードにマウスを乗せたときの効果音再生
+    $(document).on('mouseenter', '.card', function() {
+        hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
+        hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
+    });
+
+    // 効果音スライダーのイベントリスナーを追加
+    document.getElementById('sfx-volume').addEventListener('input', function (event) {
+        const volume = event.target.value / 100; // 0-100 の値を 0-1 に変換
+        hoverSound.volume = volume; // 効果音の音量を設定
+        document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`; // 現在の値を表示
+    });
+</script>
+
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
     <button id="bgm-toggle-btn" class="bgm-btn">
@@ -617,7 +628,7 @@ document.getElementById('sfx-volume').addEventListener('input', function (event)
     // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
     const volume = event.target.value / 100; 
     // 効果音オーディオ要素を取得
-    const hoverSound = document.getElementById('#hoverSound'); 
+    const hoverSound = document.getElementById('hoverSound'); 
     // 取得した値を効果音の音量に設定
     hoverSound.volume = volume; 
     // 現在の音量をパーセンテージ形式で表示
