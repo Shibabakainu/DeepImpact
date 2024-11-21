@@ -348,7 +348,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             // 投票エリアを取得して更新する関数
             function updateVoteArea() {
                 $.ajax({
-                    url: 'get_votes.php',
+                    url: 'get_votes2.php',
                     method: 'GET',
                     data: {
                         room_id: roomId
@@ -703,15 +703,32 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             $storyText = "物語が終了しました。";
             break;
     }
-
-    // Display the story for the current turn
-    echo "<div class='story-card'>{$storyText}</div>";
     ?>
+
+
+    <button id="toggleStoryButton" class="toggle-button">非表示</button>
+    <div id="storyContainer" class="story-card" style="display: block;">
+        <?php echo $storyText; ?>
+    </div>
 
     <div class="scoreboard">
         <p>スコアボード</p>
     </div>
 
+    <script>
+        document.getElementById("toggleStoryButton").addEventListener("click", function() {
+            const storyContainer = document.getElementById("storyContainer");
+            const button = document.getElementById("toggleStoryButton");
+
+            if (storyContainer.style.display === "none") {
+                storyContainer.style.display = "block";
+                button.textContent = "非表示";
+            } else {
+                storyContainer.style.display = "none";
+                button.textContent = "表示";
+            }
+        });
+    </script>
     <?php
     $conn->close();
     ?>
