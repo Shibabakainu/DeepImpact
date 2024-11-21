@@ -665,7 +665,7 @@ p {
 
 
 #volume-textarea-inside {
-    background-color: #ffffff;
+    background-image: url('/DeepImpact/images/aiueo.png');
     background-size: cover; /* 画像をコンテナ全体にフィットさせる */
     background-position: center; /* 背景画像を中央に配置 */
     text-align: center;
@@ -698,7 +698,7 @@ label {
 /* スライダーのスタイル */
 input[type="range"] {
     -webkit-appearance: none; /* デフォルトのスタイルをリセット */
-    width: 85%; /* 幅を全体に広げる */
+    width: 60%; /* 幅を全体に広げる */
     height: 10px;
     background: linear-gradient(to right, #4caf50, #8bc34a); /* グラデーション背景 */
     border-radius: 5px; /* 角を丸くする */
