@@ -75,7 +75,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <head>
     <meta charset="UTF-8">
     <title>game</title>
-    <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/game2.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
@@ -276,7 +276,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 $('#turnPopup').fadeOut();
             }, 5000); // Hide after 5 seconds
         }
-        
+
         // Click event for drawing cards
         $(document).ready(function() {
             $("#draw-cards").click(function() {
@@ -345,61 +345,60 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     }
                 });
             });
-        });
-
-        // Function to fetch and update the vote area
-        function updateVoteArea() {
-            $.ajax({
-                url: 'get_votes.php',
-                method: 'GET',
-                data: {
-                    room_id: roomId
-                },
-                dataType: 'html',
-                success: function(response) {
-                    $('#vote-area').empty(); // Clear previous content
-                    $('#vote-area').append(response); // Add the new content
-                },
-                error: function() {
-                    alert('投票エリアの更新に失敗しました。');
-                }
-            });
-        }
-
-        // Voting logic
-        $(document).on('click', '.selected-card', function() {
-            var roomCardId = $(this).data('room-card-id'); // Capture room_card_id
-
-            if (!roomCardId) {
-                alert('Room Card ID is missing!');
-                return; // Ensure we have a valid roomCardId
-            }
-
-            if (!roomId) {
-                alert('Room ID is missing!');
-                return; // Ensure we have a valid roomId
-            }
-
-            $.ajax({
-                url: 'vote.php',
-                method: 'POST',
-                data: {
-                    room_card_id: roomCardId, // Send room_card_id
-                    room_id: roomId // Send room_id
-                },
-                dataType: 'json', // Expect JSON response
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('投票が完了しました！');
-                    } else {
-                        alert('投票に失敗しました: ' + response.message);
+            // 投票エリアを取得して更新する関数
+            function updateVoteArea() {
+                $.ajax({
+                    url: 'get_votes2.php',
+                    method: 'GET',
+                    data: {
+                        room_id: roomId
+                    },
+                    dataType: 'html',
+                    success: function(response) {
+                        $('#vote-area').empty(); // 以前の内容をクリア
+                        $('#vote-area').append(response); // 新しい内容を追加
+                    },
+                    error: function() {
+                        showPopup('投票エリアの更新に失敗しました。');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Response received:", xhr.responseText);
-                    console.error("エラーが発生しました:", status, error);
-                    alert('投票中にエラーが発生しました。再度お試しください。');
+                });
+            }
+
+            // 投票処理
+            $(document).on('click', '.selected-card', function() {
+                var roomCardId = $(this).data('room-card-id'); // room_card_idを取得
+
+                if (!roomCardId) {
+                    showPopup('Room Card IDが見つかりません！');
+                    return; // roomCardIdが無効の場合は実行を停止
                 }
+
+                if (!roomId) {
+                    showPopup('Room IDが見つかりません！');
+                    return; // roomIdが無効の場合は実行を停止
+                }
+
+                $.ajax({
+                    url: 'vote.php',
+                    method: 'POST',
+                    data: {
+                        room_card_id: roomCardId, // room_card_idを送信
+                        room_id: roomId // room_idを送信
+                    },
+                    dataType: 'json', // JSONレスポンスを期待
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            showPopup('投票が完了しました！');
+                        } else {
+                            showPopup('投票に失敗しました: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Response received:", xhr.responseText);
+                        console.error("エラーが発生しました:", status, error);
+                        showPopup('投票中にエラーが発生しました。再度お試しください。');
+                    }
+                });
             });
         });
 
@@ -455,7 +454,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                             if (response.votingComplete) {
                                 // If voting is complete, update the scoreboard
                                 $('.scoreboard').html(response.scoreboard);
-                                clearVoteArea(); 
+                                clearVoteArea();
                                 alert("次のターンに進みましょう");
                             }
                         }
@@ -478,7 +477,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 $.ajax({
                     url: 'getScoreboard.php',
                     method: 'GET',
-                    data: { room_id: roomId },
+                    data: {
+                        room_id: roomId
+                    },
                     dataType: 'json',
                     success: function(response) {
                         $('.scoreboard').html(response.scoreboard);
@@ -496,8 +497,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             // Optional: reload the scoreboard every few seconds if you want it to auto-refresh
             setInterval(loadScoreboard, 5000);
         });
-
-        
     </script>
 
     <div id="textbox">
@@ -704,15 +703,32 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             $storyText = "物語が終了しました。";
             break;
     }
-
-    // Display the story for the current turn
-    echo "<div class='story-card'>{$storyText}</div>";
     ?>
+
+
+    <button id="toggleStoryButton" class="toggle-button">非表示</button>
+    <div id="storyContainer" class="story-card" style="display: block;">
+        <?php echo $storyText; ?>
+    </div>
 
     <div class="scoreboard">
         <p>スコアボード</p>
     </div>
 
+    <script>
+        document.getElementById("toggleStoryButton").addEventListener("click", function() {
+            const storyContainer = document.getElementById("storyContainer");
+            const button = document.getElementById("toggleStoryButton");
+
+            if (storyContainer.style.display === "none") {
+                storyContainer.style.display = "block";
+                button.textContent = "非表示";
+            } else {
+                storyContainer.style.display = "none";
+                button.textContent = "表示";
+            }
+        });
+    </script>
     <?php
     $conn->close();
     ?>

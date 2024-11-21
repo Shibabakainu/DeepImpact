@@ -39,7 +39,7 @@ if ($row['card_count'] >= 5) {
 $sql = "
     SELECT c.Card_id, c.Card_name, c.Image_path 
     FROM Card c
-    LEFT JOIN room_cards rc ON c.Card_id = rc.card_id AND rc.room_id = ?
+    LEFT JOIN room_cards rc ON c.Card_id = rc.card_id AND rc.room_id = ? AND rc.hide = 0
     WHERE rc.room_id IS NULL
     ORDER BY RAND()
     LIMIT 5

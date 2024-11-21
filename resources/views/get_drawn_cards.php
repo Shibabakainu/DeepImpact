@@ -32,7 +32,7 @@ $sql_unselected = "
     SELECT rc.room_card_id, c.Card_id, c.Card_name, c.Image_path
     FROM room_cards rc
     JOIN Card c ON rc.card_id = c.Card_id
-    WHERE rc.room_id = ? AND rc.player_position = ? AND rc.selected = 0
+    WHERE rc.room_id = ? AND rc.player_position = ? AND rc.selected = 0 AND rc.hide = 0
 ";
 
 // SQL to retrieve selected cards for the vote area
@@ -40,7 +40,7 @@ $sql_selected = "
     SELECT rc.room_card_id, c.Card_id, c.Card_name, c.Image_path
     FROM room_cards rc
     JOIN Card c ON rc.card_id = c.Card_id
-    WHERE rc.room_id = ? AND rc.selected = 1
+    WHERE rc.room_id = ? AND rc.selected = 1 AND rc.hide = 0
 ";
 
 $cards_unselected = [];

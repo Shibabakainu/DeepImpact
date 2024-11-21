@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'db_connect.php'; // Your database connection
+require_once 'game_functions.php';
 
 // Ensure the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -55,10 +56,13 @@ if ($result->num_rows > 0) {
     exit;
 }
 
-// Insert the vote into the votes table
-$sql = "INSERT INTO votes (room_id, player_id, room_card_id) VALUES (?, ?, ?)";
+// Get the current turn for the room
+$current_turn = getCurrentTurn($room_id);
+
+// Insert the vote into the votes table with the current turn
+$sql = "INSERT INTO votes (room_id, player_id, room_card_id, turn) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $room_id, $user_id, $room_card_id);
+$stmt->bind_param("iiii", $room_id, $user_id, $room_card_id, $current_turn);
 
 if ($stmt->execute()) {
     // Update the room_cards table to reflect that this card has been voted for

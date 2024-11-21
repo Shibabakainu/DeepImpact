@@ -101,7 +101,7 @@ if ($host_id) {
         </div>
     </main>
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
+        /*document.addEventListener('DOMContentLoaded', (event) => {
             let peopleCount = <?php echo $people; ?>;
             const playerList = document.querySelector('.player-list');
 
@@ -138,7 +138,7 @@ if ($host_id) {
                     }
                 }
             });
-        });
+        });*/
 
         document.querySelector('.leave-room').addEventListener('click', function() {
             const roomId = this.getAttribute('data-room-id');
@@ -208,7 +208,6 @@ if ($host_id) {
                     console.error('Error:', error);
                 });
         });
-
     </script>
 
 </body>

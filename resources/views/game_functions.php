@@ -2,17 +2,17 @@
 include 'db_connect.php';
 
 //投票が完了かどうかを確認
-function isVotingComplete($room_id)
+function isVotingComplete($room_id, $current_turn)
 {
     global $conn;
     if (!$conn || $conn->connect_errno) {
         die("Database connection closed or unavailable");
     }    
 
-    // Count distinct player_ids to see if every player has voted in the room
-    $query = "SELECT COUNT(DISTINCT player_id) FROM votes WHERE room_id = ?";
+    // Count distinct player_ids for the current turn to see if every player has voted in the room
+    $query = "SELECT COUNT(DISTINCT player_id) FROM votes WHERE room_id = ? AND turn = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $room_id);
+    $stmt->bind_param("ii", $room_id, $current_turn);
     $stmt->execute();
     $stmt->bind_result($distinctVoters);
     $stmt->fetch();
@@ -148,11 +148,10 @@ function getCurrentTurn($room_id) {
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $room_id);
     $stmt->execute();
-    $stmt->bind_result($turn_number);
+    $stmt->bind_result($current_turn);
     $stmt->fetch();
     $stmt->close();
-
-    return $turn_number;
+    return $current_turn;
 }
 
 //新しいターンにカードを1枚ドローする
@@ -163,7 +162,7 @@ function drawNewCard($room_id, $player_position) {
     $query = "SELECT card_id FROM card
               WHERE card_id NOT IN (
                   SELECT card_id FROM room_cards 
-                  WHERE room_id = ? AND player_position = ?
+                  WHERE room_id = ? AND player_position = ? AND hide = 0
               ) 
               ORDER BY RAND() LIMIT 1";
               
