@@ -440,8 +440,8 @@ button.hamburger-close.toggle span:after {
     width: 150%;
     max-width: 50%;
     height: 45%;
-    background-image: url(../../images/yun.png);
     margin: 10% auto;
+    background-color:azure;
     padding: 20px;
     position: relative;
     z-index: 997;
