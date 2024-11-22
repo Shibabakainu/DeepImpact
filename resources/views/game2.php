@@ -68,6 +68,7 @@ if ($stmt = $conn->prepare($sql)) {
 
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
+$showDrawButton = false;
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -223,12 +224,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <!-- Popup message element -->
             <div id="popup-message"></div>
 
-            <script>
-                document.getElementById("draw-cards").addEventListener("click", function() {
-                    this.style.display = "none"; // ボタンを非表示にする
-                });
-            </script>
-
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
                     <?php if ($card['selected'] == 0): // Only show cards that are not selected 
@@ -277,34 +272,38 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             }, 5000); // Hide after 5 seconds
         }
         
-        // Click event for drawing cards
-        $(document).ready(function() {
-            $("#draw-cards").click(function() {
-                $.ajax({
-                    url: 'draw_cards.php',
-                    method: 'POST',
-                    dataType: 'json',
-                    success: function(response) {
-                        $('#drawed-card-area').empty(); // 既存のカードをクリア
+            // Click event for drawing cards
+            $(document).ready(function() {
+                $("#draw-cards").click(function() {
+                    $.ajax({
+                        url: 'draw_cards.php',
+                        method: 'POST',
+                        dataType: 'json',
+                        success: function(response) {
+                            $('#drawed-card-area').empty(); // 既存のカードをクリア
 
-                        if (response.success) {
-                            response.cards.forEach(function(card) {
-                                $('#drawed-card-area').append(
-                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
-                                    '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
-                                    '</div>'
-                                );
-                            });
-                        } else {
-                            // エラーメッセージのポップアップを表示
-                            showPopup(response.message);
+                            if (response.success) {
+                                // Disable clicks
+                                const drawButton = document.querySelector('#draw-cards');
+                                drawButton.style.opacity = '0.5';
+                                drawButton.style.pointerEvents = 'none'; 
+                            
+                                response.cards.forEach(function(card) {
+                                    $('#drawed-card-area').append(
+                                        '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
+                                        '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                                        '</div>'
+                                    );
+                                });
+                            } else {
+                                location.reload();
+                            }
+                        },
+                        error: function() {
+                            showPopup("カードを引く際にエラーが発生しました。");
                         }
-                    },
-                    error: function() {
-                        showPopup("カードを引く際にエラーが発生しました。");
-                    }
+                    });
                 });
-            });
 
             // カード選択時のクリックイベント
             $(document).on("click", ".card", function() {
@@ -434,7 +433,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         //投票が終わった後の処理
         function pollVotingStatus() {
-            setInterval(() => {
+            const intervalId = setInterval(() => {
                 $.ajax({
                     url: 'checkVotingStatus.php',
                     method: 'GET',
@@ -444,11 +443,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     dataType: 'json',
                     success: function(response) {
                         if (response.game_over) {
-                            alert(response.message);
+                            alert(response.message);                           
+                            // Stop polling if the game is over
+                            clearInterval(intervalId);
                             // Additional logic for game over, like redirecting or disabling actions
-                            // Disable voting and other game actions if needed
+                            $('#draw-cards').prop('disabled', true).css({
+                                'opacity': '0.5',
+                                'pointer-events': 'none'
+                            });
+                            return;
                         } else {
-                            // Update the turn display and score as usual
+                            // Update the turn display
                             updateTurn();
                             showTurnPopup("");
 
@@ -458,7 +463,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                                 clearVoteArea(); 
                                 alert("次のターンに進みましょう");
                             }
-                        }
+
+                            // Control the draw button's visibility and state
+                            const drawButton = document.querySelector('#draw-cards');
+                            if (response.showDrawButton) {
+                                drawButton.style.opacity = '1';
+                                drawButton.style.pointerEvents = 'auto'; // Make it clickable
+                            } else {
+                                drawButton.style.opacity = '0.5';
+                                drawButton.style.pointerEvents = 'none'; // Disable clicks
+                            }
+                        }                       
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.error("Error checking voting status: ", textStatus, errorThrown);
@@ -467,6 +482,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 });
             }, 3000); // Poll every 3 seconds
         }
+
 
         // Call pollVotingStatus on page load to start polling
         pollVotingStatus();

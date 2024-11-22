@@ -36,6 +36,7 @@ $response = [
     'votingComplete' => false,
     'turn' => null,
     'scoreboard' => '',
+    'showDrawButton' => true,
 ];
 
 // Get the current turn for the room
@@ -77,21 +78,10 @@ if ($room_id) {
             // Hide the voted cards for this turn
             hideVotedCards($room_id);
 
-            // Fetch players for drawing new cards
-            $playersQuery = "SELECT player_position FROM room_players WHERE room_id = ?";
-            $playersStmt = $conn->prepare($playersQuery);
-            $playersStmt->bind_param("i", $room_id);
-            $playersStmt->execute();
-            $result = $playersStmt->get_result();
-            $players = $result->fetch_all(MYSQLI_ASSOC);
-            $playersStmt->close();
-            
-            //draw new card for a new turn
-            foreach ($players as $player) {
-                drawNewCard($room_id, $player['player_position']);
-            }
+            // Add a flag to indicate the draw button should be re-enabled
+            $response['showDrawButton'] = true;
 
-            // Set turn_updated to 0
+            // Set turn_updated to 0 after client updates
             $updateTurnQuery = "UPDATE rooms SET turn_updated = 0 WHERE room_id = ?";
             $updateTurnStmt = $conn->prepare($updateTurnQuery);
             $updateTurnStmt->bind_param("i", $room_id);
@@ -100,10 +90,24 @@ if ($room_id) {
         } else {
             // Just return the current turn number if already updated
             $response['turn'] = getCurrentTurn($room_id);
+
+            // Check if the player already drew their card
+            $player_position = $_SESSION['player_position'];
+            $checkCardDrawnQuery = "SELECT COUNT(*) AS drawn_count FROM room_cards 
+                                    WHERE room_id = ? AND player_position = ? AND turn = ?";
+            $checkCardStmt = $conn->prepare($checkCardDrawnQuery);
+            $checkCardStmt->bind_param("iii", $room_id, $player_position, $current_turn);
+            $checkCardStmt->execute();
+            $checkCardResult = $checkCardStmt->get_result();
+            $drawnRow = $checkCardResult->fetch_assoc();
+            $checkCardStmt->close();
+
+            $response['showDrawButton'] = ($drawnRow['drawn_count'] == 0); // Only show if card not drawn
         }
     } else {
         $response['turn'] = getCurrentTurn($room_id);
         $response['debug'] = 'Voting not complete';
+        // $response['showDrawButton'] = false; // Players cannot draw cards until voting is over
     }
 }
 

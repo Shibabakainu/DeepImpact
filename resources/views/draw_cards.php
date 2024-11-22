@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+include 'game_functions.php';
 
 // Check if the user is logged in
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
@@ -23,30 +24,40 @@ if (!$player_position) {
     exit();
 }
 
-// Check if the player has already drawn cards (to prevent redrawing)
-$sql_check = "SELECT COUNT(*) as card_count FROM room_cards WHERE room_id = ? AND player_position = ?";
+// Get the current turn
+$current_turn = getCurrentTurn($room_id);
+
+// Determine the number of cards to draw based on the turn
+$cards_to_draw = ($current_turn == 1) ? 5 : 1;
+
+// Check how many cards the player already has
+$sql_check = "SELECT COUNT(*) as card_count FROM room_cards WHERE room_id = ? AND player_position = ? AND hide = 0";
 $stmt = $conn->prepare($sql_check);
 $stmt->bind_param("ii", $room_id, $player_position);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
-if ($row['card_count'] >= 5) {
-    echo json_encode(['success' => false, 'message' => '既に5枚のカードが配られています。']);
+$current_card_count = $row['card_count'];
+$stmt->close();
+
+// Prevent drawing if the player already has the max cards
+if ($current_turn > 1 && $current_card_count >= 6) {
+    echo json_encode(['success' => false, 'message' => '既にカードを引きました。']);
     exit();
 }
 
-// SQL query to randomly select 5 cards that haven't been assigned yet in the room
+// Draw the required number of cards
 $sql = "
     SELECT c.Card_id, c.Card_name, c.Image_path 
     FROM Card c
     LEFT JOIN room_cards rc ON c.Card_id = rc.card_id AND rc.room_id = ? AND rc.hide = 0
     WHERE rc.room_id IS NULL
     ORDER BY RAND()
-    LIMIT 5
+    LIMIT ?
 ";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $room_id);
+$stmt->bind_param("ii", $room_id, $cards_to_draw);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -63,7 +74,7 @@ while ($row = $result->fetch_assoc()) {
 
     // Append room_card_id to the card details for the response
     $cards[] = [
-        'room_card_id' => $room_card_id,  // Add this line
+        'room_card_id' => $room_card_id,
         'Card_id' => $row['Card_id'],
         'Card_name' => $row['Card_name'],
         'Image_path' => $row['Image_path']

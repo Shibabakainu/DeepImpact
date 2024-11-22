@@ -65,7 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     .message-container textarea {
         width: 100%;
         height: 100px;
-        margin-bottom
     }
     </style>
 
