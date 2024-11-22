@@ -123,15 +123,15 @@ function incrementTurn($room_id) {
     $currentTurn = $turnRow['turn_number'];
     $turnStmt->close();
 
-    // If the current turn is less than 7, increment the turn
-    if ($currentTurn < 7) {
+    // If the current turn is less than 6, increment the turn
+    if ($currentTurn < 6) {
         $query = "UPDATE rooms SET turn_number = turn_number + 1, turn_updated = 0 WHERE room_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $room_id);
         $stmt->execute();
         $stmt->close();
     } else {
-        // If the current turn is 7, set the game status to "finished"
+        // If the current turn is 6, set the game status to "finished"
         $query = "UPDATE rooms SET status = 'finished' WHERE room_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $room_id);
@@ -192,8 +192,8 @@ function hideVotedCards($room_id) {
     $query = "
         UPDATE room_cards 
         SET hide = 1 
-        WHERE room_id = ? AND selected = 1 AND voted = 1";
-    
+        WHERE room_id = ? AND (selected = 1 OR voted = 1)
+    ";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $room_id);
     $stmt->execute();
