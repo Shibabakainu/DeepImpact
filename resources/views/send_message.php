@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 include 'db_connect.php';
@@ -44,28 +43,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>メッセージを送る</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/send_message.css">
     <style>
-    .message-container {
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        position: relative; /* ボタン位置調整のために追加 */
-    }
+        .message-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            position: relative;
+            /* ボタン位置調整のために追加 */
+        }
 
-    .message-container form {
-        position: relative; /* フォーム全体を基準にボタンを配置 */
-    }
+        .message-container form {
+            position: relative;
+            /* フォーム全体を基準にボタンを配置 */
+        }
 
-    .message-container textarea {
-        width: 100%;
-        height: 100px;
-    }
+        .message-container textarea {
+            width: 100%;
+            height: 100px;
+        }
     </style>
 
     <?php if (isset($_SESSION['message_status'])): ?>
@@ -96,5 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         });
     </script>
-</body>
+    </body>
+
 </html>
