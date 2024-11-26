@@ -57,14 +57,14 @@
             <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド追加</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "cardlist.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn">カード一覧</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn">新規カード追加/一覧</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "card_edit.php"): ?>
             <li class="btn"><a href="/DeepImpact/resources/views/card_edit.php" class="common-btn">デッキ編集</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "inbox.php"): ?>
             <li class="btn"><a href="/DeepImpact/resources/views/inbox.php" class="common-btn">メッセージ</a></li>
-        <?php endif; ?>
+            <?php endif; ?>　
     </ul>
     <!-- フッターセクション -->
     <div>

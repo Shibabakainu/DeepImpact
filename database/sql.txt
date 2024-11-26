@@ -17,6 +17,7 @@ CREATE TABLE users (
 );
 
 -- story テーブルの作成
+
 DROP TABLE IF EXISTS story;
 CREATE TABLE story (
     story_text  TEXT            NOT NULL,
@@ -166,12 +167,7 @@ CREATE TABLE ExtraCard (
     Card_name VARCHAR(100) NOT NULL,
     Image_path VARCHAR(255) NOT NULL,
     Card_description TEXT
-)
-AS SELECT NULL AS ExtraCard_id, Card_name, Image_path, NULL AS Card_description
-FROM Card;
-
-UPDATE ExtraCard
-SET Card_description = CONCAT('This is a description for ', Card_name);
+);
 
 -- votes テーブルの作成
 DROP TABLE IF EXISTS votes;
