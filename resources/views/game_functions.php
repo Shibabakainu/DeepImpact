@@ -130,6 +130,15 @@ function incrementTurn($room_id) {
         $stmt->bind_param("i", $room_id);
         $stmt->execute();
         $stmt->close();
+        // Update all players' turn numbers and reset the drew flag in the room_players table
+        $updatePlayersTurn = "
+            UPDATE room_players 
+            SET turn_number = turn_number + 1, drew = 0 
+            WHERE room_id = ?";
+        $playerStmt = $conn->prepare($updatePlayersTurn);
+        $playerStmt->bind_param("i", $room_id);
+        $playerStmt->execute();
+        $playerStmt->close();
     } else {
         // If the current turn is 6, set the game status to "finished"
         $query = "UPDATE rooms SET status = 'finished' WHERE room_id = ?";

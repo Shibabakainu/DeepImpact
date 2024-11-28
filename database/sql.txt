@@ -16,8 +16,6 @@ CREATE TABLE users (
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
 -- story テーブルの作成
 DROP TABLE IF EXISTS story;
 CREATE TABLE story (
@@ -67,6 +65,8 @@ CREATE TABLE room_players (
     host                BOOLEAN         NOT NULL,
     score               INT             DEFAULT 0,
     last_scored_turn    INT             DEFAULT 0,
+    turn_number         INT             DEFAULT 0,
+    drew                TINYINT(1)      DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE (room_id, player_position)
@@ -212,15 +212,8 @@ CREATE TABLE room_cards (
 CREATE TABLE ExtraCard (
     ExtraCard_id INT AUTO_INCREMENT PRIMARY KEY, -- ユニークID
     Card_name VARCHAR(100) NOT NULL,            -- カード名
-    Image_path VARCHAR(255) NOT NULL,           -- 画像ファイルのパス）
+    Image_path VARCHAR(255) NOT NULL          -- 画像ファイルのパス
 );
-
--- CardテーブルのデータをすべてExtraCardテーブルに復元
-INSERT INTO ExtraCard (Card_name, Image_path)
-SELECT 
-    Card_name, 
-    Image_path;
-
 
 -- votes テーブルの作成
 DROP TABLE IF EXISTS votes;
