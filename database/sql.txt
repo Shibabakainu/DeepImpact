@@ -17,7 +17,6 @@ CREATE TABLE users (
 );
 
 -- story テーブルの作成
-
 DROP TABLE IF EXISTS story;
 CREATE TABLE story (
     story_text  TEXT            NOT NULL,
@@ -66,6 +65,8 @@ CREATE TABLE room_players (
     host                BOOLEAN         NOT NULL,
     score               INT             DEFAULT 0,
     last_scored_turn    INT             DEFAULT 0,
+    turn_number         INT             DEFAULT 0,
+    drew                TINYINT(1)      DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE (room_id, player_position)
@@ -107,8 +108,45 @@ CREATE TABLE Card (
 );
 
 -- デモ用のカードデータを挿入
+-- Cardテーブルにデータを1～80件挿入
 INSERT INTO Card (Card_id, Card_name, Image_path)
 VALUES
+(1, 'One', 'card1.jpg'),
+(2, 'Two', 'card2.jpg'),
+(3, 'Three', 'card3.jpg'),
+(4, 'Four', 'card4.jpg'),
+(5, 'Five', 'card5.jpg'),
+(6, 'Six', 'card6.jpg'),
+(7, 'Seven', 'card7.jpg'),
+(8, 'Eight', 'card8.jpg'),
+(9, 'Nine', 'card9.jpg'),
+(10, 'Ten', 'card10.jpg'),
+(11, 'Eleven', 'card11.jpg'),
+(12, 'Twelve', 'card12.jpg'),
+(13, 'Thirteen', 'card13.jpg'),
+(14, 'Fourteen', 'card14.jpg'),
+(15, 'Fifteen', 'card15.jpg'),
+(16, 'Sixteen', 'card16.jpg'),
+(17, 'Seventeen', 'card17.jpg'),
+(18, 'Eighteen', 'card18.jpg'),
+(19, 'Nineteen', 'card19.jpg'),
+(20, 'Twenty', 'card20.jpg'),
+(21, 'Twenty-One', 'card21.jpg'),
+(22, 'Twenty-Two', 'card22.jpg'),
+(23, 'Twenty-Three', 'card23.jpg'),
+(24, 'Twenty-Four', 'card24.jpg'),
+(25, 'Twenty-Five', 'card25.jpg'),
+(26, 'Twenty-Six', 'card26.jpg'),
+(27, 'Twenty-Seven', 'card27.jpg'),
+(28, 'Twenty-Eight', 'card28.jpg'),
+(29, 'Twenty-Nine', 'card29.jpg'),
+(30, 'Thirty', 'card30.jpg'),
+(31, 'Thirty-One', 'card31.jpg'),
+(32, 'Thirty-Two', 'card32.jpg'),
+(33, 'Thirty-Three', 'card33.jpg'),
+(34, 'Thirty-Four', 'card34.jpg'),
+(35, 'Thirty-Five', 'card35.jpg'),
+(36, 'Thirty-Six', 'card36.jpg'),
 (37, 'Thirty-Seven', 'card37.jpg'),
 (38, 'Thirty-Eight', 'card38.jpg'),
 (39, 'Thirty-Nine', 'card39.jpg'),
@@ -155,6 +193,7 @@ VALUES
 (80, 'Eighty', 'card80.jpg');
 
 
+
 -- room_cards テーブルの作成
 DROP TABLE IF EXISTS room_cards;
 CREATE TABLE room_cards (
@@ -170,13 +209,10 @@ CREATE TABLE room_cards (
     FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)
 );
 
--- ExtraCard テーブルの作成
-DROP TABLE IF EXISTS ExtraCard;
 CREATE TABLE ExtraCard (
-    ExtraCard_id INT PRIMARY KEY AUTO_INCREMENT,
-    Card_name VARCHAR(100) NOT NULL,
-    Image_path VARCHAR(255) NOT NULL,
-    Card_description TEXT
+    ExtraCard_id INT AUTO_INCREMENT PRIMARY KEY, -- ユニークID
+    Card_name VARCHAR(100) NOT NULL,            -- カード名
+    Image_path VARCHAR(255) NOT NULL          -- 画像ファイルのパス
 );
 
 -- votes テーブルの作成
