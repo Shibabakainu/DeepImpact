@@ -66,6 +66,8 @@ CREATE TABLE room_players (
     host                BOOLEAN         NOT NULL,
     score               INT             DEFAULT 0,
     last_scored_turn    INT             DEFAULT 0,
+    turn_number         INT             DEFAULT 0,
+    drew                TINYINT(1)      DEFAULT 0,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE (room_id, player_position)

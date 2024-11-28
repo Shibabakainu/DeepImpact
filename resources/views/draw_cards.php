@@ -27,6 +27,20 @@ if (!$player_position) {
 // Get the current turn
 $current_turn = getCurrentTurn($room_id);
 
+// Check the 'drew' flag for the player
+$checkDrew = "SELECT drew FROM room_players WHERE room_id = ? AND player_position = ?";
+$stmt = $conn->prepare($checkDrew);
+$stmt->bind_param("ii", $room_id, $player_position);
+$stmt->execute();
+$stmt->bind_result($drew);
+$stmt->fetch();
+$stmt->close();
+
+if ($drew == 1) {
+    echo json_encode(['success' => false, 'message' => 'このターンのカードは既に引きました。']);
+    exit();
+}
+
 // Determine the number of cards to draw based on the turn
 $cards_to_draw = ($current_turn == 1) ? 5 : 1;
 
@@ -41,7 +55,7 @@ $current_card_count = $row['card_count'];
 $stmt->close();
 
 // Prevent drawing if the player already has the max cards
-if ($current_turn > 1 && $current_card_count >= 6) {
+if (($current_turn == 1 && $current_card_count >= 5) || ($current_turn > 1 && $current_card_count >= 6)) {
     echo json_encode(['success' => false, 'message' => '既にカードを引きました。']);
     exit();
 }
@@ -80,6 +94,13 @@ while ($row = $result->fetch_assoc()) {
         'Image_path' => $row['Image_path']
     ];
 }
+
+// Update the drew flag to 1 after successful draw
+$updateDrew = "UPDATE room_players SET drew = 1 WHERE room_id = ? AND player_position = ?";
+$stmt = $conn->prepare($updateDrew);
+$stmt->bind_param("ii", $room_id, $player_position);
+$stmt->execute();
+$stmt->close();
 
 // Return the cards as JSON response
 echo json_encode(['success' => true, 'cards' => $cards]);
