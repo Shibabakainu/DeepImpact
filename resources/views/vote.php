@@ -11,6 +11,14 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// Ensure player_position is set in session
+if (!isset($_SESSION['player_position'])) {
+    echo json_encode(['success' => false, 'message' => 'プレイヤーポジションが設定されていません。']);
+    exit();
+}
+
+$player_position = $_SESSION['player_position'];
+
 // Validate inputs
 if (!isset($_POST['room_id'], $_POST['room_card_id'])) {
     echo json_encode(['status' => 'error', 'message' => 'Missing parameters']);
@@ -19,6 +27,9 @@ if (!isset($_POST['room_id'], $_POST['room_card_id'])) {
 
 $room_id = $_POST['room_id'];
 $room_card_id = $_POST['room_card_id'];
+
+// Log the IDs for debugging
+error_log("Room ID: " . $room_id . ", Room Card ID: " . $room_card_id . ", Player Position: " . $player_position);
 
 // Check if the player is part of the room
 $sql = "SELECT * FROM room_players WHERE room_id = ? AND user_id = ?";
@@ -43,6 +54,20 @@ if ($result->num_rows === 0) {
     echo json_encode(['status' => 'error', 'message' => 'Card not found in this room', 'room_card_id' => $room_card_id, 'room_id' => $room_id]);
     exit;
 }
+
+// Check if the card was submitted by the current player
+$sql_check_card_owner = "SELECT * FROM room_cards WHERE room_id = ? AND room_card_id = ? AND player_position = ?";
+$stmt_check_owner = $conn->prepare($sql_check_card_owner);
+$stmt_check_owner->bind_param("iii", $room_id, $room_card_id, $player_position);
+$stmt_check_owner->execute();
+$result_check_owner = $stmt_check_owner->get_result();
+
+if ($result_check_owner->num_rows > 0) {
+    echo json_encode(['status' => 'error', 'message' => '自分のカードに投票することはできません。']);
+    $stmt_check_owner->close();
+    exit;
+}
+$stmt_check_owner->close();
 
 // Check if the player has already voted for this card
 $sql = "SELECT * FROM votes WHERE room_id = ? AND player_id = ? AND room_card_id = ?";
@@ -78,4 +103,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
-?>

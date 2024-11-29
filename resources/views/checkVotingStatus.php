@@ -60,6 +60,9 @@ if ($room_id) {
             updateScore($room_id);
             incrementTurn($room_id);
 
+            // リセット: 前のターンで選択したカード制限を解除
+            resetCardSelection($room_id);
+
             // Set turn_updated to 1 to mark that updates are done
             $updateTurnQuery = "UPDATE rooms SET turn_updated = 1 WHERE room_id = ?";
             $updateTurnStmt = $conn->prepare($updateTurnQuery);
@@ -117,4 +120,25 @@ if ($room_id) {
 }
 
 echo json_encode($response);
-?>
+
+
+/**
+ * Reset the card selection for all players in the specified room.
+ * This function clears the "selected" flag in the room_cards table for a new turn.
+ *
+ * @param int $room_id The ID of the room.
+ */
+function resetCardSelection($room_id)
+{
+    global $conn;
+
+    $resetQuery = "UPDATE room_cards SET selected = 0 WHERE room_id = ?";
+    $resetStmt = $conn->prepare($resetQuery);
+    $resetStmt->bind_param("i", $room_id);
+
+    if (!$resetStmt->execute()) {
+        error_log("Failed to reset card selections for room_id $room_id: " . $resetStmt->error);
+    }
+
+    $resetStmt->close();
+}

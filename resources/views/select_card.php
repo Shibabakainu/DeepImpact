@@ -17,8 +17,30 @@ if (!$room_id || !$room_card_id) {
     exit();
 }
 
+// Ensure player_position is set in session
+if (!isset($_SESSION['player_position'])) {
+    echo json_encode(['success' => false, 'message' => 'プレイヤーポジションが設定されていません。']);
+    exit();
+}
+
+$player_position = $_SESSION['player_position'];
+
 // Log the IDs for debugging
-error_log("Room ID: " . $room_id . ", Room Card ID: " . $room_card_id);
+error_log("Room ID: " . $room_id . ", Room Card ID: " . $room_card_id . ", Player Position: " . $player_position);
+
+// Check if the player has already selected a card
+$sql_check_selected = "SELECT * FROM room_cards WHERE room_id = ? AND player_position = ? AND selected = 1";
+$stmt_check = $conn->prepare($sql_check_selected);
+$stmt_check->bind_param('ii', $room_id, $player_position);
+$stmt_check->execute();
+$result_check = $stmt_check->get_result();
+
+if ($result_check->num_rows > 0) {
+    echo json_encode(['success' => false, 'message' => '既にカードを選択しています。']);
+    $stmt_check->close();
+    exit();
+}
+$stmt_check->close();
 
 // Check if the card exists in room_cards
 $sql = "SELECT * FROM room_cards WHERE room_card_id = ? AND room_id = ?";
@@ -29,6 +51,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
     echo json_encode(['success' => false, 'message' => 'カードが見つかりません。']);
+    $stmt->close();
     exit();
 }
 
@@ -47,4 +70,3 @@ if ($stmt_update->execute()) {
 $stmt_update->close();
 $stmt->close();
 $conn->close();
-?>

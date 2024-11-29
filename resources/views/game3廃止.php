@@ -68,7 +68,6 @@ if ($stmt = $conn->prepare($sql)) {
 
 // ポップアップ表示の条件
 $shouldShowPopup = true; // 必要に応じて条件を設定してください
-$showDrawButton = false;
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -76,7 +75,7 @@ $showDrawButton = false;
 <head>
     <meta charset="UTF-8">
     <title>game</title>
-    <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
+    <link rel="stylesheet" href="/DeepImpact/resources/css/game2.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
@@ -96,26 +95,15 @@ $showDrawButton = false;
 
     <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
     無理よ～一回だけ鳴るようになったよ-->
-    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3" preload="auto"></audio>
+    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio>
     <script type="text/javascript">
-        // 効果音用のAudio要素を取得
-        const hoverSound = document.getElementById('hoverSound');
+        const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3')
         hoverSound.preload = 'auto';
-
-        // カードにマウスを乗せたときの効果音再生
         $(document).on('mouseenter', '.card', function() {
             hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
             hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
         });
-
-        // 効果音スライダーのイベントリスナーを追加
-        document.getElementById('sfx-volume').addEventListener('input', function(event) {
-            const volume = event.target.value / 100; // 0-100 の値を 0-1 に変換
-            hoverSound.volume = volume; // 効果音の音量を設定
-            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`; // 現在の値を表示
-        });
     </script>
-
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
     <button id="bgm-toggle-btn" class="bgm-btn">
@@ -235,6 +223,12 @@ $showDrawButton = false;
             <!-- Popup message element -->
             <div id="popup-message"></div>
 
+            <script>
+                document.getElementById("draw-cards").addEventListener("click", function() {
+                    this.style.display = "none"; // ボタンを非表示にする
+                });
+            </script>
+
             <div id="drawed-card-area" class="drawed-card-area">
                 <?php foreach ($cards as $card): ?>
                     <?php if ($card['selected'] == 0): // Only show cards that are not selected 
@@ -294,11 +288,6 @@ $showDrawButton = false;
                         $('#drawed-card-area').empty(); // 既存のカードをクリア
 
                         if (response.success) {
-                            // Disable clicks
-                            const drawButton = document.querySelector('#draw-cards');
-                            drawButton.style.opacity = '0.5';
-                            drawButton.style.pointerEvents = 'none';
-
                             response.cards.forEach(function(card) {
                                 $('#drawed-card-area').append(
                                     '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
@@ -307,7 +296,8 @@ $showDrawButton = false;
                                 );
                             });
                         } else {
-                            location.reload();
+                            // エラーメッセージのポップアップを表示
+                            showPopup(response.message);
                         }
                     },
                     error: function() {
@@ -325,6 +315,7 @@ $showDrawButton = false;
                     return;
                 }
 
+                // Click event for selecting cards
                 $.ajax({
                     url: 'select_card.php',
                     method: 'POST',
@@ -332,87 +323,82 @@ $showDrawButton = false;
                         room_id: roomId,
                         room_card_id: roomCardId
                     },
-                    // dataType を一旦削除してレスポンスを確認
+                    dataType: 'json',
                     success: function(response) {
-                        console.log("Raw Response:", response);
-                        try {
-                            // 手動で JSON をパース
-                            var jsonResponse = JSON.parse(response);
-                            if (jsonResponse.success) {
-                                showPopup(jsonResponse.message);
-                                $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected').remove();
-                                updateVoteArea();
-                            } else {
-                                showPopup(jsonResponse.message);
-                            }
-                        } catch (e) {
-                            console.error("JSON パースエラー:", e);
-                            showPopup("サーバーのレスポンスが正しくありません。");
+                        if (response.success) {
+                            showPopup(response.message);
+
+                            // 選択済みクラスを追加
+                            $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
+
+                            // 手札エリアから選択済みカードを削除
+                            $(".card[data-room-card-id='" + roomCardId + "']").remove();
+
+                            // 投票エリアを更新
+                            updateVoteArea();
+                        } else {
+                            showPopup(response.message);
+                        }
+                    },
+                    error: function() {
+                        showPopup("カードの選択時にエラーが発生しました。");
+                    }
+                });
+            });
+            // 投票エリアを取得して更新する関数
+            function updateVoteArea() {
+                $.ajax({
+                    url: 'get_votes2.php',
+                    method: 'GET',
+                    data: {
+                        room_id: roomId
+                    },
+                    dataType: 'html',
+                    success: function(response) {
+                        $('#vote-area').empty(); // 以前の内容をクリア
+                        $('#vote-area').append(response); // 新しい内容を追加
+                    },
+                    error: function() {
+                        showPopup('投票エリアの更新に失敗しました。');
+                    }
+                });
+            }
+
+            // 投票処理
+            $(document).on('click', '.selected-card', function() {
+                var roomCardId = $(this).data('room-card-id'); // room_card_idを取得
+
+                if (!roomCardId) {
+                    showPopup('Room Card IDが見つかりません！');
+                    return; // roomCardIdが無効の場合は実行を停止
+                }
+
+                if (!roomId) {
+                    showPopup('Room IDが見つかりません！');
+                    return; // roomIdが無効の場合は実行を停止
+                }
+
+                $.ajax({
+                    url: 'vote.php',
+                    method: 'POST',
+                    data: {
+                        room_card_id: roomCardId, // room_card_idを送信
+                        room_id: roomId // room_idを送信
+                    },
+                    dataType: 'json', // JSONレスポンスを期待
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            showPopup('投票が完了しました！');
+                        } else {
+                            showPopup('投票に失敗しました: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error("Response received:", xhr.responseText);
                         console.error("エラーが発生しました:", status, error);
-                        showPopup("カードの選択時にエラーが発生しました。");
+                        showPopup('投票中にエラーが発生しました。再度お試しください。');
                     }
                 });
-            });
-        });
-
-        // Function to fetch and update the vote area
-        function updateVoteArea() {
-            $.ajax({
-                url: 'get_votes.php',
-                method: 'GET',
-                data: {
-                    room_id: roomId
-                },
-                dataType: 'html',
-                success: function(response) {
-                    $('#vote-area').empty(); // Clear previous content
-                    $('#vote-area').append(response); // Add the new content
-                },
-                error: function() {
-                    alert('投票エリアの更新に失敗しました。');
-                }
-            });
-        }
-
-        // Voting logic
-        $(document).on('click', '.selected-card', function() {
-            var roomCardId = $(this).data('room-card-id'); // Capture room_card_id
-
-            if (!roomCardId) {
-                alert('Room Card ID is missing!');
-                return; // Ensure we have a valid roomCardId
-            }
-
-            if (!roomId) {
-                alert('Room ID is missing!');
-                return; // Ensure we have a valid roomId
-            }
-
-            $.ajax({
-                url: 'vote.php',
-                method: 'POST',
-                data: {
-                    room_card_id: roomCardId, // Send room_card_id
-                    room_id: roomId // Send room_id
-                },
-                dataType: 'json', // Expect JSON response
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('投票が完了しました！');
-                    } else {
-                        // Show the specific error message returned by the server
-                        alert('投票エラー: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Response received:", xhr.responseText);
-                    console.error("エラーが発生しました:", status, error);
-                    alert('投票中にエラーが発生しました。再度お試しください。');
-                }
             });
         });
 
@@ -447,7 +433,7 @@ $showDrawButton = false;
 
         //投票が終わった後の処理
         function pollVotingStatus() {
-            const intervalId = setInterval(() => {
+            setInterval(() => {
                 $.ajax({
                     url: 'checkVotingStatus.php',
                     method: 'GET',
@@ -458,16 +444,10 @@ $showDrawButton = false;
                     success: function(response) {
                         if (response.game_over) {
                             alert(response.message);
-                            // Stop polling if the game is over
-                            clearInterval(intervalId);
                             // Additional logic for game over, like redirecting or disabling actions
-                            $('#draw-cards').prop('disabled', true).css({
-                                'opacity': '0.5',
-                                'pointer-events': 'none'
-                            });
-                            return;
+                            // Disable voting and other game actions if needed
                         } else {
-                            // Update the turn display
+                            // Update the turn display and score as usual
                             updateTurn();
                             showTurnPopup("");
 
@@ -476,16 +456,6 @@ $showDrawButton = false;
                                 $('.scoreboard').html(response.scoreboard);
                                 clearVoteArea();
                                 alert("次のターンに進みましょう");
-                            }
-
-                            // Control the draw button's visibility and state
-                            const drawButton = document.querySelector('#draw-cards');
-                            if (response.showDrawButton) {
-                                drawButton.style.opacity = '1';
-                                drawButton.style.pointerEvents = 'auto'; // Make it clickable
-                            } else {
-                                drawButton.style.opacity = '0.5';
-                                drawButton.style.pointerEvents = 'none'; // Disable clicks
                             }
                         }
                     },
@@ -496,7 +466,6 @@ $showDrawButton = false;
                 });
             }, 3000); // Poll every 3 seconds
         }
-
 
         // Call pollVotingStatus on page load to start polling
         pollVotingStatus();
@@ -557,7 +526,6 @@ $showDrawButton = false;
             <div class="button_1">
                 <button class="back-btn">退出する</button>
                 <button class="popup-btn" id="rule-click-btn">ルール</button>
-                <button class="volume-btn" id="volume-btn">ボリューム</button>
                 <div id="rule-popup-wrapper" style="display: none;">
                     <div id="rule-popup-inside">
                         <div class="text">
@@ -573,6 +541,7 @@ $showDrawButton = false;
                             <p>カードの提出</p>
                             <ul>
                                 <li>物語を確認し、自分の手札から物語のフレーズに合うと思うカードを1枚選択し、待機します。</li><br>
+                                <li>全てのプレイヤーが選び終えると、画面中央に選ばれたカードが表示されます。</li>
                             </ul>
                             <p>投票</p>
                             <ul>
@@ -586,7 +555,7 @@ $showDrawButton = false;
                             </ul>
                             <p>ラウンド終了</p>
                             <ul>
-                                <li>次のターンになるとカードを1枚引くことができます。</li>
+                                <li>各プレイヤーは新しいカードを1枚手に入れ、手札が5枚に戻ります。</li>
                             </ul>
                             <p>ゲーム終了</p>
                             <ul>
@@ -610,66 +579,6 @@ $showDrawButton = false;
             <button class="other-btn" id="exit-btn">退出</button>
         </div>
     </div>
-
-    <!-- ボリューム買えるようにするよ -->
-    <div id="volume-textarea-wrapper" style="display: none;">
-        <div id="volume-textarea-inside">
-            <div class="text">
-                <div id="volume-textarea-close">X</div>
-                <!-- 音量調節スライダー -->
-                <label for="bgm-volume">BGM 音量: <span id="bgm-volume-value">100%</span></label>
-                <input id="bgm-volume" type="range" min="0" max="100" value="100">
-            </div>
-            <div>
-                <label for="sfx-volume">効果音 音量: <span id="sfx-volume-value">100%</span></label>
-                <input id="sfx-volume" type="range" min="0" max="100" value="100">
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <script>
-        // 音量調節のスライダーをセットアップ
-        document.getElementById('bgm-volume').addEventListener('input', function(event) {
-            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
-            const volume = event.target.value / 100;
-            // BGMオーディオ要素を取得
-            const bgm = document.getElementById('bgm');
-            // 取得した値をBGMの音量に設定
-            bgm.volume = volume;
-            // 現在の音量をパーセンテージ形式で表示
-            document.getElementById('bgm-volume-value').innerText = `${event.target.value}%`;
-        });
-
-        // 効果音の音量調節スライダーをセットアップ
-        document.getElementById('sfx-volume').addEventListener('input', function(event) {
-            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
-            const volume = event.target.value / 100;
-            // 効果音オーディオ要素を取得
-            const hoverSound = document.getElementById('hoverSound');
-            // 取得した値を効果音の音量に設定
-            hoverSound.volume = volume;
-            // 現在の音量をパーセンテージ形式で表示
-            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`;
-        });
-
-
-
-        //<audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio><script type="text/javascript">const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3') hoverSound.preload = 'auto';$(document).on('mouseenter', '.card', function() {hoverSound.currentTime = 0; // 効果音をリセットして最初から再生hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));});
-
-
-
-        document.getElementById("volume-btn").addEventListener("click", function() {
-            document.getElementById("volume-textarea-wrapper").style.display = "block";
-        });
-
-        document.getElementById("volume-textarea-close").addEventListener("click", function() {
-            document.getElementById("volume-textarea-wrapper").style.display = "none";
-        });
-    </script>
-
-
-
 
     <script>
         document.querySelector('.other-btn').addEventListener('click', function() {
@@ -794,15 +703,32 @@ $showDrawButton = false;
             $storyText = "物語が終了しました。";
             break;
     }
-
-    // Display the story for the current turn
-    echo "<div class='story-card'>{$storyText}</div>";
     ?>
+
+
+    <button id="toggleStoryButton" class="toggle-button">非表示</button>
+    <div id="storyContainer" class="story-card" style="display: block;">
+        <?php echo $storyText; ?>
+    </div>
 
     <div class="scoreboard">
         <p>スコアボード</p>
     </div>
 
+    <script>
+        document.getElementById("toggleStoryButton").addEventListener("click", function() {
+            const storyContainer = document.getElementById("storyContainer");
+            const button = document.getElementById("toggleStoryButton");
+
+            if (storyContainer.style.display === "none") {
+                storyContainer.style.display = "block";
+                button.textContent = "非表示";
+            } else {
+                storyContainer.style.display = "none";
+                button.textContent = "表示";
+            }
+        });
+    </script>
     <?php
     $conn->close();
     ?>
