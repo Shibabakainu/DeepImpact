@@ -283,79 +283,76 @@ $showDrawButton = false;
             }, 5000); // Hide after 5 seconds
         }
         
-            // Click event for drawing cards
-            $(document).ready(function() {
-                $("#draw-cards").click(function() {
-                    $.ajax({
-                        url: 'draw_cards.php',
-                        method: 'POST',
-                        dataType: 'json',
-                        success: function(response) {
-                            $('#drawed-card-area').empty(); // 既存のカードをクリア
-
-                            if (response.success) {
-                                // Disable clicks
-                                const drawButton = document.querySelector('#draw-cards');
-                                drawButton.style.opacity = '0.5';
-                                drawButton.style.pointerEvents = 'none'; 
-                            
-                                response.cards.forEach(function(card) {
-                                    $('#drawed-card-area').append(
-                                        '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
-                                        '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
-                                        '</div>'
-                                    );
-                                });
-                            } else {
-                                location.reload();
-                            }
-                        },
-                        error: function() {
-                            showPopup("カードを引く際にエラーが発生しました。");
-                        }
-                    });
-                });
-
-            // カード選択時のクリックイベント
-            $(document).on("click", ".card", function() {
-                var roomCardId = $(this).data("room-card-id");
-
-                if (!roomCardId) {
-                    showPopup("カードIDが見つかりません。");
-                    return;
-                }
-
-                // Click event for selecting cards
+        // Click event for drawing cards
+        $(document).ready(function() {
+            $("#draw-cards").click(function() {
                 $.ajax({
-                    url: 'select_card.php',
+                    url: 'draw_cards.php',
                     method: 'POST',
-                    data: {
-                        room_id: roomId,
-                        room_card_id: roomCardId
-                    },
                     dataType: 'json',
                     success: function(response) {
+                        $('#drawed-card-area').empty(); // 既存のカードをクリア
+
                         if (response.success) {
-                            showPopup(response.message);
-
-                            // 選択済みクラスを追加
-                            $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
-
-                            // 手札エリアから選択済みカードを削除
-                            $(".card[data-room-card-id='" + roomCardId + "']").remove();
-
-                            // 投票エリアを更新
-                            updateVoteArea();
+                            // Disable clicks
+                            const drawButton = document.querySelector('#draw-cards');
+                            drawButton.style.opacity = '0.5';
+                            drawButton.style.pointerEvents = 'none'; 
+                            
+                            response.cards.forEach(function(card) {
+                                $('#drawed-card-area').append(
+                                    '<div class="card" data-room-card-id="' + card.room_card_id + '">' +
+                                    '<img src="../../images/' + card.Image_path + '" alt="' + card.Card_name + '">' +
+                                    '</div>'
+                                );
+                            });
                         } else {
-                            showPopup(response.message);
+                            location.reload();
                         }
                     },
                     error: function() {
-                        showPopup("カードの選択時にエラーが発生しました。");
+                        showPopup("カードを引く際にエラーが発生しました。");
                     }
                 });
             });
         });
+
+        //　Click event for selecting cards カード選択時のクリックイベント
+        $(document).on("click", ".card", function() {
+            var roomCardId = $(this).data("room-card-id");
+            if (!roomCardId) {
+                showPopup("カードIDが見つかりません。");
+                return;
+            }
+            $.ajax({
+                url: 'select_card.php',
+                method: 'POST',
+                data: {
+                    room_id: roomId,
+                    room_card_id: roomCardId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        showPopup(response.message);
+
+                        // 選択済みクラスを追加
+                        $(".card[data-room-card-id='" + roomCardId + "']").addClass('selected');
+
+                        // 手札エリアから選択済みカードを削除
+                        $(".card[data-room-card-id='" + roomCardId + "']").remove();
+
+                        // 投票エリアを更新
+                        updateVoteArea();
+                    } else {
+                        showPopup(response.message);
+                    }
+                },
+                error: function() {
+                    showPopup("カードの選択時にエラーが発生しました。");
+                }
+            });
+        });        
 
         // Function to fetch and update the vote area
         function updateVoteArea() {
@@ -494,7 +491,6 @@ $showDrawButton = false;
             }, 3000); // Poll every 3 seconds
         }
 
-
         // Call pollVotingStatus on page load to start polling
         pollVotingStatus();
 
@@ -523,8 +519,7 @@ $showDrawButton = false;
             // Optional: reload the scoreboard every few seconds if you want it to auto-refresh
             setInterval(loadScoreboard, 5000);
         });
-
-        
+      
     </script>
 
     <div id="textbox">
@@ -610,12 +605,12 @@ $showDrawButton = false;
     </div>
     <!-- ボリューム買えるようにするよ -->
     <div id="volume-textarea-wrapper" style="display: none;">
-    <div id="volume-textarea-inside">
-        <div class="text">
-            <div id="volume-textarea-close">X</div>
-            <!-- 音量調節スライダー -->
-                <label for="bgm-volume">BGM 音量: <span id="bgm-volume-value">100%</span></label>
-                <input id="bgm-volume" type="range" min="0" max="100" value="100">
+        <div id="volume-textarea-inside">
+            <div class="text">
+                <div id="volume-textarea-close">X</div>
+                <!-- 音量調節スライダー -->
+                    <label for="bgm-volume">BGM 音量: <span id="bgm-volume-value">100%</span></label>
+                    <input id="bgm-volume" type="range" min="0" max="100" value="100">
             </div>
             <div>
                 <label for="sfx-volume">効果音 音量: <span id="sfx-volume-value">100%</span></label>
@@ -623,56 +618,40 @@ $showDrawButton = false;
             </div>
         </div>
     </div>
-</div>
-<script>
 
+    <script>
+        // 音量調節のスライダーをセットアップ
+        document.getElementById('bgm-volume').addEventListener('input', function (event) {
+            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
+            const volume = event.target.value / 100; 
+            // BGMオーディオ要素を取得
+            const bgm = document.getElementById('bgm'); 
+            // 取得した値をBGMの音量に設定
+            bgm.volume = volume; 
+            // 現在の音量をパーセンテージ形式で表示
+            document.getElementById('bgm-volume-value').innerText = `${event.target.value}%`;
+        });
 
-// 音量調節のスライダーをセットアップ
-document.getElementById('bgm-volume').addEventListener('input', function (event) {
-    // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
-    const volume = event.target.value / 100; 
-    // BGMオーディオ要素を取得
-    const bgm = document.getElementById('bgm'); 
-    // 取得した値をBGMの音量に設定
-    bgm.volume = volume; 
-    // 現在の音量をパーセンテージ形式で表示
-    document.getElementById('bgm-volume-value').innerText = `${event.target.value}%`;
-});
+        // 効果音の音量調節スライダーをセットアップ
+        document.getElementById('sfx-volume').addEventListener('input', function (event) {
+            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
+            const volume = event.target.value / 100; 
+            // 効果音オーディオ要素を取得
+            const hoverSound = document.getElementById('hoverSound'); 
+            // 取得した値を効果音の音量に設定
+            hoverSound.volume = volume; 
+            // 現在の音量をパーセンテージ形式で表示
+            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`;
+        });
 
-// 効果音の音量調節スライダーをセットアップ
-document.getElementById('sfx-volume').addEventListener('input', function (event) {
-    // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
-    const volume = event.target.value / 100; 
-    // 効果音オーディオ要素を取得
-    const hoverSound = document.getElementById('hoverSound'); 
-    // 取得した値を効果音の音量に設定
-    hoverSound.volume = volume; 
-    // 現在の音量をパーセンテージ形式で表示
-    document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`;
-});
+        document.getElementById("volume-btn").addEventListener("click", function() {
+            document.getElementById("volume-textarea-wrapper").style.display = "block";
+        });
 
-
-
-    //<audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3"></audio><script type="text/javascript">const hoverSound = new Audio('/DeepImpact/bgm/03_ぷい.mp3') hoverSound.preload = 'auto';$(document).on('mouseenter', '.card', function() {hoverSound.currentTime = 0; // 効果音をリセットして最初から再生hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));});
-
-
-
-
-
-
-
-
-    document.getElementById("volume-btn").addEventListener("click", function() {
-    document.getElementById("volume-textarea-wrapper").style.display = "block";
-    });
-
-    document.getElementById("volume-textarea-close").addEventListener("click", function() {
-    document.getElementById("volume-textarea-wrapper").style.display = "none";
-    });
-</script>
-
-
-
+        document.getElementById("volume-textarea-close").addEventListener("click", function() {
+            document.getElementById("volume-textarea-wrapper").style.display = "none";
+        });
+    </script>
 
     <script>
         document.querySelector('.other-btn').addEventListener('click', function() {
