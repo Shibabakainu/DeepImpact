@@ -259,6 +259,15 @@ $showDrawButton = false;
 
     <div class="turnPopup" id="turnPopup"></div>
 
+    <!--   投票ポップアップ -->
+    <div id="voting-popup" class="popup-container" style="display: none;">
+        <div class="popup-content">
+            <h2>Vote Results</h2>
+            <ul id="voting-details-list"></ul>
+            <button id="close-popup-btn">Close</button>
+        </div>
+    </div>
+
     <script type="text/javascript">
         // URLからroom_idを取得する関数
         function getRoomIdFromUrl() {
@@ -451,7 +460,8 @@ $showDrawButton = false;
                     dataType: 'json',
                     success: function(response) {
                         if (response.game_over) {
-                            alert(response.message);                           
+                            alert(response.message);
+                            document.getElementById('end-game-popup').style.display = 'block';
                             // Stop polling if the game is over
                             clearInterval(intervalId);
                             // Additional logic for game over, like redirecting or disabling actions
@@ -465,7 +475,9 @@ $showDrawButton = false;
                             updateTurn();
                             showTurnPopup("");
 
-                            if (response.votingComplete) {
+                            if (response.votingComplete && response.showVotingDetails) {
+                                console.log("Voting complete! Fetching voting details...");
+                                fetchVotingDetails(roomId); // Show the voting details popup
                                 // If voting is complete, update the scoreboard
                                 $('.scoreboard').html(response.scoreboard);
                                 clearVoteArea(); 
@@ -519,7 +531,40 @@ $showDrawButton = false;
             // Optional: reload the scoreboard every few seconds if you want it to auto-refresh
             setInterval(loadScoreboard, 5000);
         });
-      
+    
+        // Function to fetch voting details
+        function fetchVotingDetails(roomId) {
+            fetch(`getVotingDetails.php?room_id=${roomId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        const votingDetailsList = document.getElementById("voting-details-list");
+                        votingDetailsList.innerHTML = ""; // Clear previous data
+
+                        data.votingDetails.forEach((detail) => {
+                            const listItem = document.createElement("li");
+                            listItem.innerHTML = `
+                                <strong>${detail.player_name}</strong> voted for <strong>${detail.card_name}</strong>
+                                <br>
+                                <img src="${detail.image_path}" alt="${detail.card_name}" style="width: 100px; height: auto;">
+                            `;
+                            votingDetailsList.appendChild(listItem);
+                        });
+
+                        // Show the popup
+                        document.getElementById("voting-popup").style.display = "flex";
+                    } else {
+                        alert(data.message || "Failed to fetch voting details.");
+                    }
+                })
+                .catch((error) => console.error("Error fetching voting details:", error));
+        }
+
+        // Event listener to close the popup
+        document.getElementById("close-popup-btn").addEventListener("click", () => {
+            document.getElementById("voting-popup").style.display = "none";
+        });
+
     </script>
 
     <div id="textbox">
@@ -542,6 +587,12 @@ $showDrawButton = false;
             <input type="hidden" name="reset_game" value="1">
             <button class="newgame" type="submit">新しく始める</button>
         </form>
+    </div>
+    
+    <div class="end-game-popup" id="end-game-popup">
+        <div id="winner">
+            <p>勝利者は　○○さん　～　スコア：</p>
+        </div>
     </div>
 
     <div class="menu-">

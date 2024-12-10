@@ -1071,7 +1071,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             cardElement.addEventListener("click", () => {
                 if (hasVoted) {
                     alert("すでに投票済み");
-                    retun;
+                    return;
                 }
                 socket.emit('vote', card.id);
                 hasVoted = true;

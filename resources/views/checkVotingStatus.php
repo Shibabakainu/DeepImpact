@@ -36,6 +36,7 @@ $response = [
     'turn' => null,
     'scoreboard' => '',
     'showDrawButton' => true,
+    'showVotingDetails' => false,
 ];
 
 // Get the current turn for the room
@@ -78,6 +79,7 @@ if ($room_id) {
             $resetDrewStmt->close();
 
             $response['votingComplete'] = true;
+            $response['showVotingDetails'] = true;
             $response['turn'] = getCurrentTurn($room_id);
 
             // Capture scoreboard output
@@ -99,7 +101,11 @@ if ($room_id) {
             $response['turn'] = $current_turn;
         }
     } else {
-        $response['debug'] = 'Voting not complete';
+        $response['debug'] = [
+            'votingComplete' => isVotingComplete($room_id, $current_turn),
+            'currentTurn' => $current_turn,
+            'roomId' => $room_id,
+        ];
     }
 
     // Check if the player can draw cards (based on the `drew` flag)
