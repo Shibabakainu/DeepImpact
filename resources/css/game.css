@@ -12,49 +12,114 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column-reverse;
 }
 
 .container {
-    position: relative;
-    bottom: -250px;
-    width: 60%;
-    padding: 50px;
+    position: fixed;
+    bottom: 10px;
+    width: 50%;
+    padding: 25px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.3);
     text-align: center;
     max-height: 1000px;
     overflow-y: auto;
-}
 
-.container .card-container {
-    display: flex;
-    justify-content: center;
 }
 
 .container .card {
     /* ホバー時アニメーション */
-    transition-property: flex-shrink, translate;
-    transition-duration: 0.2s;
-    /* ホバーしたカードが前面に出ないようにする */
-}
-
-.container .card:hover {
-    flex-shrink: 0;
-    translate: 0 -1rem;
-}
-
-.container .card {
-    /* カードの見た目 */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     width: 8rem;
-    background-color: #c00606;
+    background-color: white;
     box-shadow: 0 0 6px black;
     border: 0.3rem white solid;
     border-radius: 0.5rem;
 }
 
+/* ホバー時のカードの発光 */
+.container .card:hover {
+    transform: translateY(-0.5rem) scale(1.1);
+    box-shadow: 0 0 30px 10px rgba(232, 243, 26, 0.8),
+        0 0 40px 20px rgba(16, 131, 245, 0.8);
+}
+
 .container .card img {
     width: 8rem;
+}
+
+#draw-cards {
+    width: 200px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bolder;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    transition: 0.5s ease;
+}
+
+#draw-cards:hover {
+    background-color: #e77a34;
+}
+
+.vote-area {
+    position: relative;
+    width: 60%;
+    height: 30%;
+    padding: 20px;
+    margin-bottom: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-height: 1000px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.vote-area .selected-card {
+    width: 8rem;
+    margin-right: 30px;
+    background-color: white;
+    box-shadow: 0 0 6px black;
+    border: 0.3rem white solid;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* カードが追加されたときの発光アニメーション */
+
+.vote-area .selected-card:hover {
+    transform: translateY(-0.5rem) scale(1.1);
+    box-shadow: 0 0 30px 10px rgba(255, 255, 0, 0.8),
+        0 0 40px 20px rgba(0, 128, 255, 0.8);
+}
+
+.vote-area .selected-card .img {
+    width: 8rem;
+}
+
+.scoreboard {
+    width: 300px;
+    height: 300px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}
+
+.scoreboard p {
+    margin: 0;
+    text-align: center;
 }
 
 @media screen and (max-width: 1500px) {
@@ -112,12 +177,52 @@ body {
     border-radius: 5px;
 }
 
+.popup-btn:hover {
+    background-color: #e77a34;
+}
+
 #back-btn {
     background-color: red;
     position: relative;
     z-index: 995;
     border-radius: 5px;
     cursor: pointer;
+}
+
+
+
+.volume-btn:hover {
+    background: rgb(63, 175, 245);
+}
+
+.nextturn {
+    border-radius: 5px;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nextturn:hover {
+    background-color: #e77a34;
+}
+
+.newgame {
+    border-radius: 5px;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.newgame:hover {
+    background-color: lime;
 }
 
 .button_1 {
@@ -135,7 +240,8 @@ body {
 }
 
 .button_1 .popup-btn,
-.button_1 .back-btn {
+.button_1 .back-btn,
+.button_1 .volume-btn{
     padding: 15px 30px;
     font-size: 1.5em;
     border-radius: 10px;
@@ -316,6 +422,8 @@ button.hamburger-close.toggle span:after {
     cursor: pointer;
 }
 
+
+
 /*ルール*/
 ul {
     list-style: none
@@ -325,6 +433,92 @@ p {
     font-size: 24px;
     font-weight: bold;
 }
+
+.story-card {
+    width: 60%;
+    position: fixed;
+    top: 10px;
+    left: 370px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: larger;
+}
+
+.title {
+    font-family: Arial, sans-serif;
+    font-weight: bolder;
+    font-size: 2rem;
+}
+
+.player-list {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+#chatbox {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    white-space: nowrap;
+}
+
+.message {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+    animation: slide-in 10s linear forwards;
+}
+
+#textbox {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#textbox input[type="text"] {
+    padding: 10px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ccc;
+}
+
+#textbox button {
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
+    border: 1px solid #ccc;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+
+#hand {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 
 /* スクロールバーの幅や高さを狭くしています */
 ::-webkit-scrollbar {
@@ -338,20 +532,210 @@ p {
     border-radius: 5px;
 }
 
-.scoreboard {
-    width: 200px;
-    height: 300px;
-    position: fixed;
-    bottom: 5px;
-    left: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-family: Arial, sans-serif;
+.drawed-card-area {
+    display: flex;
+    justify-content: center;
 }
 
-.scoreboard p {
-    margin: 0;
+/* vote-area内のカードのスタイル */
+.vote-area .selected-card {
+    display: inline-block;
+    width: 130px;
+    /* カードの幅を固定 */
+    height: 200px;
+    /* カードの高さを固定（必要に応じて調整） */
+    margin: 5px;
+    /* カード間のスペース */
+    box-sizing: border-box;
+    /* パディングやボーダーをサイズに含める */
+}
+
+.vote-area .selected-card img {
+    width: 100%;
+    /* 画像をカードの幅に合わせる */
+    height: auto;
+    /* 画像の高さを自動で調整 */
+}
+
+.voter-info {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    /* Space between card and voters */
+    flex-direction: column;
+}
+
+.voter-icon {
+    width: 30px;
+    /* Adjust size as needed */
+    height: 30px;
+    /* Adjust size as needed */
+    border-radius: 50%;
+    /* Make it circular */
+    margin-right: 5px;
+    /* Space between icon and name */
+}
+
+.voter-name {
+    font-size: 20px;
+    /* Adjust font size as needed */
+    font-weight: bold;
+    color: white;
+}
+
+/* ボタンのデザインを定義します */
+.bgm-btn {
+    position: absolute;
+    /* 絶対位置を指定 */
+    top: 100px;
+    /* 上からの距離を設定 */
+    right: 30px;
+    /* 右からの距離を設定 */
+    background-color: #4CAF50;
+    /* ボタンの背景色（緑色） */
+    color: white;
+    /* 文字色（白） */
+    border: none;
+    /* ボタンの枠線なし */
+    border-radius: 50%;
+    /* ボタンを円形にする */
+    width: 50px;
+    /* ボタンの幅を50pxに設定 */
+    height: 50px;
+    /* ボタンの高さを50pxに設定 */
+    font-size: 24px;
+    /* ボタン内のアイコンの文字サイズ */
+    cursor: pointer;
+    /* ホバー時にポインタを指に変える */
+    display: flex;
+    /* フレックスボックスで配置 */
+    align-items: center;
+    /* ボタン内のアイコンを垂直方向に中央揃え */
+    justify-content: center;
+    /* ボタン内のアイコンを水平方向に中央揃え */
+}
+
+/*メッセージポップアップ*/
+/* Style for the popup message */
+#popup-message {
+    display: none;
+    /* Initially hidden */
+    position: fixed;
+    width: 200px;
+    top: 50%;
+    left: 90%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
     text-align: center;
+    z-index: 1000;
+}
+
+#turnDisplay {
+    color: #e77a34;
+    font-size: 1.75rem;
+    font-weight: bolder;
+}
+
+#volume-textarea-wrapper {
+    background-color: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 996;
+    animation: fadeIn 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    
+}
+
+
+
+#volume-textarea-close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+}
+
+
+#volume-textarea-inside {
+    background-image: url('/DeepImpact/images/aiueo.png');
+    background-size: cover; /* 画像をコンテナ全体にフィットさせる */
+    background-position: center; /* 背景画像を中央に配置 */
+    text-align: center;
+    width: 150%;
+    max-width: 50%;
+    height: 45%;
+    margin: 10% auto;
+    background-color:azure;
+    padding: 20px;
+    position: relative;
+    z-index: 997;
+    overflow: scroll;
+    border-radius: 5px;
+    font-family: 'Arial', sans-serif; /* モダンなフォント */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ソフトな影を追加 */
+}
+
+
+
+
+/* ラベルのスタイル */
+label {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #090404;
+}
+
+/* スライダーのスタイル */
+input[type="range"] {
+    -webkit-appearance: none; /* デフォルトのスタイルをリセット */
+    width: 60%; /* 幅を全体に広げる */
+    height: 10px;
+    background: linear-gradient(to right, #4caf50, #8bc34a); /* グラデーション背景 */
+    border-radius: 5px; /* 角を丸くする */
+    outline: none;
+    transition: background 0.3s; /* 背景色の変更をスムーズに */
+}
+
+/* スライダーのつまみ（thumb）のスタイル */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #4caf50; /* つまみの色 */
+    border-radius: 50%; /* 丸い形状 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 軽い影 */
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s; /* 色とサイズの変更をスムーズに */
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #45a049; /* ホバー時に濃い緑色に */
+    transform: scale(1.1); /* 少し大きくする */
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #4caf50;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* スライダーの上の値表示 */
+#bgm-volume-value,
+#sfx-volume-value {
+    font-size: 12px;
+    color: #777;
+    margin-left: 10px;
 }

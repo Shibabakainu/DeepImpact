@@ -1,0 +1,68 @@
+        /* 基本スタイル */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(../../images/art5.jpg);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: -70px; /* 少し上に配置 */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff4d4d; /* 赤色 */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            }
+
+        .back-button:hover {
+                background-color: #cf4505;
+            }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+
+        /* message-containerを中央に配置 */
+.message-container {
+    width: 80%; /* 横幅を80%に設定 */
+    max-width: 900px; /* 最大幅を900pxに制限 */
+    margin: 0 auto; /* 上下のマージンは0、左右のマージンは自動で設定し、中央配置 */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-sizing: border-box; /* パディングを含めたサイズ指定 */
+    transform: translateY(-50px); /* 要素全体を10px上に移動 */
+}
+
+/* メッセージのスタイル */
+.message {
+    margin-bottom: 20px; /* メッセージの間に余白を追加 */
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+
+
+h1 {
+    text-align: center;
+}

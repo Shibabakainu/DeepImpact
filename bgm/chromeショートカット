@@ -1,0 +1,12 @@
+
+chrome右クリック
+
+リンク先ctrl+a
+
+    ↓
+
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --autoplay-policy=no-user-gesture-required
+
+貼り付け
+
+👍

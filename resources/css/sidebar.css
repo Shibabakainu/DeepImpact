@@ -51,6 +51,7 @@ body {
 
 /*ポップアップ*/
 #sidebar-click-btn {
+    border: none;
     display: block;
     color: #000;
     text-decoration: none;
@@ -91,8 +92,9 @@ body {
 #sidebar-popup-inside {
     text-align: center;
     width: 100%;
-    max-width: 60%;
-    height: 60%;
+    max-width: 70%;
+    height: 70%;
+    top: -30px;
     background: white;
     margin: 10% auto;
     padding: 20px;
@@ -131,4 +133,47 @@ p {
 ::-webkit-scrollbar-thumb {
     background: rgb(132, 132, 132);
     border-radius: 5px;
+}
+
+/* ログアウトボタンコンテナ */
+.logout-btn-container {
+    margin-top: auto;
+    /* 上部との間隔を最大限確保 */
+    padding: 10px 0;
+    /* 上下余白 */
+    text-align: center;
+}
+
+/* ログアウトボタンのスタイル */
+.logout-btn {
+    background-color: #ff4500;
+    /* 赤色 */
+    color: white;
+    padding: 10px 20px;
+    /* 形状を保つ */
+    text-decoration: none;
+    border-radius: 5px;
+    /* 少し丸みを持たせる */
+    font-weight: bold;
+    font-size: 16px;
+    /* 文字サイズ */
+    display: block;
+    /* ブロック要素として扱う */
+    text-align: center;
+    /* テキスト中央揃え */
+    margin: 0 auto;
+    /* 左右中央に配置 */
+    width: 150px;
+    /* 横幅固定 */
+    position: relative;
+    /* bottom で調整するために relative を追加 */
+    bottom: -90px;
+    /* 下に10px移動 */
+    transition: background-color 0.3s ease;
+    /* ホバー時の変化をスムーズに */
+}
+
+.logout-btn:hover {
+    background-color: #d32f2f;
+    /* ホバー時の色変更 */
 }
