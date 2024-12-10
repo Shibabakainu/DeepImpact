@@ -3,7 +3,11 @@ session_start();
 include 'db_connect.php';
 
 // 最大ルーム数の上限
+<<<<<<<< HEAD:resources/views2/room_DB.php
 $max_rooms = 50;
+========
+$max_rooms = 100;
+>>>>>>>> 1948c0f8d4eaf6ad4993e15e9e68b85a168a01bf:resources/views/room_DB.php
 
 // 現在のルーム数をカウント
 $sql_count_rooms = "SELECT COUNT(*) as room_count FROM rooms";
@@ -74,13 +78,46 @@ if ($stmt->execute()) {
 
     if ($stmt_password->execute()) {
         // room_playersテーブルにホストプレイヤーを挿入
-        $sql_room_players = "INSERT INTO room_players (room_id, user_id, host) VALUES (?, ?, ?)";
+
+        // 1. Check for the next available player position in the room
+        $sql_position = "SELECT COALESCE(MAX(player_position), 0) as max_position FROM room_players WHERE room_id = ?";
+        $stmt_position = $conn->prepare($sql_position);
+        if (!$stmt_position) {
+            die("Error preparing position statement: " . $conn->error);
+        }
+        $stmt_position->bind_param("i", $room_id);
+        $stmt_position->execute();
+        $result_position = $stmt_position->get_result();
+        $row_position = $result_position->fetch_assoc();
+
+        $host_position = $row_position['max_position'] + 1; // Increment to the next available position
+
+        // Debugging to confirm the player position
+        echo "Next available player position: " . $host_position . "<br>";
+
+        $stmt_position->close();
+
+        // 2. Check if the same room_id and player_position already exists
+        $sql_check_duplicate = "SELECT COUNT(*) as count FROM room_players WHERE room_id = ? AND player_position = ?";
+        $stmt_check_duplicate = $conn->prepare($sql_check_duplicate);
+        $stmt_check_duplicate->bind_param("ii", $room_id, $host_position);
+        $stmt_check_duplicate->execute();
+        $result_duplicate = $stmt_check_duplicate->get_result();
+        $row_duplicate = $result_duplicate->fetch_assoc();
+
+        if ($row_duplicate['count'] > 0) {
+            die("Error: Duplicate entry for room_id $room_id and player_position $host_position.");
+        }
+
+        // 3. Insert host player with the next available position
+        $sql_room_players = "INSERT INTO room_players (room_id, user_id, host, player_position) VALUES (?, ?, ?, ?)";
         $stmt_room_players = $conn->prepare($sql_room_players);
         if (!$stmt_room_players) {
             die("Error preparing room_players statement: " . $conn->error);
         }
         $host = true;
-        $stmt_room_players->bind_param("iii", $room_id, $user_id, $host);
+        $stmt_room_players->bind_param("iiii", $room_id, $user_id, $host, $host_position);
+        $_SESSION['player_position'] = $host_position;
 
         if ($stmt_room_players->execute()) {
             // ルーム詳細ページにリダイレクト
