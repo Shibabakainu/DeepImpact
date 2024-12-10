@@ -337,3 +337,21 @@ p {
     background: rgb(132, 132, 132);
     border-radius: 5px;
 }
+
+.scoreboard {
+    width: 200px;
+    height: 300px;
+    position: fixed;
+    bottom: 5px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}
+
+.scoreboard p {
+    margin: 0;
+    text-align: center;
+}

@@ -1,135 +1,527 @@
--- Create the database
+- データベースの作成
 SET NAMES utf8;
 DROP DATABASE IF EXISTS storyteller;
 CREATE DATABASE storyteller CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE storyteller;
 
--- Create the users table
+-- users テーブルの作成
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
+
     email           VARCHAR(100)    NOT NULL UNIQUE,
+
     password        VARCHAR(255)    NOT NULL,
+
     profile_image   VARCHAR(255),
+
     name            VARCHAR(100)    NOT NULL UNIQUE,
+
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+
 );
 
--- Insert a demo user
-INSERT INTO users (id, email, password, profile_image, name, created_at) VALUES 
-(1, 'demo@demo', 'demo', '', 'demo', NOW());
 
--- roomsテーブルを作成
+
+-- story テーブルの作成
+
+DROP TABLE IF EXISTS story;
+
+CREATE TABLE story (
+
+    story_text  TEXT            NOT NULL,
+
+    keywords    VARCHAR(255)    NOT NULL,
+
+    turn_number INT             NOT NULL
+
+);
+
+
+
+INSERT INTO story (story_text, keywords, turn_number) 
+
+VALUES (
+
+    '　昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。そんな時、小さな町に住むが立ち上がりました。',
+
+    '正義感の強い若い戦士',
+
+    1
+
+);
+
+
+
+-- rooms テーブルの作成
+
 DROP TABLE IF EXISTS rooms;
+
 CREATE TABLE rooms (
+
     room_id         INT             AUTO_INCREMENT PRIMARY KEY,
+
     room_name       VARCHAR(100)    NOT NULL,
+
     host_id         INT             NOT NULL,
+
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+
     max_players     INT             DEFAULT 6,
+
     status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
+
     current_players INT             DEFAULT 1,
+
+    turn_number     INT             DEFAULT 1,
+
+    turn_updated    TINYINT(1)      DEFAULT 0,
+
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
+
 );
 
--- room_passwordsテーブルを作成
+
+
+-- room_passwords テーブルの作成
+
 DROP TABLE IF EXISTS room_passwords;
+
 CREATE TABLE room_passwords (
+
     room_id         INT             PRIMARY KEY,
+
     password_hash   VARCHAR(255)    NOT NULL,
+
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
+
 );
 
--- room_playersテーブルを作成
+
+
+-- room_players テーブルの作成
+
 DROP TABLE IF EXISTS room_players;
+
 CREATE TABLE room_players (
-    id              INT             AUTO_INCREMENT PRIMARY KEY,
-    room_id         INT             NOT NULL,
-    user_id         INT             NOT NULL,
-    joined_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
-    host            BOOLEAN         NOT NULL,
+
+    id                  INT             AUTO_INCREMENT PRIMARY KEY,
+
+    room_id             INT             NOT NULL,
+
+    user_id             INT             NOT NULL,
+
+    player_position     INT             NOT NULL,
+
+    joined_at           TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+
+    host                BOOLEAN         NOT NULL,
+
+    score               INT             DEFAULT 0,
+
+    last_scored_turn    INT             DEFAULT 0,
+
+    turn_number         INT             DEFAULT 0,
+
+    drew                TINYINT(1)      DEFAULT 0,
+
     FOREIGN KEY (room_id) REFERENCES rooms(room_id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+
+    FOREIGN KEY (user_id) REFERENCES users(id),
+
+    UNIQUE (room_id, player_position)
+
 );
 
--- Create the friends table
+
+
+-- friends テーブルの作成
+
 DROP TABLE IF EXISTS friends;
+
 CREATE TABLE friends (
+
     id              INT             AUTO_INCREMENT PRIMARY KEY,
+
     user_name       VARCHAR(100)    NOT NULL,
+
     friend_name     VARCHAR(100)    NOT NULL,
+
     status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+
     requested_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (user_name) REFERENCES users(name) ON DELETE CASCADE,
+
     FOREIGN KEY (friend_name) REFERENCES users(name) ON DELETE CASCADE,
+
     UNIQUE(user_name, friend_name)
+
 );
 
-# カードテーブル作成
+
+
+-- messages テーブルの作成 (room_id を NULL 許可に変更)
+
+DROP TABLE IF EXISTS messages;
+
+CREATE TABLE messages (
+
+    message_id      INT             AUTO_INCREMENT PRIMARY KEY,
+
+    room_id         INT             NULL,                  -- NULL 許可に変更
+
+    user_id         INT             NOT NULL,
+
+    recipient_id    INT             NOT NULL,
+
+    content         TEXT            NOT NULL,
+
+    sent_at         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+
+    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+
+);
+
+
+
+-- Card テーブルの作成
+
 DROP TABLE IF EXISTS Card;
+
 CREATE TABLE Card (
-    Card_id INT PRIMARY KEY,
+
+    Card_id INT PRIMARY KEY AUTO_INCREMENT,
+
     Card_name VARCHAR(100) NOT NULL,
-    Image_path VARCHAR(255) NOT NULL,
-    IsVisible INT NOT NULL DEFAULT 1
+
+    Image_path VARCHAR(255) NOT NULL
+
 );
 
 
 
-INSERT INTO Card (Card_id, Card_name, Image_path, IsVisible)
+-- デモ用のカードデータを挿入
+
+-- Cardテーブルにデータを1～80件挿入
+
+INSERT INTO Card (Card_id, Card_name, Image_path)
+
 VALUES
-(1, 'Card One', 'card1.jpg', 1),
-(2, 'Card Two', 'card2.jpg', 1),
-(3, 'Card Three', 'card3.jpg', 1),
-(4, 'Card Four', 'card4.jpg', 1),
-(5, 'Card Five', 'card5.jpg', 1),
-(6, 'Card Six', 'card6.jpg', 1),
-(7, 'Card Seven', 'card7.jpg', 1),
-(8, 'Card Eight', 'card8.jpg', 1),
-(9, 'Card Nine', 'card9.jpg', 1),
-(10, 'Card Ten', 'card10.jpg', 1);
+
+(1, 'ゴリラ', 'gorira.jpg'),
+
+(2, 'キツネ', 'kitune.jpg'),
+
+(3, 'カエル', 'kaeru.jpg'),
+
+(4, 'アヒル', 'ahiru(36).jpg'),
+
+(5, 'アライグマ', 'araiguma.jpg'),
+
+(6, 'アリ', 'ari.jpg'),
+
+(7, 'クマ', 'bear(13).jpg'),
+
+(8, 'クマモト', 'bear(13)angry.jpg'),
+
+(9, 'ビーバー', 'beaver(5).jpg'),
+
+(10, 'Ten', 'boar(15).jpg'),
+
+(11, 'Eleven', 'butte(42).jpg'),
+
+(12, 'Twelve', 'cattle(21).jpg'),
+
+(13, 'Thirteen', 'cooldog(4).jpg'),
+
+(14, 'Fourteen', 'crocodile(1).jpg'),
+
+(15, 'Fifteen', 'cutedog(3).jpg'),
+
+(16, 'Sixteen', 'datyou.jpg'),
+
+(17, 'Seventeen', 'doragon.jpg'),
+
+(18, 'Eighteen', 'ele(2).jpg'),
+
+(19, 'Nineteen', 'flamingo(7).jpg'),
+
+(20, 'Twenty', 'hae(40).jpg'),
+
+(21, 'Twenty-One', 'haiena.jpg'),
+
+(22, 'Twenty-Two', 'hari(17).jpg'),
+
+(23, 'Twenty-Three', 'hati.jpg'),
+
+(24, 'Twenty-Four', 'hato(9).jpg'),
+
+(25, 'Twenty-Five', 'hebi(37).jpg'),
+
+(26, 'Twenty-Six', 'hituji(27).jpg'),
+
+(27, 'Twenty-Seven', 'hukurou.jpg'),
+
+(28, 'Twenty-Eight', 'hyou(23).jpg'),
+
+(29, 'Twenty-Nine', 'inko(29).jpg'),
+
+(30, 'Thirty', 'iruka.jpg'),
+
+(31, 'Thirty-One', 'kaba.jpg'),
+
+(32, 'Thirty-Two', 'kama(16).jpg'),
+
+(33, 'Thirty-Three', 'kame.jpg'),
+
+(34, 'Thirty-Four', 'kamereon.jpg'),
+
+(35, 'Thirty-Five', 'kamome.jpg'),
+
+(36, 'Thirty-Six', 'kamome(22).jpg'),
+
+(37, 'Thirty-Seven', 'kangaroo(6).jpg'),
+
+(38, 'Thirty-Eight', 'kani.jpg'),
+
+(39, 'Thirty-Nine', 'kata(44).jpg'),
+
+(40, 'Forty', 'kawauso.jpg'),
+
+(41, 'Forty-One', 'kirin.jpg'),
+
+(42, 'Forty-Two', 'kitutuki.jpg'),
+
+(43, 'Forty-Three', 'koi.jpg'),
+
+(44, 'Forty-Four', 'koumori.jpg'),
+
+(45, 'Forty-Five', 'kujira.jpg'),
+
+(46, 'Forty-Six', 'kujaku.jpg'),
+
+(47, 'Forty-Seven', 'mon(19).jpg'),
+
+(48, 'Forty-Eight', 'mouse(11).jpg'),
+
+(49, 'Forty-Nine', 'namakemono(25).jpg'),
+
+(50, 'Fifty', 'neko(35).jpg'),
+
+(51, 'Fifty-One', 'nimo(1).jpg'),
+
+(52, 'Fifty-Two', 'niwato(30).jpg'),
+
+(53, 'Fifty-Three', 'pan(20).jpg'),
+
+(54, 'Fifty-Four', 'pengin.jpg'),
+
+(55, 'Fifty-Five', 'rakda(34).jpg'),
+
+(56, 'Fifty-Six', 'rion(18).jpg'),
+
+(57, 'Fifty-Seven', 'rion(18)angry.jpg'),
+
+(58, 'Fifty-Eight', 'risu(14).jpg'),
+
+(59, 'Fifty-Nine', 'sai(10).jpg'),
+
+(60, 'Sixty', 'same.jpg'),
+
+(61, 'Sixty-One', 'sasori(41).jpg'),
+
+(62, 'Sixty-Two', 'sika.jpg'),
+
+(63, 'Sixty-Three', 'sika(12)a.jpg'),
+
+(64, 'Sixty-Four', 'simauma.jpg'),
+
+(65, 'Sixty-Five', 'siuti(38).jpg'),
+
+(66, 'Sixty-Six', 'sukanku.jpg'),
+
+(67, 'Sixty-Seven', 'taka.jpg'),
+
+(68, 'Sixty-Eight', 'tako.jpg'),
+
+(69, 'Sixty-Nine', 'tatunootosigo.jpg'),
+
+(70, 'Seventy', 'ten(40).jpg'),
+
+(71, 'Seventy-One', 'tokage(43).jpg'),
+
+(72, 'Seventy-Two', 'tonbo.jpg'),
+
+(73, 'Seventy-Three', 'tora(31).jpg'),
+
+(74, 'Seventy-Four', 'uma(32).jpg'),
+
+(75, 'Seventy-Five', 'usagi.jpg'),
+
+(76, 'Seventy-Six', 'usi.jpg'),
+
+(77, 'Seventy-Seven', 'wolf(8).jpg'),
+
+(78, 'Seventy-Eight', 'yuniko(33).jpg'),
+
+(79, 'Seventy-Nine', 'yunikon(33).jpg'),
+
+(80, 'Eighty', 'whitebear(86).jpg');
 
 
--- Remove the trigger if it exists
+
+
+
+
+
+-- room_cards テーブルの作成
+
+DROP TABLE IF EXISTS room_cards;
+
+CREATE TABLE room_cards (
+
+    room_card_id INT PRIMARY KEY AUTO_INCREMENT,
+
+    room_id INT NOT NULL,
+
+    card_id INT NOT NULL,
+
+    player_position INT NOT NULL,
+
+    selected TINYINT NOT NULL DEFAULT 0,
+
+    voted TINYINT NOT NULL DEFAULT 0,
+
+    hide TINYINT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+
+    FOREIGN KEY (card_id) REFERENCES Card(Card_id),
+
+    FOREIGN KEY (room_id, player_position) REFERENCES room_players(room_id, player_position)
+
+);
+
+
+
+CREATE TABLE ExtraCard (
+
+    ExtraCard_id INT AUTO_INCREMENT PRIMARY KEY, -- ユニークID
+
+    Card_name VARCHAR(100) NOT NULL,            -- カード名
+
+    Image_path VARCHAR(255) NOT NULL          -- 画像ファイルのパス
+
+);
+
+
+
+-- votes テーブルの作成
+
+DROP TABLE IF EXISTS votes;
+
+CREATE TABLE votes (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    room_id INT NOT NULL,
+
+    player_id INT NOT NULL,
+
+    room_card_id INT NOT NULL,
+
+    turn INT NOT NULL,
+
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+
+    FOREIGN KEY (player_id) REFERENCES users(id),
+
+    FOREIGN KEY (room_card_id) REFERENCES room_cards(room_card_id)
+
+);
+
+
+
+-- 既存のトリガーがあれば削除
+
 DROP TRIGGER IF EXISTS after_accept_friend;
 
--- Create the event to update reciprocal friend relationships
+
+
+-- 相互フレンドシップを更新するイベントの作成
+
 DELIMITER //
 
+
+
 CREATE EVENT update_reciprocal_friends
+
 ON SCHEDULE EVERY 1 MINUTE
+
 DO
+
 BEGIN
+
     DECLARE done INT DEFAULT 0;
+
     DECLARE current_user_name VARCHAR(100);
+
     DECLARE current_friend_name VARCHAR(100);
+
     DECLARE cur CURSOR FOR 
+
         SELECT user_name, friend_name FROM friends WHERE status = 'accepted';
+
+
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
+
+
     OPEN cur;
+
     read_loop: LOOP
+
         FETCH cur INTO current_user_name, current_friend_name;
+
         IF done THEN
+
             LEAVE read_loop;
+
         END IF;
 
-        -- Check if reciprocal relationship exists
+
+
         IF NOT EXISTS (SELECT 1 FROM friends WHERE user_name = current_friend_name AND friend_name = current_user_name) THEN
-            -- Insert the reciprocal relationship
+
             INSERT INTO friends (user_name, friend_name, status) VALUES (current_friend_name, current_user_name, 'accepted');
+
         ELSE
-            -- Update the reciprocal relationship if it exists
+
             UPDATE friends SET status = 'accepted' WHERE user_name = current_friend_name AND friend_name = current_user_name;
+
         END IF;
+
     END LOOP;
+
     CLOSE cur;
+
 END //
+
+
 
 DELIMITER ;
 
--- Grant privileges
+
+
+-- 権限の付与
+
 GRANT ALL PRIVILEGES ON storyteller.* TO 'username'@'localhost' IDENTIFIED BY 'password';
+
 FLUSH PRIVILEGES;
