@@ -137,7 +137,7 @@ $loggedIn = isset($_SESSION['user_id']);
         <div id="login-popup-wrapper" style="display: flex;">
             <div id="login-popup-inside">
                 <div class="text">ログインしてください</div>
-                <button onclick="window.location.href='/DeepImpact/resources/views/login/login.php'">ログインページへ</button>
+                <button onclick="window.location.href='/DeepImpact/resources/views2/login/login.php'">ログインページへ</button>
             </div>
         </div>
     <?php endif; ?>
@@ -172,7 +172,7 @@ $loggedIn = isset($_SESSION['user_id']);
 
         function loadTutorial() {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/DeepImpact/resources/views/tutorial.php', true);
+            xhr.open('GET', '/DeepImpact/resources/views2/tutorial.php', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {

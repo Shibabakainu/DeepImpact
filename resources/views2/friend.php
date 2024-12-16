@@ -80,9 +80,9 @@ include 'db_connect.php'; // Include the database connection
                 while ($friend = $result->fetch_assoc()) {
                     echo "<div class='friend-info'>";
                     if (!empty($friend['profile_image'])) {
-                        echo "<img src='/Deepimpact/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
+                        echo "<img src='/Deepimpact/resources/views2/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
                     } else {
-                        echo "<img src='/Deepimpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
+                        echo "<img src='/Deepimpact/resources/views2/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
                     }
                     echo "<p>" . htmlspecialchars($friend['name']) . "</p>";
 

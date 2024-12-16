@@ -37,7 +37,7 @@
         ?>
         <!-- ホームにいる場合はボタンを非表示 -->
         <?php if ($currentPage !== "index.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/index.php" class="common-btn">ホームに戻る</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views2/index.php" class="common-btn">ホームに戻る</a></li>
         <?php endif; ?>
         <li class="btn">
             <button id="sidebar-click-btn" class="btn">ヘルプ</button>
@@ -51,24 +51,24 @@
             </div>
         </li>
         <?php if ($currentPage !== "profile.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/login/profile.php" class="common-btn">プロフィール</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views2/login/profile.php" class="common-btn">プロフィール</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "friend.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/friend.php" class="common-btn">フレンド追加</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views2/friend.php" class="common-btn">フレンド追加</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "cardlist.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/cardlist.php" class="common-btn">新規カード追加/一覧</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views2/cardlist.php" class="common-btn">新規カード追加/一覧</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "card_edit.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/card_edit.php" class="common-btn">デッキ編集</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views2/card_edit.php" class="common-btn">デッキ編集</a></li>
         <?php endif; ?>
         <?php if ($currentPage !== "inbox.php"): ?>
-            <li class="btn"><a href="/DeepImpact/resources/views/inbox.php" class="common-btn">メッセージ</a></li>
+            <li class="btn"><a href="/DeepImpact/resources/views2/inbox.php" class="common-btn">メッセージ</a></li>
             <?php endif; ?>　
     </ul>
     <!-- フッターセクション -->
     <div>
-        <a href="/DeepImpact/resources/views/logout.php" class="logout-btn">ログアウト</a>
+        <a href="/DeepImpact/resources/views2/logout.php" class="logout-btn">ログアウト</a>
     </div>
 </div>
 
@@ -80,7 +80,7 @@
 
     function loadTutorialSidebar() {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/DeepImpact/resources/views/tutorial.php', true);
+        xhr.open('GET', '/DeepImpact/resources/views2/tutorial.php', true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 popupContentSidebar.innerHTML = xhr.responseText;

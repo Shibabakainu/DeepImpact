@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,9 +17,11 @@
             border: none;
             border-radius: 5px;
             position: fixed;
-            right: 130px; /* 「ベルアイコン」の左側に配置 */
+            right: 130px;
+            /* 「ベルアイコン」の左側に配置 */
             top: 20px;
-            z-index: 1000; /* 他の要素より前面に表示 */
+            z-index: 1000;
+            /* 他の要素より前面に表示 */
         }
 
         /* ベルアイコンのスタイル */
@@ -36,6 +39,7 @@
         }
     </style>
 </head>
+
 <body>
     <?php
     session_start();
@@ -93,7 +97,7 @@
     $stmt->close();
     $conn->close();
     ?>
-    
+
     <!-- メッセージボタン -->
     <!--<button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>-->
 
@@ -105,21 +109,21 @@
         <div class="friend-list">
             <?php if (!empty($friends)): ?>
                 <?php foreach ($friends as $friend): ?>
-<<<<<<<< HEAD:resources/views2/frieview.php
-                    <div class="friend-item" onclick="location.href='/DeepImpact/resources/views/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
-========
-                    <div class="friend-item">
->>>>>>>> 1948c0f8d4eaf6ad4993e15e9e68b85a168a01bf:resources/views/frieview.php
-                        <?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>
-                        <button onclick="location.href='/deepimpact/resources/views/send_message.php?friend_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">メッセージを送る</button>
-                        <button onclick="location.href='/deepimpact/resources/views/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">プロフィールを見る</button>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="no-friends">フレンドがいません。</div>
-            <?php endif; ?>
+                    <<<<<<<< HEAD:resources/views2/frieview.php
+                        <div class="friend-item" onclick="location.href='/DeepImpact/resources/views2/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
+                        ========
+                        <div class="friend-item">
+                            >>>>>>>> 1948c0f8d4eaf6ad4993e15e9e68b85a168a01bf:resources/views/frieview.php
+                            <?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>
+                            <button onclick="location.href='/deepimpact/resources/views2/send_message.php?friend_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">メッセージを送る</button>
+                            <button onclick="location.href='/deepimpact/resources/views2/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">プロフィールを見る</button>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="no-friends">フレンドがいません。</div>
+                <?php endif; ?>
         </div>
-        
+
         <div class="pending-requests">
             <div class="title">保留中のフレンドリクエスト</div>
             <?php if (!empty($pending_requests)): ?>
@@ -138,8 +142,9 @@
             <?php endif; ?>
         </div>
 
-        <button class="friend-search" onclick="location.href='/DeepImpact/resources/views/friend.php'">フレンド検索</button>
+        <button class="friend-search" onclick="location.href='/DeepImpact/resources/views2/friend.php'">フレンド検索</button>
         <button class="return" onclick="location.href='index.php'">戻る</button>
     </div>
 </body>
+
 </html>

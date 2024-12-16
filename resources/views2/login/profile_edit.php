@@ -3,12 +3,14 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロフィール編集</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/signup.css">
 </head>
+
 <body>
     <div class="header-container">
         <header>
@@ -51,7 +53,7 @@ session_start();
         <form id="profileForm" action="edit_confirmation.php" method="post" enctype="multipart/form-data">
             <label for="profile_image">プロフィール画像:</label><br>
             <input type="file" accept=".jpg,.jpeg,.png,.gif" id="profile_image" name="profile_image" onchange="previewImage()"><br><br>
-            <img id="profile_image_preview" src="<?php echo !empty($currentProfileImage) ? '/deepimpact/resources/views/login/profileicon/' . $currentProfileImage : '#' ?>" alt="プロフィール画像プレビュー" style="<?php echo !empty($currentProfileImage) ? 'display:block;' : 'display:none;' ?>"><br>
+            <img id="profile_image_preview" src="<?php echo !empty($currentProfileImage) ? '/deepimpact/resources/views2/login/profileicon/' . $currentProfileImage : '#' ?>" alt="プロフィール画像プレビュー" style="<?php echo !empty($currentProfileImage) ? 'display:block;' : 'display:none;' ?>"><br>
 
             <label for="name">User Name:</label><br>
             <input type="text" id="name" name="name" placeholder="<?php echo $currentName; ?>" value="<?php echo $currentName; ?>" required><br><br>
@@ -69,7 +71,7 @@ session_start();
             <input type="button" value="編集" onclick="showCustomAlert()">
         </form>
         <div class="separator"></div>
-        <button class="return" onclick="location.href='/DeepImpact/resources/views/login/profile.php'">戻る</button>
+        <button class="return" onclick="location.href='/DeepImpact/resources/views2/login/profile.php'">戻る</button>
     </div>
 
     <div id="overlay"></div>
@@ -83,7 +85,7 @@ session_start();
         function previewImage() {
             var fileInput = document.getElementById('profile_image');
             var reader = new FileReader();
-            reader.onload = function () {
+            reader.onload = function() {
                 var output = document.getElementById('profile_image_preview');
                 output.src = reader.result;
                 output.style.display = 'block';
@@ -129,4 +131,5 @@ session_start();
         document.getElementById("cancelButton").addEventListener("click", closeCustomAlert);
     </script>
 </body>
+
 </html>

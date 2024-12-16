@@ -61,14 +61,13 @@ foreach ($cards as $room_card_id => $card) {
         foreach ($card['voters'] as $voter) {
             $profileImage = htmlspecialchars($voter['profile_image'], ENT_QUOTES);
             echo '<div class="voter-info">';
-            echo '<img src="/DeepImpact/resources/views/login/profileicon/' . $profileImage . '" style="width:50px;height:auto;"  alt="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" title="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" class="voter-icon">';
+            echo '<img src="/DeepImpact/resources/views2/login/profileicon/' . $profileImage . '" style="width:50px;height:auto;"  alt="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" title="' . htmlspecialchars($voter['name'], ENT_QUOTES) . '" class="voter-icon">';
             echo '<div class="voter-name">' . htmlspecialchars($voter['name'], ENT_QUOTES) . '</div>'; // Display voter name
             echo '</div>'; // Close voter-info
         }
-        
+
         echo '</div>'; // Close voters
     }
 
     echo '</div>'; // Close selected-card
 }
-?>

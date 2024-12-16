@@ -13,7 +13,7 @@
 <body>
     <div class="header-container">
         <header>
-            <a href="/DeepImpact/resources/views/index.php"><img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="title-image"></a>
+            <a href="/DeepImpact/resources/views2/index.php"><img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="title-image"></a>
             <button class="menu-button" onclick="toggleSidebar(this)">メニュー</button>
         </header>
     </div>

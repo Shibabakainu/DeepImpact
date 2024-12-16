@@ -80,7 +80,7 @@ include 'db_connect.php'; // Include the database connection
                     </div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="back-btn" onclick="window.location.href='/DeepImpact/resources/views/index.php'">戻る</button>
+                    <button type="button" class="back-btn" onclick="window.location.href='/DeepImpact/resources/views2/index.php'">戻る</button>
                     <button type="submit" class="submit-btn">登録</button>
                 </div>
             </form>
@@ -96,7 +96,7 @@ include 'db_connect.php'; // Include the database connection
 
         // OKボタンがクリックされたときにindex.phpへ遷移
         document.getElementById('popup-ok-btn').addEventListener('click', function() {
-            window.location.href = '/DeepImpact/resources/views/index.php';
+            window.location.href = '/DeepImpact/resources/views2/index.php';
         });
     </script>
 </body>
