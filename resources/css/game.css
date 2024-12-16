@@ -739,3 +739,21 @@ input[type="range"]::-moz-range-thumb {
     color: #777;
     margin-left: 10px;
 }
+/* 選択されたカードが赤枠で光るアニメーション */
+.selected-card {
+    box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.8);
+    border: 0.3rem red solid;
+    animation: glow 1.5s infinite;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 30px 10px rgba(255, 0, 0, 1);
+    }
+    100% {
+        box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.6);
+    }
+}
