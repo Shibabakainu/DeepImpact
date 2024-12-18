@@ -465,7 +465,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             font-weight: bold;
         }
 
-        .story-card {
+        .ssory-card {
             width: 20%;
             /* 縦長にするため幅を狭める */
             height: 60%;
@@ -698,6 +698,52 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             font-size: 1.75rem;
             font-weight: bolder;
         }
+
+        .story-card {
+            width: 60%;
+            position: fixed;
+            top: 10px;
+            left: 370px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: larger;
+        }
+
+        .winner-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 999;
+        }
+
+        .winner-popup h2 {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .winner-popup h3 {
+            font-size: 24px;
+        }
+
+        .winner-popup p {
+            font-size: 18px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 
     <script type="text/javascript">
@@ -720,16 +766,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <div class="container">
         <div class="onhand">
             <div class="draw" id="draw">
-                <button id="draw-cards">カードをドロー</button>
             </div>
             <!-- Popup message element -->
             <div id="popup-message"></div>
 
-            <script>
-                document.getElementById("draw-cards").addEventListener("click", function() {
-                    this.style.display = "none"; // ボタンを非表示にする
-                });
-            </script>
 
             <div id="drawed-card-area" class="drawed-card-area">
             </div>
@@ -756,36 +796,28 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         <div id="turnDisplay">現在のターン： 1</div>
 
+
         <form method="POST">
             <input type="hidden" name="reset_game" value="1">
             <button class="newgame" type="submit">新しく始める</button>
         </form>
     </div>
+    <div id="ResultArea"></div>
 
 
+    <div id="story-card"></div>
 
-
-
-    </div>
     <div id='messages'></div>
 
-    <div id="chat-section">
-        <div id="chatbox"></div>
-        <input type="text" id="chat-input" placeholder="Enter message..." />
-        <button id="send-chat">Send</button>
-    </div>
+
 
     <div id="player-hand"></div>
     <div id="hand-section"></div>
-    <div id='drawCard'>
-        <button id='drawCard'>Draw Card</button>
+
+    <div id="scoreboard">
+        <p>スコアボード</p>
     </div>
 
-
-    <div class="top-left-text">
-        <p>現在のプレイヤー:</p>
-        <ul id="player-list"></ul>
-    </div>
 
     <div class="menu-">
         <div id="menu-popup-wrapper">
@@ -860,7 +892,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         let currentRoomId = '';
         let currentHand = [];
-        let hasVoted = false;
+
 
 
         function getQueryParam(param) {
@@ -888,25 +920,29 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 console.warn('user ID is not set');
             }
         });
+
         socket.on('playerJoined', (data) => {
             console.log(data);
             updatePlayerList(data.players);
         });
 
-        document.getElementById('send-chat').addEventListener('click', () => {
-            const message = document.getElementById('chatMessgae').value;
-            const roomId = document.getElementById('roomId').value;
 
-            if (message && currentRoomId) {
-                socket.emit('chat_message', {
-                    message: message,
-                    room_id: currentRoomId
-                });
-                document.getElementById('chatMessage').value = '';
-            }
+
+        socket.on("storyDisplay", (data) => {
+
+            const {
+                story
+            } = data;
+            console.log(story);
+            displayStory(story);
         });
 
-
+        function displayStory(story) {
+            const storyDisplay = document.getElementById('story-card');
+            if (storyDisplay) {
+                storyDisplay.textContent = `${story}`;
+            }
+        }
 
         socket.on('disconnect', () => {
             console.log('Disconnected from the server');
@@ -925,6 +961,16 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                     }
                 });
             }
+        })
+        socket.on('updatescore', (data) => {
+            const players = data;
+            const scoreList = document.getElementById('scoreboard');
+            scoreList.innerHTML = '';
+            players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = `${player.name}:${player.score}`;
+                scoreList.appendChild(li);
+            })
         })
 
         socket.on('gameStarted', (data) => {
@@ -948,6 +994,27 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             });
         });
 
+        socket.on("votingResults", (data) => {
+            const {
+                votes,
+                roomId
+            } = data;
+            console.log('投票結果', votes);
+            const ResultArea = document.getElementById('ResultArea');
+            ResultArea.innerHTML = '';
+
+            for (const cardId in votes) {
+                const voteElement = document.createElement("div");
+                voteElement.textContent = `カードID: ${cardId} 投票数: ${votes[cardId]}`;
+                ResultArea.appendChild(voteElement);
+            }
+
+            socket.emit('nextTurn', {
+                roomId
+            });
+        })
+
+
         socket.on('player_list', (data) => {
             if (!playersList) {
                 console.error('playersList');
@@ -965,7 +1032,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 li.textContent = player;
                 playersList.appendChild(li);
             });
-
             console.log('player list updateed:', data.players);
         });
 
@@ -974,16 +1040,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             messages.innerHTML += `<p>${data.message}</p>`;
         });
 
-        sendChatBtn.addEventListener('click', () => {
-            const message = chatInput.value;
-            if (message) {
-                socket.emit('chat_message', {
-                    room_id: currentRoomId,
-                    message: message
-                });
-                chatInput.value = '';
-            }
-        });
+
 
         socket.on('played_card', (data) => {
             const li = document.createElement('li');
@@ -1011,33 +1068,37 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             const cards = data.cards;
             const hand = document.getElementById('drawed-card-area');
             hand.innerHTML = ''; // 既存のカードをクリア
+
             cards.forEach((cardObj) => {
-                const cardString = cardObj.card;
-                const [rank, suit] = cardString.split(' of ');
+                const card = cardObj.card; // cardオブジェクトを取得
+                const imaggePath = `../../images/${card.image}`;
+
+                // カードに画像パスと名前が含まれている場合
+                const cardImage = card.image; // 画像ファイルパス
+                const cardName = card.name; // カード名
+
+                if (!cardImage || !cardName) {
+                    console.error('Invalid card data:', card);
+                    return; // 画像または名前がない場合、カードをスキップ
+                }
 
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
                 cardElement.dataset.cardId = cardObj.id;
 
-                const rankElement = document.createElement('div');
-                rankElement.className = 'rank';
-                rankElement.textContent = rank;
+                // カードの画像を表示
+                const imgElement = document.createElement('img');
+                imgElement.src = imaggePath;
+                imgElement.className = 'card-image';
 
-                const suitElement = document.createElement('div');
-                suitElement.className = 'suit';
-                suitElement.textContent = getSuitSymbol(suit);
-
-                cardElement.appendChild(rankElement);
-                cardElement.appendChild(suitElement);
+                // カードに画像と名前を追加
+                cardElement.appendChild(imgElement);
                 hand.appendChild(cardElement);
 
                 cardElement.addEventListener('click', () => {
-
-                    const cardId = cardElement.dataset.cardId;
-                    console.log(`Selected card: ${cardString}`);
                     socket.emit('playCard', {
                         roomId: roomId,
-                        cardId: cardId
+                        cardId: cardObj.id
                     });
                 });
 
@@ -1045,45 +1106,147 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             console.log('dealCards complete');
         }); // サーバーからカードがプレイされた際の処理
 
+
+        socket.on('turnStarted', (data) => {
+            const {
+                turn,
+                players
+            } = data;
+            const turnDisplay = document.getElementById('turnDisplay');
+            if (turnDisplay) {
+                turnDisplay.textContent = `現在のターン:${turn}`;
+            }
+
+            const playerList = document.getElementById('player-list');
+            if (playerList) {
+                playerList.innerHTML = '';
+
+                players.forEach((player) => {
+                    const playerElement = document.createElement('div');
+                    playerElement.classList.add('player-info');
+                    playerElement.innerHTML =
+                        `<p>User ID : ${player.userId}</p>
+                    <p>Score: ${player.score}</p>`;
+                    playerList.appendChild(playerElement);
+                });
+            }
+
+            const currentPlayer = player.find((p) => p.hand !== null);
+            const handContainer = document.getElementById('drawed-card-area');
+            if (handconatiner && currentPlayer) {
+                handconatiner.innerHTML = '';
+
+                currentPlayer.hand.foreach((card) => {
+                    const cardElement = document.createElement('div');
+                    cardElement.classList.add('card');
+                    cardElement.textContent = card;
+                    handcontainer.appendChild(cardElement);
+                })
+            }
+        })
+
+        socket.on("nextRound", (data) => {
+            const {
+                message,
+                round
+            } = data;
+            console.log(message);
+            console.log(round);
+
+            const vote_area = document.getElementById('vote-area');
+            vote_area.innerHTML = '';
+            updateRoundDisplay(round);
+        })
+
+        function updateRoundDisplay(round) {
+            const roundDisplay = document.getElementById('turnDisplay');
+            if (roundDisplay) {
+                roundDisplay.textContent = `現在のターン: ${round}`;
+            }
+        }
+
+        socket.on('updateVotes', (data) => {
+            const {
+                votes,
+                cardId,
+                player,
+                userName
+            } = data;
+            for (const cardId in votes) {
+                const voterList = votes[cardId];
+                console.log(`card ${cardId} has votes from`, voterList);
+            }
+            console.log(`${playerId}が${votes}に投票しました${userName}`);
+        })
+
+        socket.on('gameEnd', (data) => {
+            const {
+                message,
+                winners,
+                highestScore
+            } = data;
+            alert(message);
+            displayWinner(winners, highestScore);
+        });
+
+        function displayWinner(winners, highestScore) {
+            const winnerlist = winners.map(winner => `<p>${winner.name} - ${winner.score}天</p>`).join('');
+            const winnerMessage = `
+            <div class="winner-popup">
+                  <h2>ゲーム終了！</h2>
+                  <h3>勝者:</h3>
+                  ${winnerList}
+                  <p>最高スコア: ${highestScore}</p>
+                  <button onclick="resetGame()">次のゲームへ</button>
+                  </div>
+                  `;
+
+            document.body.innerHTML += winnerMessage;
+        }
         socket.on('cardPlayed', (data) => {
 
             console.log('Card played:', data);
+
             // プレイヤーIDとカード情報を取得
             const {
                 playerId,
                 card
             } = data;
+
+            console.log(card);
+
+
             // プレイされたカードを表示する場所（例えば、場に出すカードを表示するエリア）
             const playedArea = document.getElementById('vote-area');
             const cardElement = document.createElement('div');
             cardElement.className = 'card played';
-            const [rank, suit] = card.card.split(' of '); // カード情報を分割
-            const rankElement = document.createElement('div');
-            rankElement.className = 'rank';
-            rankElement.textContent = rank;
-            const suitElement = document.createElement('div');
-            suitElement.className = 'suit';
-            suitElement.textContent = getSuitSymbol(suit);
-            cardElement.appendChild(rankElement);
+            cardElement.dataset.cardId = card.id;
+            console.log(card.id);
 
-            cardElement.appendChild(suitElement);
 
+            const imaggePath = `../../images/${card.card.image}`;
+
+            console.log(imaggePath);
+            // カードの画像を表示
+            const imgElement = document.createElement('img');
+            imgElement.src = imaggePath;
+            imgElement.className = 'card-image';
+
+            // カードに画像と名前を追加
+            cardElement.appendChild(imgElement);
             cardElement.addEventListener("click", () => {
-                if (hasVoted) {
-                    alert("すでに投票済み");
-                    retun;
-                }
-                socket.emit('vote', card.id);
+                socket.emit('vote', {
+                    cardId: card.id,
+                    playerId: playerId,
+                    roomId: roomId
+                });
                 hasVoted = true;
+                console.log('投票しました');
             })
 
             // 場に出すカードを追加
-
             playedArea.appendChild(cardElement);
-
-
             console.log(`Card played by player ${playerId}: ${card.card}`);
-
         });
 
         function generateNewUserId() {
@@ -1149,63 +1312,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             })
         }
 
-        function playCard(card) {
-            if (!card) {
-                console.error('no card selected');
-                return;
-            }
-
-            const roomId = getRoomId();
-            if (!roomId) {
-                console.error('no room');
-                return;
-            }
-            const message = {
-                type: 'play_card',
-                card: card,
-                room_id: roomId
-            };
-            socket.send(JSON.stringify(message));
-        }
-
-        function voteForCard(card) {
-            ws.send(JSON.stringify({
-                type: 'vote',
-                card: card
-            }));
-        }
-
-        function updateHand(hand) {
-            const handContainer = document.getElementById('hand');
-            handContainer.innerHTML = '';
-
-            // プレイヤーの手札を更新する処理を実装
-            hand.forEach(card => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card';
-                cardElement.innerText = card;
-                cardElement.onclick = function() {
-                    playcard(card);
-                }
-                handcontainer.appendChild(cardElement);
-            });
-        }
-
-        function getSuitSymbol(suit) {
-            switch (suit) {
-                case 'Hearts':
-                    return '♥';
-                case 'Diamonds':
-                    return '♦';
-                case 'Clubs':
-                    return '♣';
-                case 'Spades':
-                    return '♠';
-                default:
-                    return suit;
-            }
-        }
-
         function sendMessage() {
             var message = document.getElementById('message').value;
             ws.send(JSON.stringify({
@@ -1213,24 +1319,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 message: message
             }));
             document.getElementById('message').value = '';
-        }
-
-        function getRoomId() {
-            return localStorage.getItem('roomId');
-        }
-
-        function getSelectedCard() {
-            const selectedCardElement = document.quarySelector('.selected-card');
-            return selectedCardElement ? selectedCardElement.dataset.card : null;
-        }
-
-
-
-        function animateMessage(messageElement) {
-            messageElement.style.animation = 'slide-in 10s linear forwards';
-            setTimeout(function() {
-                messageElement.remove();
-            }, 10000);
         }
 
         document.getElementById('menu-click-btn').addEventListener('click', function() {
@@ -1285,12 +1373,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             console.log('client socket id:', socket.id);
         };
     </script>
-
-    <?php
-    // 表示するテキストをPHPで定義
-    $text = "これは右下に表示されるテキストです";
-    echo "<div class='bottom-right-text'>{$text}</div>";
-    ?>
 
 </body>
 

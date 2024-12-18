@@ -80,15 +80,23 @@ include 'db_connect.php'; // Include the database connection
                 while ($friend = $result->fetch_assoc()) {
                     echo "<div class='friend-info'>";
                     if (!empty($friend['profile_image'])) {
-                        echo "<img src='/Deepimpact/resources/views/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
+                        echo "<img src='/Deepimpact/resources/views2/login/profileicon/" . htmlspecialchars($friend['profile_image']) . "' alt='Profile Icon' class='profile-icon'>";
                     } else {
-                        echo "<img src='/Deepimpact/resources/views/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
+                        echo "<img src='/Deepimpact/resources/views2/login/profileicon/icon.png' alt='Default Icon' class='profile-icon'>";
                     }
                     echo "<p>" . htmlspecialchars($friend['name']) . "</p>";
-                    echo "<form class='friend-request-form'>";
-                    echo "<input type='hidden' name='friend_id' value='" . htmlspecialchars($friend['id']) . "'>";
-                    echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
-                    echo "</form>";
+
+                    if ($friend['id'] == $user_id) {
+                        // If the user is the logged-in user, display "ログイン中"
+                        echo "<p>　あなた　　</p>";
+                    } else {
+                        // Display the friend request button for other users
+                        echo "<form class='friend-request-form'>";
+                        echo "<input type='hidden' name='friend_id' value='" . htmlspecialchars($friend['id']) . "'>";
+                        echo "<button type='submit' class='add_friend_button'>フレンド申請</button>";
+                        echo "</form>";
+                    }
+
                     echo "</div>";
                 }
             } else {
@@ -115,21 +123,22 @@ include 'db_connect.php'; // Include the database connection
                 const formData = new FormData(event.target);
 
                 fetch('send_friend_request.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const popup = document.getElementById('popup');
-                    popup.textContent = data.message;
-                    popup.style.display = 'block';
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const popup = document.getElementById('popup');
+                        popup.textContent = data.message;
+                        popup.style.display = 'block';
 
-                    setTimeout(() => {
-                        popup.style.display = 'none';
-                    }, 3000);
-                });
+                        setTimeout(() => {
+                            popup.style.display = 'none';
+                        }, 3000);
+                    });
             }
         });
     </script>
 </body>
+
 </html>

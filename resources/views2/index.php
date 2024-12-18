@@ -11,6 +11,23 @@ $loggedIn = isset($_SESSION['user_id']);
     <title>Story Teller</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/index.css">
     <style>
+        /* メッセージボタンのスタイル */
+        .message-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            position: fixed;
+            right: 130px;
+            /* 「ベルアイコン」の左側に配置 */
+            top: 20px;
+            z-index: 1000;
+            /* 他の要素より前面に表示 */
+        }
+
         /* ポップアップのスタイル */
         #login-popup-wrapper {
             display: none;
@@ -46,6 +63,85 @@ $loggedIn = isset($_SESSION['user_id']);
 </head>
 
 <body>
+    <!-- メッセージボタン -->
+    <!--<button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>-->
+
+    <!-- <img src="/DeepImpact/images/bell.jpg" style="max-width: 5%; height: auto; position: fixed; right: 200px; top: 100px;" class="bell"> -->
+
+    <!-- メッセージボックスのポップアップ -->
+    <div id="messageBox" class="message-box">
+        <div class="message-header">
+            <span class="close-btn">&times;</span>
+            <button id="dragButton" class="drag-button">ドラッグで移動</button>
+        </div>
+        <div class="message-content">
+            <p>この機能は撤廃しました。</p>
+        </div>
+    </div>
+
+    <script>
+        const bellImage = document.querySelector('.bell');
+        const messageBox = document.getElementById('messageBox');
+        const closeBtn = document.querySelector('.close-btn');
+        const dragButton = document.getElementById('dragButton');
+
+        bellImage.addEventListener('click', function(event) {
+            const rect = bellImage.getBoundingClientRect();
+            messageBox.style.top = (rect.bottom + window.scrollY + 10) + 'px'; // 修正: 数値を文字列に変換
+            messageBox.style.left = (rect.left + window.scrollX) + 'px'; // 修正: 数値を文字列に変換
+            messageBox.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', function() {
+            messageBox.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target !== messageBox && !messageBox.contains(event.target) && event.target !== bellImage) {
+                messageBox.style.display = 'none';
+            }
+        });
+
+        let offsetX = 0,
+            offsetY = 0,
+            isDragging = false;
+
+        dragButton.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            offsetX = e.clientX - messageBox.getBoundingClientRect().left;
+            offsetY = e.clientY - messageBox.getBoundingClientRect().top;
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        });
+
+        function drag(e) {
+            if (isDragging) {
+                messageBox.style.left = (e.clientX - offsetX) + 'px'; // 修正: 数値を文字列に変換
+                messageBox.style.top = (e.clientY - offsetY) + 'px'; // 修正: 数値を文字列に変換
+            }
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+    </script>
+
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+
+    <?php if (!$loggedIn) : ?>
+        <div id="login-popup-wrapper" style="display: flex;">
+            <div id="login-popup-inside">
+                <div class="text">ログインしてください</div>
+                <button onclick="window.location.href='/DeepImpact/resources/views2/login/login.php'">ログインページへ</button>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <?php include 'header.php'; ?>
     <div class="main-container">
         <img src="/DeepImpact/images/sttera.png" alt="Story Teller" class="header-image">
@@ -53,70 +149,74 @@ $loggedIn = isset($_SESSION['user_id']);
             <button onclick="window.location.href='room_setting.php'">ルーム作成</button>
             <button onclick="window.location.href='room_search.php'">ルーム検索</button>
             <button onclick="window.location.href='frieview.php'">フレンド</button>
-            <button id="index-click-btn">ルール</button>
+            <button id="index-click-btn">ヘルプ</button>
             <div id="index-popup-wrapper">
                 <div id="index-popup-inside">
-                    <div class="text">
-                        <div id="index-close">X</div>
-                        <p>※注意事項※</p>
-                        <ul>
-                            <li>ゲーム推奨プレイ人数は6人となっています。</li><br>
-                            <li>あとは適当に追加</li>
-                        </ul>
-                        <p>ゲーム開始時</p>
-                        <ul>
-                            <li>各プレイヤーに5枚のカードを配ります。</li>
-                        </ul>
-                        <p>カードの提出</p>
-                        <ul>
-                            <li>物語を確認し、自分の手札から物語のフレーズに合うと思うカードを1枚選択し、待機します。</li><br>
-                            <li>全てのプレイヤーが選び終えると、画面中央に選ばれたカードが表示されます。</li>
-                        </ul>
-                        <p>投票</p>
-                        <ul>
-                            <li>各プレイヤーは、物語のフレーズに1番あっていると思うカードを選び、投票することができます。</li><br>
-                            <li>注意として、自身が提出したカードに投票することはできません。</li>
-                        </ul>
-                        <p>得点</p>
-                        <ul>
-                            <li>投票が入ったカードを出したプレイヤーは、投票1つにつき、+1点を獲得します。</li><br>
-                            <li>1番票を集めたカードに、投票をしていた場合には投票者にも+1点を獲得します。</li>
-                        </ul>
-                        <p>ラウンド終了</p>
-                        <ul>
-                            <li>各プレイヤーは新しいカードを1枚手に入れ、手札が5枚に戻ります。</li>
-                        </ul>
-                        <p>ゲーム終了</p>
-                        <ul>
-                            <li>物語の決められたチャプター(ターン)が全て終えると、ゲーム終了です。</li><br>
-                            <li>最も得点の多いプレイヤーの勝利となります。</li>
-                        </ul>
-                    </div>
+                    <div id="index-close">X</div>
+                    <div id="popup-content"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php if (!$loggedIn) : ?>
-        <div id="login-popup-wrapper" style="display: flex;">
-            <div id="login-popup-inside">
-                <div class="text">ログインしてください</div>
-                <button onclick="window.location.href='/DeepImpact/resources/views/login/login.php'">ログインページへ</button>
-            </div>
-        </div>
-    <?php endif; ?>
+    <div id="imageModal" class="modal" style="display: none;">
+        <span id="closeModal" class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
 
     <script>
         const indexClickBtn = document.getElementById('index-click-btn');
         const indexPopupWrapper = document.getElementById('index-popup-wrapper');
         const indexClose = document.getElementById('index-close');
+        const popupContent = document.getElementById('popup-content');
 
-        // ボタンをクリックしたときにポップアップを表示させる
+        function loadTutorial() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/DeepImpact/resources/views2/tutorial.php', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        popupContent.innerHTML = xhr.responseText;
+
+                        const clickableImages = document.querySelectorAll('.clickableImage');
+
+                        clickableImages.forEach(image => {
+                            image.addEventListener('click', function() {
+                                const modal = document.getElementById('imageModal');
+                                const modalImage = document.getElementById('modalImage');
+                                modal.style.display = 'flex';
+                                modalImage.src = this.src;
+                            });
+                        });
+
+                        const closeModal = document.getElementById('closeModal');
+                        const modal = document.getElementById('imageModal');
+                        closeModal.addEventListener('click', function() {
+                            modal.style.display = 'none';
+                        });
+
+                        modal.addEventListener('click', function(e) {
+                            if (e.target === modal) {
+                                modal.style.display = 'none';
+                            }
+                        });
+
+                    } else {
+                        console.error("Error loading tutorial: " + xhr.status + " " + xhr.statusText);
+                    }
+                }
+            };
+            xhr.onerror = function() {
+                console.error("Request failed.");
+            };
+            xhr.send();
+        }
+
         indexClickBtn.addEventListener('click', () => {
             indexPopupWrapper.style.display = "block";
+            loadTutorial();
         });
 
-        // ポップアップの外側又は「x」のマークをクリックしたときポップアップを閉じる
         indexPopupWrapper.addEventListener('click', e => {
             if (e.target.id === indexPopupWrapper.id || e.target.id === indexClose.id) {
                 indexPopupWrapper.style.display = 'none';

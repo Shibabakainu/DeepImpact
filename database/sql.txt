@@ -9,10 +9,15 @@ USE storyteller;
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
+
     email           VARCHAR(100)    NOT NULL UNIQUE,
+
     password        VARCHAR(255)    NOT NULL,
+
     profile_image   VARCHAR(255),
+
     name            VARCHAR(100)    NOT NULL UNIQUE,
+
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -33,29 +38,44 @@ VALUES (
 
 -- rooms テーブルの作成
 DROP TABLE IF EXISTS rooms;
+
 CREATE TABLE rooms (
+
     room_id         INT             AUTO_INCREMENT PRIMARY KEY,
+
     room_name       VARCHAR(100)    NOT NULL,
+
     host_id         INT             NOT NULL,
+
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+
     max_players     INT             DEFAULT 6,
+
     status ENUM('waiting', 'in_game', 'finished') DEFAULT 'waiting',
+
     current_players INT             DEFAULT 1,
     turn_number     INT             DEFAULT 1,
     turn_updated    TINYINT(1)      DEFAULT 0,
     FOREIGN KEY (host_id) REFERENCES users(id) ON DELETE CASCADE
+
 );
 
 -- room_passwords テーブルの作成
 DROP TABLE IF EXISTS room_passwords;
+
 CREATE TABLE room_passwords (
+
     room_id         INT             PRIMARY KEY,
+
     password_hash   VARCHAR(255)    NOT NULL,
+
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
+
 );
 
 -- room_players テーブルの作成
 DROP TABLE IF EXISTS room_players;
+
 CREATE TABLE room_players (
     id                  INT             AUTO_INCREMENT PRIMARY KEY,
     room_id             INT             NOT NULL,
@@ -74,15 +94,25 @@ CREATE TABLE room_players (
 
 -- friends テーブルの作成
 DROP TABLE IF EXISTS friends;
+
 CREATE TABLE friends (
+
     id              INT             AUTO_INCREMENT PRIMARY KEY,
+
     user_name       VARCHAR(100)    NOT NULL,
+
     friend_name     VARCHAR(100)    NOT NULL,
+
     status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+
     requested_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (user_name) REFERENCES users(name) ON DELETE CASCADE,
+
     FOREIGN KEY (friend_name) REFERENCES users(name) ON DELETE CASCADE,
+
     UNIQUE(user_name, friend_name)
+
 );
 
 -- messages テーブルの作成 (room_id を NULL 許可に変更)
@@ -101,6 +131,7 @@ CREATE TABLE messages (
 
 -- Card テーブルの作成
 DROP TABLE IF EXISTS Card;
+
 CREATE TABLE Card (
     Card_id INT PRIMARY KEY AUTO_INCREMENT,
     Card_name VARCHAR(100) NOT NULL,
@@ -234,36 +265,63 @@ DROP TRIGGER IF EXISTS after_accept_friend;
 -- 相互フレンドシップを更新するイベントの作成
 DELIMITER //
 
+
+
 CREATE EVENT update_reciprocal_friends
+
 ON SCHEDULE EVERY 1 MINUTE
+
 DO
+
 BEGIN
+
     DECLARE done INT DEFAULT 0;
+
     DECLARE current_user_name VARCHAR(100);
+
     DECLARE current_friend_name VARCHAR(100);
+
     DECLARE cur CURSOR FOR 
+
         SELECT user_name, friend_name FROM friends WHERE status = 'accepted';
+
+
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
+
+
     OPEN cur;
+
     read_loop: LOOP
+
         FETCH cur INTO current_user_name, current_friend_name;
+
         IF done THEN
+
             LEAVE read_loop;
+
         END IF;
 
         IF NOT EXISTS (SELECT 1 FROM friends WHERE user_name = current_friend_name AND friend_name = current_user_name) THEN
             INSERT INTO friends (user_name, friend_name, status) VALUES (current_friend_name, current_user_name, 'accepted');
+
         ELSE
             UPDATE friends SET status = 'accepted' WHERE user_name = current_friend_name AND friend_name = current_user_name;
+
         END IF;
+
     END LOOP;
+
     CLOSE cur;
+
 END //
+
+
 
 DELIMITER ;
 
 -- 権限の付与
 GRANT ALL PRIVILEGES ON storyteller.* TO 'username'@'localhost' IDENTIFIED BY 'password';
+
 FLUSH PRIVILEGES;

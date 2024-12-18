@@ -1,14 +1,16 @@
 <?php
-session_start(); 
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>サインアップ</title>
     <link rel="stylesheet" href="/DeepImpact/resources/css/signup.css">
 </head>
+
 <body>
     <div class="header-container">
         <header>
@@ -38,7 +40,7 @@ session_start();
             <input type="button" value="作成" onclick="showCustomAlert()">
         </form>
         <div class="separator"></div>
-        <button class="return" onclick="location.href='/DeepImpact/resources/views/login/login.php'">戻る</button>
+        <button class="return" onclick="location.href='/DeepImpact/resources/views2/login/login.php'">戻る</button>
     </div>
 
     <div id="overlay"></div>
@@ -52,7 +54,7 @@ session_start();
         function previewImage() {
             var fileInput = document.getElementById('profile_image');
             var reader = new FileReader();
-            reader.onload = function () {
+            reader.onload = function() {
                 var output = document.getElementById('profile_image_preview');
                 output.src = reader.result;
                 output.style.display = 'block';
@@ -98,4 +100,5 @@ session_start();
         document.getElementById("cancelButton").addEventListener("click", closeCustomAlert);
     </script>
 </body>
+
 </html>
