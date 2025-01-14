@@ -86,13 +86,7 @@
                 <u>Draw Cards</u>ボタンでカードを引くことができます。<br>
                 <br>
                 <img src="/DeepImpact/images/tutorial_2.jpg" alt="説明画像" style="max-width: 40%; height: auto;" class="clickableImage"><br>
-                カードを手札に加えたら画面上部の物語を確認し、役に適していると思うカードをクリックし提出しましょう。役は、眼立つように太文字で書かれています。
-                <br>
-                <img src="/DeepImpact/images/tutorial_3.jpg" alt="説明画像" style="max-width: 40%; height: auto;" class="clickableImage"><br>
-                全員のカードが出そろったら、その中で「今回の役に一番ふさわしい」と思うカードをクリックして投票します。<br>
-                <img src="/DeepImpact/images/tutorial_4.jpg" alt="説明画像" style="max-width: 40%; height: auto;" class="clickableImage"><br>
-                最も選ばれたカードを出した人に一点入ります。<br>
-                この流れを五回繰り返し、最も選ばれた回数が多い人の勝利になります。<br>
+                カードを手札に加えたら画面上部の物語を確認し、キーワードに適していると思うカードをクリックし提出しましょう。
             </div>
         </div>
     </details>
@@ -100,12 +94,7 @@
     <details class="details">
         <summary class="summary">質問</summary>
         <div class="answer">
-            <div class="answerInner">
-                Q.最低何人からプレイできますか？<br>
-                A.最低三人からプレイできます。<br>
-                Q.新しいカードを追加するにはどうすれば良いか？<br>
-                A.新カード追加/一覧からカードを追加してください。<br>
-            </div>
+            <div class="answerInner">切手を舐めると２キロカロリーを摂取できる。</div>
         </div>
     </details>
     <br />
