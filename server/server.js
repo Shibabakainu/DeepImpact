@@ -21,7 +21,8 @@ const io = new Server(server, {
 });
 
 const db = mysql.createConnection({
-  host: "192.168.3.79",
+  //host: "192.168.3.79",
+  host: "192.168.1.100",
   user: "thread",
   password: "PassWord1412%",
   database: "storyteller",
@@ -100,7 +101,7 @@ io.on("connection", (socket) => {
   
   // ストーリーリストを定義（ラウンドごと）
 const stories = [
-  "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。しかし魔王が現れ軍勢を率いて国を支配しまし。魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。そんな時、小さな町に住むが立ち上がりました。正義感の強い若い戦士",
+  "昔々、平和な国があり、その国は緑豊かな土地と、穏やかな人々に恵まれていました。\nしかし魔王が現れ軍勢を率いて国を支配しまし。\n魔王は強力な魔法が使え、心臓が３つあり、国は恐怖に包まれました。\n人々は魔王に立ち向かう勇者が現れるのを待ち望んでいました。\nそんな時、小さな町に住むが立ち上がりました。正義感の強い若い戦士",
   "正義感の強い若い戦士は魔王を倒しに行こうと決心しました。しかし３つの心臓と軍勢相手に一人で行くのはあまりにも無謀だと思いました。それに３つの心臓はそれぞれ火と水と風の剣でないと効果がないことが分かりその剣の持ち主を探しに行きました。まず火の洞窟へ持ち主に会いに行きました。火の剣の持ち主は<b>すごく協力的で体中に傷があり鋭い目</b>をしていました。",
   "次に水の剣の持ち主に会いに行きました。水の剣の持ち主は協力してくれたものの<b>愛想の悪い面倒くさがりの性格</b>でした。",
   "最後に風の剣の持ち主に会いに行きました。風の剣の持ち主は<b>警戒心が強く目力も強い背の高い力持ち</b>でした。最後に風の剣の持ち主に会いに行きました。風の剣の持ち主は<b>警戒心が強く目力も強い背の高い力持ち</b>でした。",
@@ -187,6 +188,7 @@ const stories = [
           votes:{},
           round:1,
           currentPlayers: 0,
+          votedPlayers:{},
           maxPlayers: maxPlayers,
         };
         players[roomId] = [];
@@ -268,6 +270,7 @@ const stories = [
         hand: [],
         score: 0,
       });
+
       console.log("ルーム内のプレーヤーを更新しました");
       socket.emit("joinRoomSuccess", { roomId });
       socket.to(roomId).emit("playerjoined", { players: room.players });
@@ -321,7 +324,7 @@ const stories = [
     room.cardPlayedBy.push(player.userId);
 
     // すべてのプレイヤーに場に出されたカードを通知
-    io.to(roomId).emit("cardPlayed", { playerId: player.userId, card: card });
+    io.to(roomId).emit("cardPlayed", { playerId: userId, card: card });
 
     if(room.cardPlayedBy.length === room.players.length){
       console.log('全プレイヤーがカードを提出しました');
@@ -330,26 +333,39 @@ const stories = [
   });
 
   socket.on("leaveRoom", (roomId) => {
-    for (const roomId in rooms) {
-      const playerIndex = rooms[roomId].players.findIndex(
+    for (const id in rooms) {
+      const playerIndex = rooms[id].players.findIndex(
         (p) => p.socketId === socket.id
       );
       if (playerIndex !== -1) {
-        const player = rooms[roomId].players[playerIndex];
-        rooms[roomId].players.splice(player, playerIndex);
-        if (rooms[roomId].player.length === 0) {
-          delete rooms[roomId];
+        const player = rooms[id].players[playerIndex];
+        rooms[id].players.splice(playerIndex,1);
+        console.log(rooms[id].players.length);
+        if (rooms[id].players.length === 0) {
+
+          delete rooms[id];
+          deleteRoomFromDB(id);
+          console.log('0人になったため削除します');
+          
         } else {
-          io.to(roomId).emit("playerleft", { players: rooms[roomId].players });
+          io.to(id).emit("playerleft", { players: rooms[id].players });
         }
-        socket.leave(roomId);
+        socket.leave(id);
         console.log(
-          `プレイヤー${player.userId}がルーム${roomId}から退室されました`
+          `プレイヤー${player.userId}がルーム${id}から退室されました`
         );
         break;
       }
     }
   });
+
+  socket.on('entryGame',(data) => {
+    console.log('entry');
+    const roomId = data.roomId;
+    console.log(data.roomId);
+    console.log(roomId);
+    io.to(roomId).emit('gameStarted',{roomId:roomId});
+  })
 
   socket.on("startGame", ({ roomId }) => {
     const room = rooms[roomId];
@@ -384,25 +400,36 @@ const stories = [
   });
 
   socket.on("vote", (data) => {
-    const { cardId, playerId, roomId} = data;
+    const { cardId, userId, playerId, roomId} = data;
     const room = rooms[roomId];
-    console.log('vote');
     if(room.cardPlayedBy.length !== room.players.length){
-      socket.emit('vottingerror',{
+      socket.emit('message',{
         message: '全プレイヤーがカードを出し終えていません',
       });
+      console.log('error');
       return;
     }
     
+    if(!room.votedPlayers)room.votedPlayers ={};
+
+    if(room.votedPlayers[userId]){
+      socket.emit('message',{
+        message:'すでに投票ずみです',
+      });
+      return;
+    }
+    room.votedPlayers[userId] = true;
+
     let userName;
+    let playerName;
     const players= room.players;
 
     if(players){
       const player = players.find(player => player.userId === playerId);
-      
+      const user = players.find(player => player.userId === userId);
       if(player){
-
         userName = player.name;
+        playerName = user.name;
       }else{
         console.log('playern not found');
       } 
@@ -412,11 +439,17 @@ const stories = [
     if(!room.votes[cardId]) room.votes[cardId] = [];
 
     room.votes[cardId].push({ playerId, userName });
-    
+    const message=`${playerName}が${cardId}に投票しました`;
+    io.to(roomId).emit("message",{message:message});
 
-    io.emit("updateVotes",{ votes:votes, cardId:cardId });
+    io.to(roomId).emit("updateVotes",{ votes:room.votes, cardId:cardId ,player:playerId,userName:userName});
     
-    if(Object.keys(room.votes).length === room.players.length){
+    console.log(room.votes);
+
+    const totalVotes = Object.values(room.votedPlayers).length;
+
+
+    if(totalVotes === room.players.length){
       console.log('全員が投票しました。結果を集計します');
       const results = room.votes;
       io.to(roomId).emit("votingResults",{results:results, roomId:roomId});
@@ -435,7 +468,7 @@ const stories = [
     const story =stories[room.round] || "冒険は終わった";
     io.to(roomId).emit('storyDisplay',{story:story});
     
-    if(room.round > 6){
+    if(room.round > 3){
       endgame(roomId);
     }else{
       io.to(roomId).emit('nextRound',{
@@ -529,6 +562,7 @@ const stories = [
   room.votes={};
   room.playedcards=[];
   room.cardPlayedBy=[];
+  room.votedPlayers={};
 
   });
 
@@ -568,8 +602,21 @@ const stories = [
       });
     })
   }
+
+  function deleteRoomFromDB(roomId) {
+    const query = "DELETE FROM rooms WHERE room_id = ?";
+  
+    db.query(query, [roomId], (err, result) => {
+      if (err) {
+        console.error("ルームの削除中にエラーが発生しました:", err);
+        return;
+      }
+      console.log(`ルームID ${roomId} が正常に削除されました。`);
+    });
+  }
+
 });
 // サーバーをポート8080で起動
 server.listen(8080, () => {
   console.log("Server is running on port 8080");
-});
+  });

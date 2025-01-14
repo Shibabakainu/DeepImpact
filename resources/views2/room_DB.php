@@ -3,11 +3,8 @@ session_start();
 include 'db_connect.php';
 
 // 最大ルーム数の上限
-<<<<<<<< HEAD:resources/views2/room_DB.php
-$max_rooms = 50;
-========
-$max_rooms = 100;
->>>>>>>> 1948c0f8d4eaf6ad4993e15e9e68b85a168a01bf:resources/views/room_DB.php
+
+$max_rooms = 300;
 
 // 現在のルーム数をカウント
 $sql_count_rooms = "SELECT COUNT(*) as room_count FROM rooms";
@@ -139,4 +136,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
-?>

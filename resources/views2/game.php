@@ -35,11 +35,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 <head>
     <meta charset="UTF-8">
     <title>game</title>
-    <link rel="stylesheet" href="/DeepImpact/resources/css/game.css">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
 
     <style>
         body {
             /* サイトの外枠の余白を無効化 */
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-image: url('/DeepImpact/images/art3.jpg');
@@ -56,6 +58,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         }
 
         .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: fixed;
             bottom: 10px;
             width: 50%;
@@ -121,6 +126,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             justify-content: center;
         }
 
+
+
         .vote-area .selected-card {
             width: 8rem;
             margin-right: 30px;
@@ -141,22 +148,34 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             width: 8rem;
         }
 
-        .scoreboard {
+        #scoreboard {
             width: 200px;
             height: 300px;
+            right: 20px;
             position: fixed;
             bottom: 5px;
-            left: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0);
             font-family: Arial, sans-serif;
         }
 
         .scoreboard p {
             margin: 0;
             text-align: center;
+        }
+
+        .scoreboard ul {
+            list-style: none;
+            padding: 0;
+            ;
+        }
+
+        .scoreboard li {
+            margin: 5px 0;
+            font-size: 16px;
         }
 
         @media screen and (max-width: 1500px) {
@@ -699,7 +718,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             font-weight: bolder;
         }
 
-        .story-card {
+        #story-card {
             width: 60%;
             position: fixed;
             top: 10px;
@@ -744,6 +763,46 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             font-size: 20px;
             cursor: pointer;
         }
+
+        #message-box {
+            position: fixed;
+            /* 画面全体に固定表示 */
+            bottom: 20px;
+            /* 画面下から20px */
+            left: 50%;
+            /* 横中央 */
+            transform: translateX(-50%);
+            /* 中央揃え */
+            background-color: rgba(0, 0, 0, 0.8);
+            /* 半透明の背景 */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            /* 初期は非表示 */
+        }
+
+        #message-box.hidden {
+            display: none;
+        }
+
+        #toggle-story {
+            position: relative;
+            /* 必要なら absolute でもOK */
+            z-index: 10;
+            /* story-card より大きい値を指定 */
+            background-color: #fff;
+            /* 背景色を付けると目視しやすい */
+            cursor: pointer;
+            /* ボタンらしいカーソル */
+            padding: 5px 10px;
+            /* ボタンのサイズを適切に調整 */
+            margin-top: 10px;
+            /* 必要に応じて調整 */
+        }
     </style>
 
     <script type="text/javascript">
@@ -760,9 +819,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
-
-
-
     <div class="container">
         <div class="onhand">
             <div class="draw" id="draw">
@@ -806,8 +862,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 
     <div id="story-card"></div>
+    <button id='toggle-story'>ストーリーの詳細を見る</button>
 
-    <div id='messages'></div>
+    <div id="message-box" class="hidden">
+        <p id="message-text"></p>
+    </div>
 
 
 
@@ -883,7 +942,9 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        var socket = io('http://192.168.1.100:8080');
+        //const socket = io('http://192.168.3.79:8080');
+        const socket = io('http://192.168.1.100:8080');
+
 
         const sendChatBtn = document.getElementById('send-chat');
         const handList = document.getElementById('hand');
@@ -892,7 +953,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         let currentRoomId = '';
         let currentHand = [];
-
+        let isFullStoryVisible = false;
 
 
         function getQueryParam(param) {
@@ -904,10 +965,13 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         console.log(roomId);
         const userId = '<?php echo json_encode($_SESSION['user_id']) ?>';
 
+        console.log(userId);
+
         socket.emit('startGame', {
-            roomId,
-            userId
+            roomId: roomId
         });
+
+
 
         socket.on('connect', () => {
             console.log(socket.id);
@@ -939,8 +1003,23 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         function displayStory(story) {
             const storyDisplay = document.getElementById('story-card');
+            const toggleButton = document.getElementById('toggle-story');
+
             if (storyDisplay) {
-                storyDisplay.textContent = `${story}`;
+                // ストーリーの最初の3行だけを表示
+                const storyPreview = story.split('\n').slice(0, 3).join('\n');
+                storyDisplay.textContent = isFullStoryVisible ? story : storyPreview;
+            }
+
+            if (toggleButton) {
+                // ボタンのテキストを切り替え
+                toggleButton.textContent = isFullStoryVisible ? "ストーリーを短縮して見る" : "ストーリーの詳細を見る";
+
+                // ボタンをクリックした時に表示を切り替え
+                toggleButton.onclick = () => {
+                    isFullStoryVisible = !isFullStoryVisible;
+                    displayStory(story);
+                };
             }
         }
 
@@ -1176,7 +1255,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 const voterList = votes[cardId];
                 console.log(`card ${cardId} has votes from`, voterList);
             }
-            console.log(`${playerId}が${votes}に投票しました${userName}`);
+            console.log(`${userName}が${votes}に投票しました`);
         })
 
         socket.on('gameEnd', (data) => {
@@ -1190,23 +1269,30 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
         function displayWinner(winners, highestScore) {
-            const winnerlist = winners.map(winner => `<p>${winner.name} - ${winner.score}天</p>`).join('');
-            const winnerMessage = `
-            <div class="winner-popup">
-                  <h2>ゲーム終了！</h2>
-                  <h3>勝者:</h3>
-                  ${winnerList}
-                  <p>最高スコア: ${highestScore}</p>
-                  <button onclick="resetGame()">次のゲームへ</button>
-                  </div>
-                  `;
+            const winnerList = winners
+                .map((winner) => `<p>${winner.name} - ${winner.score}点</p>`)
+                .join('');
 
-            document.body.innerHTML += winnerMessage;
+            const winnerPopup = document.createElement('div');
+            winnerPopup.className = 'winner-popup';
+            winnerPopup.innerHTML = `
+            <div class="popup-content">
+            <h2>ゲーム終了！</h2>
+            <h3>勝者:</h3>
+            ${winnerList}
+            <p>最高スコア: ${highestScore}</p>
+            <button id="reset-game-btn">次のゲームへ</button>
+            </div>
+            `;
+
+            document.body.appendChild(winnerPopup);
+
+            // ボタンの動作を追加
+            document.getElementById('reset-game-btn').addEventListener('click', resetGame);
         }
+
         socket.on('cardPlayed', (data) => {
-
             console.log('Card played:', data);
-
             // プレイヤーIDとカード情報を取得
             const {
                 playerId,
@@ -1230,13 +1316,14 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             // カードの画像を表示
             const imgElement = document.createElement('img');
             imgElement.src = imaggePath;
-            imgElement.className = 'card-image';
+            imgElement.className = 'selected-card';
 
             // カードに画像と名前を追加
             cardElement.appendChild(imgElement);
             cardElement.addEventListener("click", () => {
                 socket.emit('vote', {
                     cardId: card.id,
+                    userId: userId,
                     playerId: playerId,
                     roomId: roomId
                 });
@@ -1247,6 +1334,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             // 場に出すカードを追加
             playedArea.appendChild(cardElement);
             console.log(`Card played by player ${playerId}: ${card.card}`);
+        });
+
+        socket.on('message', (data) => {
+            showMessage(data.message);
         });
 
         function generateNewUserId() {
@@ -1321,6 +1412,25 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             document.getElementById('message').value = '';
         }
 
+        function showMessage(message, duration = 3000) {
+            const messageBox = document.getElementById('message-box');
+            const messageText = document.getElementById('message-text');
+
+            // メッセージをセット
+            messageText.textContent = message;
+
+            // メッセージボックスを表示
+            messageBox.classList.remove('hidden');
+            messageBox.style.display = 'block';
+
+            // 指定時間後に非表示
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+                messageBox.style.display = 'none';
+            }, duration);
+        }
+
+
         document.getElementById('menu-click-btn').addEventListener('click', function() {
             const menuPopupWrapper = document.getElementById('menu-popup-wrapper');
             if (menuPopupWrapper.style.display === 'flex') {
@@ -1329,11 +1439,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 menuPopupWrapper.style.display = 'flex';
             }
         });
-
-        document.getElementById('playCardButton').addEventListener('click', function() {
-            const selectedCard = getSelectedCard();
-            playcard(selectedCard);
-        })
 
         document.getElementById('rule-click-btn').addEventListener('click', function() {
             document.getElementById('rule-popup-wrapper').style.display = 'block';
@@ -1352,7 +1457,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         });
 
         document.getElementById('exit-btn').addEventListener('click', function() {
-            window.location.href = '/DeepImpact/exit.php';
+            socket.emit('leaveRoom', {
+                roomId: roomId
+            });
+            window.location.href = 'index.php';
         });
 
         $("button").click(function() {
