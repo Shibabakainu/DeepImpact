@@ -3,10 +3,9 @@
 //$username = "username";
 //$password = "password";
 
-$servername = "192.168.1.100";
-//$servername = "192.168.3.79";
-$username = "thread";
-$password = "PassWord1412%";
+$servername = "10.0.2.15";
+$username = "shiba";
+$password = "Shiba@0612";
 $dbname = "storyteller";
 
 // 接続の作成

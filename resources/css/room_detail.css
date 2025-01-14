@@ -86,9 +86,7 @@ main {
     transition: 0.5s ease;
 }
 
-.create {
-    display: none;
-}
+
 
 .game2 {
     width: 140px;
