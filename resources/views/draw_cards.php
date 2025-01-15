@@ -55,7 +55,7 @@ $current_card_count = $row['card_count'];
 $stmt->close();
 
 // Prevent drawing if the player already has the max cards
-if (($current_turn == 1 && $current_card_count >= 5) || ($current_turn > 1 && $current_card_count >= 6)) {
+if (($current_turn == 1 && $current_card_count >= 5) || ($current_turn > 1 && $current_card_count >= 5)) {
     echo json_encode(['success' => false, 'message' => '既にカードを引きました。']);
     exit();
 }
@@ -82,7 +82,7 @@ while ($row = $result->fetch_assoc()) {
     $stmt_insert = $conn->prepare($sql_insert);
     $stmt_insert->bind_param("iii", $room_id, $row['Card_id'], $player_position);
     $stmt_insert->execute();
-    
+
     // Get the last inserted ID (room_card_id)
     $room_card_id = $conn->insert_id;
 
@@ -106,4 +106,3 @@ $stmt->close();
 echo json_encode(['success' => true, 'cards' => $cards]);
 
 $conn->close();
-?>
