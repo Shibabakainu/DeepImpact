@@ -22,7 +22,7 @@ const io = new Server(server, {
 
 const db = mysql.createConnection({
   //host: "192.168.3.79",
-  host: "192.168.1.100",
+  host: "49.212.166.241",
   user: "thread",
   password: "PassWord1412%",
   database: "storyteller",

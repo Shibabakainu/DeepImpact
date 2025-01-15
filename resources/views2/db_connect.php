@@ -3,7 +3,7 @@
 //$username = "username";
 //$password = "password";
 
-$servername = "192.168.1.100";
+$servername = "49.212.166.241";
 //$servername = "192.168.3.79";
 $username = "thread";
 $password = "PassWord1412%";
