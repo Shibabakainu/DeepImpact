@@ -4,15 +4,21 @@
 //そのときに使われるコードがio.to(roomID).emit()です。これを使うと引数に設定されているものがクライアントに送信され、game.phpやroom_searchで使えるようになります
 
 const express = require("express");
-const http = require("http");
+const https = require("https");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const fs =require('fs');
 const mysql = require("mysql");
+
+const options = {
+  key: fs.readFileSync("/etc/letsencrypt/live/storyteller.help/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/storyteller.help/fullchain.pem"),
+};
 
 // サーバーのセットアップ
 const app = express();
 app.use(cors());
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const io = new Server(server, {
   cors: {
     origin: "*",
