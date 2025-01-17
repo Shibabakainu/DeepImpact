@@ -113,7 +113,7 @@ if ($host_id) {
     </main>
     <script>
         //const socket = io('http://192.168.3.79:8080');
-        const socket = io('http://storyteller.help');
+        const socket = io('http://storyteller.help:8080');
 
         const playerList = document.getElementById('player-list');
 
