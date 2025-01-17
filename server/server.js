@@ -13,6 +13,7 @@ const mysql = require("mysql");
 const options = {
   key: fs.readFileSync("/etc/letsencrypt/live/storyteller.help/privkey.pem"),
   cert: fs.readFileSync("/etc/letsencrypt/live/storyteller.help/fullchain.pem"),
+  ca: fs.readFileSync("/etc/letsencrypt/live/storyteller.help/chain.pem"),
 };
 
 // サーバーのセットアップ
@@ -623,6 +624,6 @@ const stories = [
 
 });
 // サーバーをポート8080で起動
-server.listen(8080, () => {
+server.listen(443, () => {
   console.log("Server is running on port 8080");
   });
