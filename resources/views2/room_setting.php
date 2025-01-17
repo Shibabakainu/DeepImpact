@@ -75,7 +75,7 @@ if (isset($_SESSION['error_message'])) {
 
     <script>
         //sconst socket = io('http://192.168.3.79:8080');        
-        const socket = io('https://storyteller.help:443', {
+        const socket = io('https://storyteller.help', {
             secure: true,
         });
 
