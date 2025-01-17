@@ -74,9 +74,8 @@ if (isset($_SESSION['error_message'])) {
     </div>
 
     <script>
-        //sconst socket = io('http://192.168.3.79:8080');
-        const socket = io('http://49.212.166.241:8080');
-
+        //sconst socket = io('http://192.168.3.79:8080');        
+        const socket = io('http://storyteller.help');
 
         const userId = '<?php echo json_encode($_SESSION['user_id']) ?>';
         const userName = '<?php echo json_encode($_SESSION['user_name']) ?>';
