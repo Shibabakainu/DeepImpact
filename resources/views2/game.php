@@ -943,7 +943,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
     <script>
         //const socket = io('http://192.168.3.79:8080');
-        const socket = io('http://49.212.166.241');
+        const socket = io('http://49.212.166.241:8080');
 
 
         const sendChatBtn = document.getElementById('send-chat');
