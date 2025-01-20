@@ -1466,19 +1466,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         $("button").click(function() {
             $(this).toggleClass("toggle");
         });
-
-
-        window.onload = function() {
-            let userId = localStorage.getItem('userId');
-            if (!userId) {
-                userId = generateNewUserId();
-                localStorage.getItem('userId', userId);
-            }
-            socket.emit('reconnectWithUserId', {
-                userId: userId
-            });
-            console.log('client socket id:', socket.id);
-        };
     </script>
 
 </body>
