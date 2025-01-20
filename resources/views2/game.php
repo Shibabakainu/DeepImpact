@@ -1474,7 +1474,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 userId = generateNewUserId();
                 localStorage.getItem('userId', userId);
             }
-            connectwebsocket();
             socket.emit('reconnectWithUserId', {
                 userId: userId
             });
