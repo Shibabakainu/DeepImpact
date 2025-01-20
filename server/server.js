@@ -49,7 +49,7 @@ const room_players = {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.post("/server", (rep, res) => {
+app.post("/server", (req, res) => {
   const roomId = req.body.room_id;
   if (room_players[roomId]) {
     res.json({ players: room_players[roomId] });
@@ -624,6 +624,6 @@ const stories = [
 
 });
 // サーバーをポート8080で起動
-server.listen(8080, () => {
+server.listen(443, () => {
   console.log("Server is running on port 8080");
-  });
+});
