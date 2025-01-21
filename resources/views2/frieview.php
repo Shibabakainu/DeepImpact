@@ -109,11 +109,8 @@
         <div class="friend-list">
             <?php if (!empty($friends)): ?>
                 <?php foreach ($friends as $friend): ?>
-                    <<<<<<<< HEAD:resources/views2/frieview.php
-                        <div class="friend-item" onclick="location.href='/DeepImpact/resources/views2/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
-                        ========
+                    <div class="friend-item" onclick="location.href='/DeepImpact/resources/views2/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">
                         <div class="friend-item">
-                            >>>>>>>> 1948c0f8d4eaf6ad4993e15e9e68b85a168a01bf:resources/views/frieview.php
                             <?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>
                             <button onclick="location.href='/deepimpact/resources/views2/send_message.php?friend_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">メッセージを送る</button>
                             <button onclick="location.href='/deepimpact/resources/views2/login/other_profile.php?user_name=<?php echo htmlspecialchars($friend, ENT_QUOTES, 'UTF-8'); ?>'">プロフィールを見る</button>
@@ -122,29 +119,29 @@
                 <?php else: ?>
                     <div class="no-friends">フレンドがいません。</div>
                 <?php endif; ?>
-        </div>
-
-        <div class="pending-requests">
-            <div class="title">保留中のフレンドリクエスト</div>
-            <?php if (!empty($pending_requests)): ?>
-                <?php foreach ($pending_requests as $request): ?>
-                    <div class="request-item">
-                        <?php echo htmlspecialchars($request, ENT_QUOTES, 'UTF-8'); ?>
-                        <form action="handle_friend_request.php" method="post" class="request-form">
-                            <input type="hidden" name="request_user" value="<?php echo htmlspecialchars($request, ENT_QUOTES, 'UTF-8'); ?>">
-                            <button type="submit" name="action" value="accept" class="accept-button">承認</button>
-                            <button type="submit" name="action" value="reject" class="reject-button">拒否</button>
-                        </form>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="no-requests">保留中のフレンドリクエストがありません。</div>
-            <?php endif; ?>
-        </div>
 
-        <button class="friend-search" onclick="location.href='/DeepImpact/resources/views2/friend.php'">フレンド検索</button>
-        <button class="return" onclick="location.href='index.php'">戻る</button>
-    </div>
+                    <div class="pending-requests">
+                        <div class="title">保留中のフレンドリクエスト</div>
+                        <?php if (!empty($pending_requests)): ?>
+                            <?php foreach ($pending_requests as $request): ?>
+                                <div class="request-item">
+                                    <?php echo htmlspecialchars($request, ENT_QUOTES, 'UTF-8'); ?>
+                                    <form action="handle_friend_request.php" method="post" class="request-form">
+                                        <input type="hidden" name="request_user" value="<?php echo htmlspecialchars($request, ENT_QUOTES, 'UTF-8'); ?>">
+                                        <button type="submit" name="action" value="accept" class="accept-button">承認</button>
+                                        <button type="submit" name="action" value="reject" class="reject-button">拒否</button>
+                                    </form>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="no-requests">保留中のフレンドリクエストがありません。</div>
+                        <?php endif; ?>
+                    </div>
+
+                    <button class="friend-search" onclick="location.href='/DeepImpact/resources/views2/friend.php'">フレンド検索</button>
+                    <button class="return" onclick="location.href='index.php'">戻る</button>
+        </div>
 </body>
 
 </html>

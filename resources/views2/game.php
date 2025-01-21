@@ -862,7 +862,6 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
 
     <div id="story-card"></div>
-    <button id='toggle-story'>ストーリーの詳細を見る</button>
 
     <div id="message-box" class="hidden">
         <p id="message-text"></p>
