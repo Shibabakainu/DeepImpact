@@ -106,7 +106,7 @@ if ($host_id) {
                 } else {
                     echo '<p>ホストがゲームを開始するのを待っています...</p>';
                 }
-                ?><button class="game3" data-room-id="<?php echo $room; ?>">物語を作る3</button>
+                ?>
             </div>
         </div>
         <ul id="player-list"></ul>
