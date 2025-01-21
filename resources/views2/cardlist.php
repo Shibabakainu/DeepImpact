@@ -1,9 +1,9 @@
 <?php
 
-$host = "localhost";
+$host = "49.212.166.241";
 $dbname = "storyteller";
-$username = "username";  // Replace with your actual database username
-$password = "password";  // Replace with your actual database password
+$username = "thread";  // Replace with your actual database username
+$password = "PassWord1412%";  // Replace with your actual database password
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

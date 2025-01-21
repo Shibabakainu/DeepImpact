@@ -1003,23 +1003,11 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
         function displayStory(story) {
             const storyDisplay = document.getElementById('story-card');
-            const toggleButton = document.getElementById('toggle-story');
 
             if (storyDisplay) {
                 // ストーリーの最初の3行だけを表示
                 const storyPreview = story.split('\n').slice(0, 3).join('\n');
-                storyDisplay.textContent = isFullStoryVisible ? story : storyPreview;
-            }
-
-            if (toggleButton) {
-                // ボタンのテキストを切り替え
-                toggleButton.textContent = isFullStoryVisible ? "ストーリーを短縮して見る" : "ストーリーの詳細を見る";
-
-                // ボタンをクリックした時に表示を切り替え
-                toggleButton.onclick = () => {
-                    isFullStoryVisible = !isFullStoryVisible;
-                    displayStory(story);
-                };
+                storyDisplay.textContent = story;
             }
         }
 
