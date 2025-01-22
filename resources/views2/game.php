@@ -924,7 +924,10 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             background: white;
             position: relative;
             z-index: 995;
-            border-radius: 5px;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            margin: 20px 0px 0px;
         }
     </style>
 
