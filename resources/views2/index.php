@@ -244,25 +244,6 @@ $loggedIn = isset($_SESSION['user_id']);
 
     <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
     無理よ～一回だけ鳴るようになったよ-->
-    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3" preload="auto"></audio>
-    <script type="text/javascript">
-        // 効果音用のAudio要素を取得
-        const hoverSound = document.getElementById('hoverSound');
-        hoverSound.preload = 'auto';
-
-        // カードにマウスを乗せたときの効果音再生
-        $(document).on('mouseenter', '.card', function() {
-            hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
-            hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
-        });
-
-        // 効果音スライダーのイベントリスナーを追加
-        document.getElementById('sfx-volume').addEventListener('input', function(event) {
-            const volume = event.target.value / 100; // 0-100 の値を 0-1 に変換
-            hoverSound.volume = volume; // 効果音の音量を設定
-            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`; // 現在の値を表示
-        });
-    </script>
 
 
     <!-- ボタンを設置、クリックでBGMを再生/停止 -->
