@@ -819,6 +819,87 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 </head>
 
 <body>
+
+    <audio id="hoverSound" src="/DeepImpact/bgm/03_ぷい.mp3" preload="auto"></audio>
+    <script type="text/javascript">
+        // 効果音用のAudio要素を取得
+        const hoverSound = document.getElementById('hoverSound');
+        hoverSound.preload = 'auto';
+
+        // カードにマウスを乗せたときの効果音再生
+        $(document).on('mouseenter', '.card', function() {
+            hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
+            hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
+        });
+
+        // 効果音スライダーのイベントリスナーを追加
+        document.getElementById('sfx-volume').addEventListener('input', function(event) {
+            const volume = event.target.value / 100; // 0-100 の値を 0-1 に変換
+            hoverSound.volume = volume; // 効果音の音量を設定
+            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`; // 現在の値を表示
+        });
+    </script>
+    <!-- ボタンを設置、クリックでBGMを再生/停止 -->
+    <button id="bgm-toggle-btn" class="bgm-btn">
+        <span id="bgm-icon">🔊</span>
+    </button>
+
+    <audio id="bgm" src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" preload="auto" loop autoplay>
+        <!-- オーディオ要素：BGMを再生、ループ設定を有効化 -->
+        <source src="/DeepImpact/b gm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        // 最初のクリックでミュート解除 (Chrome制限対応)
+        document.body.addEventListener('click', () => {
+            bgm.muted = false;
+            bgm.play().catch(console.error);
+        }, {
+            once: true
+        }); // このイベントは一度だけ実行
+
+        const context = new AudioContext();
+
+        // Setup an audio graph with AudioNodes and schedule playback.
+
+        // Resume AudioContext playback when user clicks a button on the page.
+        document.querySelector('button').addEventListener('click', function() {
+            context.resume().then(() => {
+                console.log('AudioContext playback resumed successfully');
+            });
+        });
+
+        // DOMの読み込みが完了したときに実行される処理
+        document.addEventListener('DOMContentLoaded', function() {
+            const bgm = document.getElementById('bgm');
+            const bgmToggleBtn = document.getElementById('bgm-toggle-btn');
+            const bgmIcon = document.getElementById('bgm-icon');
+            let isPlaying = false;
+
+            // ボタンがクリックされたときのイベントハンドラを定義
+            bgmToggleBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    // 再生中ならBGMを一時停止
+                    bgm.pause();
+                    bgmIcon.textContent = '🔇'; // アイコンをミュートのものに変更
+                } else {
+                    // 停止中ならBGMを再生
+                    bgm.play();
+                    bgmIcon.textContent = '🔊'; // アイコンをスピーカーのものに変更
+                }
+                isPlaying = !isPlaying; // フラグを反転（再生⇔停止を切り替え）
+            });
+
+            // ユーザーがページを離れる前に音楽を停止する処理
+            window.addEventListener('beforeunload', () => {
+                bgm.pause(); // ページが閉じられる前にBGMを停止
+            });
+
+            // 1秒後にボタンを自動的にクリック
+            setTimeout(function() {
+                bgmToggleBtn.click(); // ここでボタンがクリックされる
+            }, 2000); // 1000ミリ秒 = 1秒
+        });
+    </script>
     <div class="container">
         <div class="onhand">
             <div class="draw" id="draw">
@@ -882,6 +963,8 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <div class="button_1">
                 <button class="back-btn">退出する</button>
                 <button class="popup-btn" id="rule-click-btn">ルール</button>
+                <button class="volume-btn" id="volume-btn">ボリューム</button>
+
                 <div id="rule-popup-wrapper" style="display: none;">
                     <div id="rule-popup-inside">
                         <div class="text">
@@ -936,6 +1019,57 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <button class="other-btn" id="exit-btn">退出</button>
         </div>
     </div>
+    <!-- ボリューム買えるようにするよ -->
+    <div id="volume-textarea-wrapper" style="display: none;">
+        <div id="volume-textarea-inside">
+            <div class="text">
+                <div id="volume-textarea-close">X</div>
+                <!-- 音量調節スライダー -->
+                <label for="bgm-volume">BGM 音量: <span id="bgm-volume-value">100%</span></label>
+                <input id="bgm-volume" type="range" min="0" max="100" value="100">
+            </div>
+            <div>
+                <label for="sfx-volume">効果音 音量: <span id="sfx-volume-value">100%</span></label>
+                <input id="sfx-volume" type="range" min="0" max="100" value="100">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 音量調節のスライダーをセットアップ
+        document.getElementById('bgm-volume').addEventListener('input', function(event) {
+            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
+            const volume = event.target.value / 100;
+            // BGMオーディオ要素を取得
+            const bgm = document.getElementById('bgm');
+            // 取得した値をBGMの音量に設定
+            bgm.volume = volume;
+            // 現在の音量をパーセンテージ形式で表示
+            document.getElementById('bgm-volume-value').innerText = `${event.target.value}%`;
+        });
+
+        // 効果音の音量調節スライダーをセットアップ
+        document.getElementById('sfx-volume').addEventListener('input', function(event) {
+            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
+            const volume = event.target.value / 100;
+            // 効果音オーディオ要素を取得
+            const hoverSound = document.getElementById('hoverSound');
+            // 取得した値を効果音の音量に設定
+            hoverSound.volume = volume;
+            // 現在の音量をパーセンテージ形式で表示
+            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`;
+        });
+
+        document.getElementById("volume-btn").addEventListener("click", function() {
+            document.getElementById("volume-textarea-wrapper").style.display = "block";
+        });
+
+        document.getElementById("volume-textarea-close").addEventListener("click", function() {
+            document.getElementById("volume-textarea-wrapper").style.display = "none";
+        });
+    </script>
+
+
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
