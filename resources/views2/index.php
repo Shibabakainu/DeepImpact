@@ -354,6 +354,21 @@ $loggedIn = isset($_SESSION['user_id']);
         </div>
     </div>
 
+    <div id="volume-textarea-wrapper" style="display: none;">
+        <div id="volume-textarea-inside">
+            <div class="text">
+                <div id="volume-textarea-close">X</div>
+                <!-- 音量調節スライダー -->
+                <label for="bgm-volume">BGM 音量: <span id="bgm-volume-value">100%</span></label>
+                <input id="bgm-volume" type="range" min="0" max="100" value="100">
+            </div>
+            <div>
+                <label for="sfx-volume">効果音 音量: <span id="sfx-volume-value">100%</span></label>
+                <input id="sfx-volume" type="range" min="0" max="100" value="100">
+            </div>
+        </div>
+    </div>
+
     <div id="imageModal" class="modal" style="display: none;">
         <span id="closeModal" class="close">&times;</span>
         <img class="modal-content" id="modalImage">
@@ -416,6 +431,39 @@ $loggedIn = isset($_SESSION['user_id']);
             if (e.target.id === indexPopupWrapper.id || e.target.id === indexClose.id) {
                 indexPopupWrapper.style.display = 'none';
             }
+        });
+
+
+        // 音量調節のスライダーをセットアップ
+        document.getElementById('bgm-volume').addEventListener('input', function(event) {
+            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
+            const volume = event.target.value / 100;
+            // BGMオーディオ要素を取得
+            const bgm = document.getElementById('bgm');
+            // 取得した値をBGMの音量に設定
+            bgm.volume = volume;
+            // 現在の音量をパーセンテージ形式で表示
+            document.getElementById('bgm-volume-value').innerText = `${event.target.value}%`;
+        });
+
+        // 効果音の音量調節スライダーをセットアップ
+        document.getElementById('sfx-volume').addEventListener('input', function(event) {
+            // スライダーの値を取得し、0-100 の範囲を 0-1 に変換
+            const volume = event.target.value / 100;
+            // 効果音オーディオ要素を取得
+            const hoverSound = document.getElementById('hoverSound');
+            // 取得した値を効果音の音量に設定
+            hoverSound.volume = volume;
+            // 現在の音量をパーセンテージ形式で表示
+            document.getElementById('sfx-volume-value').innerText = `${event.target.value}%`;
+        });
+
+        document.getElementById("volume-btn").addEventListener("click", function() {
+            document.getElementById("volume-textarea-wrapper").style.display = "block";
+        });
+
+        document.getElementById("volume-textarea-close").addEventListener("click", function() {
+            document.getElementById("volume-textarea-wrapper").style.display = "none";
         });
     </script>
 </body>
