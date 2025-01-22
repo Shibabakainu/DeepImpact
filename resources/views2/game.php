@@ -918,6 +918,14 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             margin-top: 10px;
             /* 必要に応じて調整 */
         }
+
+        #volume-btn {
+            text-align: center;
+            background: white;
+            position: relative;
+            z-index: 995;
+            border-radius: 5px;
+        }
     </style>
 
     <script type="text/javascript">
