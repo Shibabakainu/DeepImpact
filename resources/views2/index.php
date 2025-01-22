@@ -242,71 +242,10 @@ $loggedIn = isset($_SESSION['user_id']);
         }
     </script>
 
-    <!--こうかおん  てか無理かも～できへん助けてなんで鳴らへんねんおかしいやん
-    無理よ～一回だけ鳴るようになったよ-->
-
-
-    <!-- ボタンを設置、クリックでBGMを再生/停止 -->
-    <button id="bgm-toggle-btn" class="bgm-btn">
-        <span id="bgm-icon">🔊</span>
-    </button>
-
-    <audio id="bgm" src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" preload="auto" loop autoplay>
-        <!-- オーディオ要素：BGMを再生、ループ設定を有効化 -->
-        <source src="/DeepImpact/bgm/PerituneMaterial_Poema.mp3" type="audio/mpeg">
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
     </audio>
-    <script>
-        // 最初のクリックでミュート解除 (Chrome制限対応)
-        document.body.addEventListener('click', () => {
-            bgm.muted = false;
-            bgm.play().catch(console.error);
-        }, {
-            once: true
-        }); // このイベントは一度だけ実行
-
-        const context = new AudioContext();
-
-        // Setup an audio graph with AudioNodes and schedule playback.
-
-        // Resume AudioContext playback when user clicks a button on the page.
-        document.querySelector('button').addEventListener('click', function() {
-            context.resume().then(() => {
-                console.log('AudioContext playback resumed successfully');
-            });
-        });
-
-        // DOMの読み込みが完了したときに実行される処理
-        document.addEventListener('DOMContentLoaded', function() {
-            const bgm = document.getElementById('bgm');
-            const bgmToggleBtn = document.getElementById('bgm-toggle-btn');
-            const bgmIcon = document.getElementById('bgm-icon');
-            let isPlaying = false;
-
-            // ボタンがクリックされたときのイベントハンドラを定義
-            bgmToggleBtn.addEventListener('click', function() {
-                if (isPlaying) {
-                    // 再生中ならBGMを一時停止
-                    bgm.pause();
-                    bgmIcon.textContent = '🔇'; // アイコンをミュートのものに変更
-                } else {
-                    // 停止中ならBGMを再生
-                    bgm.play();
-                    bgmIcon.textContent = '🔊'; // アイコンをスピーカーのものに変更
-                }
-                isPlaying = !isPlaying; // フラグを反転（再生⇔停止を切り替え）
-            });
-
-            // ユーザーがページを離れる前に音楽を停止する処理
-            window.addEventListener('beforeunload', () => {
-                bgm.pause(); // ページが閉じられる前にBGMを停止
-            });
-
-            // 1秒後にボタンを自動的にクリック
-            setTimeout(function() {
-                bgmToggleBtn.click(); // ここでボタンがクリックされる
-            }, 2000); // 1000ミリ秒 = 1秒
-        });
-    </script>
 
 
     <?php if (!$loggedIn) : ?>
@@ -335,20 +274,6 @@ $loggedIn = isset($_SESSION['user_id']);
         </div>
     </div>
 
-    <div id="volume-textarea-wrapper" style="display: none;">
-        <div id="volume-textarea-inside">
-            <div class="text">
-                <div id="volume-textarea-close">X</div>
-                <!-- 音量調節スライダー -->
-                <label for="bgm-volume">BGM 音量: <span id="bgm-volume-value">100%</span></label>
-                <input id="bgm-volume" type="range" min="0" max="100" value="100">
-            </div>
-            <div>
-                <label for="sfx-volume">効果音 音量: <span id="sfx-volume-value">100%</span></label>
-                <input id="sfx-volume" type="range" min="0" max="100" value="100">
-            </div>
-        </div>
-    </div>
 
     <div id="imageModal" class="modal" style="display: none;">
         <span id="closeModal" class="close">&times;</span>
