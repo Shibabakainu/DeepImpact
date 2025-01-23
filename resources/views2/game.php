@@ -1536,10 +1536,15 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
             // ボタンの動作を追加
             document.getElementById('exit-btn').addEventListener('click', function() {
-                socket.emit('leaveRoom', {
-                    roomId: roomId
-                });
-                window.location.href = 'index.php';
+                if (roomId) {
+                    socket.emit('leaveRoom', {
+                        roomId: roomId
+                    });
+                    window.location.href = 'index.php';
+
+                } else {
+                    console.error("roomIdが定義されていません");
+                }
             });
         }
 
