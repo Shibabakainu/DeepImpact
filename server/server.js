@@ -488,7 +488,7 @@ const stories = [
   }
 
   function updateScores(roomId) {
-    if (!room || !room.votes) return;
+
     const voteCounts = {};
     for(const [cardId, votes] of Object.entries(room.votes)){
       voteCounts[cardId] = votes.length;
