@@ -470,6 +470,8 @@ const stories = [
     if(room){
       room.players.forEach(player => player.voted = false);
     }
+
+    updateScores(room);
     room.round = (room.round || 0 ) + 1;
 
     const story =stories[room.round] || "冒険は終わった";
@@ -485,6 +487,39 @@ const stories = [
     }
   }
 
+  function updateScores(room) {
+    if (!room || !room.votes) return;
+    const voteCounts = {};
+    for(const [cardId, votes] of Object.entries(room.votes)){
+      voteCounts[cardId] = votes.length;
+    }
+
+    const winningCardId = Object.keys(voteCounts).reduce((a, b)=>
+      voteCounts[a] > voteCounts[b] ? a : b,
+    null
+    )
+
+    const winner= room.playedCards.find((card) => card.id === winningCardId);
+    const playerId = winner ? winner.playerId : null;
+
+    if (winningCardId) {
+      // `votes` から勝者の `playerId` を取得
+      const winningVote = room.votes[winningCardId][0]; // 1票目を使用
+      const playerId = winningVote.playerId;
+
+      const player = room.players.find((p) => p.userId === playerId);
+      if (player) {
+          player.score += 1;
+          console.log('勝者', winningVote);
+      } else {
+          console.log('勝者のプレイヤーが見つかりません');
+      }  
+
+      io.to(roomId).emit('updatescore',room.players)
+
+    }
+  }
+  
   function endgame(roomId){
     const room= rooms[roomId];
 
@@ -526,35 +561,6 @@ const stories = [
       return;
     }
 
-    const voteCounts = {};
-    for(const [cardId, votes] of Object.entries(room.votes)){
-      voteCounts[cardId] = votes.length;
-    }
-
-    const winningCardId = Object.keys(voteCounts).reduce((a, b)=>
-      voteCounts[a] > voteCounts[b] ? a : b,
-    null
-    )
-
-    const winner= room.playedCards.find((card) => card.id === winningCardId);
-    const playerId = winner ? winner.playerId : null;
-
-    if (winningCardId) {
-      // `votes` から勝者の `playerId` を取得
-      const winningVote = room.votes[winningCardId][0]; // 1票目を使用
-      const playerId = winningVote.playerId;
-
-      const player = room.players.find((p) => p.userId === playerId);
-      if (player) {
-          player.score += 1;
-          console.log('勝者', winningVote);
-      } else {
-          console.log('勝者のプレイヤーが見つかりません');
-      }  
-
-      io.to(roomId).emit('updatescore',room.players)
-
-
     room.players.forEach((player,index) => {
       while(player.hands.length < 5 && room.deck.length > 0){
         const card = room.deck.pop();
@@ -564,7 +570,7 @@ const stories = [
       let hand=player.hands;
       io.to(socketId).emit("dealCards", { cards: hand });
     });
-  }
+  
   
   room.votes={};
   room.playedcards=[];
