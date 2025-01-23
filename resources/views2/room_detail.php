@@ -111,6 +111,10 @@ if ($host_id) {
         </div>
         <ul id="player-list"></ul>
     </main>
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
     <script>
         //const socket = io('http://192.168.3.79:8080');
         const socket = io('https://storyteller.help:8080');

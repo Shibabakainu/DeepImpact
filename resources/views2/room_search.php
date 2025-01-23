@@ -35,6 +35,10 @@ session_start();
     <!-- メッセージボタン -->
     <!--<button onclick="window.location.href='/DeepImpact/resources/views/inbox.php'" class="message-button">メッセージ</button>-->
 
+    <audio autoplay loop>
+        <source src="/DeepImpact/bgm/sekiranun.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
     <main>
         <div class="container">
             <label class="search_label" for="search">ルーム名で検索</label>
