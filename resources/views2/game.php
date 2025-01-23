@@ -1534,18 +1534,24 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
 
             document.body.appendChild(winnerPopup);
 
-            // ボタンの動作を追加
-            document.getElementById('exit-btn').addEventListener('click', function() {
-                if (roomId) {
-                    socket.emit('leaveRoom', {
-                        roomId: roomId
-                    });
-                    window.location.href = 'index.php';
-
-                } else {
-                    console.error("roomIdが定義されていません");
-                }
-            });
+            const exitBtn = document.getElementById('exit-btn');
+            if (exitBtn) {
+                exitBtn.addEventListener('click', function() {
+                    console.log('Exit button clicked'); // デバッグ用ログ
+                    const roomId = getRoomId(); // roomId を取得
+                    if (roomId) {
+                        socket.emit('leaveRoom', {
+                            roomId: roomId
+                        });
+                        console.log(`Exiting room: ${roomId}`);
+                        window.location.href = 'index.php'; // ページ遷移
+                    } else {
+                        console.error('roomId が定義されていません');
+                    }
+                });
+            } else {
+                console.error('Exit button (#exit-btn) が見つかりません');
+            }
         }
 
         socket.on('cardPlayed', (data) => {
