@@ -952,11 +952,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
         const hoverSound = document.getElementById('hoverSound');
         hoverSound.preload = 'auto';
 
-        // カードにマウスを乗せたときの効果音再生
-        $(document).on('mouseenter', '.card', function() {
-            hoverSound.currentTime = 0; // 効果音をリセットして最初から再生
-            hoverSound.play().catch(error => console.error("ホバーサウンド再生に失敗:", error));
-        });
+
 
         // 効果音スライダーのイベントリスナーを追加
         document.getElementById('sfx-volume').addEventListener('input', function(event) {
