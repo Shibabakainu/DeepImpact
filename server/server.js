@@ -548,6 +548,7 @@ const stories = [
         score: winner.score,
       })),
       highestScore: highestScore,
+      roomId
     });
     console.log(`ルーム${roomId} のゲームが終了しました. 勝者:`,winners);
 

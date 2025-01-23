@@ -1509,13 +1509,14 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             const {
                 message,
                 winners,
-                highestScore
+                highestScore,
+                roomId
             } = data;
             alert(message);
-            displayWinner(winners, highestScore);
+            displayWinner(winners, highestScore, roomId);
         });
 
-        function displayWinner(winners, highestScore) {
+        function displayWinner(winners, highestScore, roomId) {
             const winnerList = winners
                 .map((winner) => `<p>${winner.name} - ${winner.score}点</p>`)
                 .join('');
