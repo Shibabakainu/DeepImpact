@@ -471,7 +471,7 @@ const stories = [
       room.players.forEach(player => player.voted = false);
     }
 
-    updateScores(room);
+    updateScores(roomId);
     room.round = (room.round || 0 ) + 1;
 
     const story =stories[room.round] || "冒険は終わった";
@@ -487,7 +487,7 @@ const stories = [
     }
   }
 
-  function updateScores(room) {
+  function updateScores(roomId) {
     if (!room || !room.votes) return;
     const voteCounts = {};
     for(const [cardId, votes] of Object.entries(room.votes)){
