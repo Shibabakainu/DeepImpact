@@ -1528,7 +1528,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             <h3>勝者:</h3>
             ${winnerList}
             <p>最高スコア: ${highestScore}</p>
-            <button id="reset-game-btn">次のゲームへ</button>
+            <button id="exit-btn">次のゲームへ</button>
             </div>
             `;
 
