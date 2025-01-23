@@ -1498,7 +1498,7 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
                 const voterList = votes[cardId];
                 console.log(`card ${cardId} has votes from`, voterList);
             }
-            console.log(`${userName}が${votes}に投票しました`);
+            console.log(`${userName}が投票しました`);
         })
 
         socket.on('gameEnd', (data) => {
