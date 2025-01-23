@@ -489,6 +489,7 @@ const stories = [
 
   function updateScores(roomId) {
 
+    const room = rooms[roomId];
     const voteCounts = {};
     for(const [cardId, votes] of Object.entries(room.votes)){
       voteCounts[cardId] = votes.length;
