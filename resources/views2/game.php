@@ -1529,13 +1529,17 @@ $shouldShowPopup = true; // 必要に応じて条件を設定してください
             ${winnerList}
             <p>最高スコア: ${highestScore}</p>
             <button id="exit-btn">次のゲームへ</button>
-            </div>
-            `;
+            </div>`;
 
             document.body.appendChild(winnerPopup);
 
             // ボタンの動作を追加
-            document.getElementById('reset-game-btn').addEventListener('click', resetGame);
+            document.getElementById('exit-btn').addEventListener('click', function() {
+                socket.emit('leaveRoom', {
+                    roomId: roomId
+                });
+                window.location.href = 'index.php';
+            });
         }
 
         socket.on('cardPlayed', (data) => {
